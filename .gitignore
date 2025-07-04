@@ -1,0 +1,24 @@
+# IDE
+# Ignore everything but code style settings and run configurations
+# that are supposed to be shared within teams.
+.idea/*
+!.idea/codeStyles
+!.idea/runConfigurations
+
+# SBT
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+.history
+.cache
+.lib/
+
+# Scala
+*.class
+*.log
+
+# OS Data
+.DS_Store
