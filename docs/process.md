@@ -1,5 +1,5 @@
 ---
-title: Process
+title: Processo di Sviluppo
 nav_order: 2
 ---
-# Process
+# Processo di Sviluppo
