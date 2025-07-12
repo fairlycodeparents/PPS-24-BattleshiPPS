@@ -2,17 +2,15 @@ package it.unibo.shipps.model
 
 /** Represents a ship in the game. */
 trait Ship:
-  /**
-   * Moves the ship to a new position.
-   * @param pos the new anchor [[Position]]
-   * @return a new instance of [[Ship]] with the updated position
-   */
+  /** Moves the ship to a new position.
+    * @param pos the new anchor [[Position]]
+    * @return a new instance of [[Ship]] with the updated position
+    */
   def move(pos: Position): Ship
 
-  /**
-   * Rotates the [[Orientation]] of the [[Ship]].
-   * @return a new instance of [[Ship]] with the rotated orientation
-   */
+  /** Rotates the [[Orientation]] of the [[Ship]].
+    * @return a new instance of [[Ship]] with the rotated orientation
+    */
   def rotate(): Ship
 
   /** @return the shape of the [[Ship]] */

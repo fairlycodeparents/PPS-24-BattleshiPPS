@@ -12,10 +12,9 @@ trait ShipShape:
 enum Orientation:
   case Horizontal, Vertical
 
-  /**
-   * Rotates the orientation.
-   * @return the opposite [[Orientation]]
-   */
+  /** Rotates the orientation.
+    * @return the opposite [[Orientation]]
+    */
   def rotate(): Orientation = this match
     case Horizontal => Vertical
     case Vertical   => Horizontal
