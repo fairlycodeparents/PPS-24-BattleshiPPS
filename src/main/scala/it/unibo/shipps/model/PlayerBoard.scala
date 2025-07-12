@@ -4,9 +4,9 @@ package it.unibo.shipps.model
 trait PlayerBoard:
   /**
    * Returns the list of ships currently on the player board.
-   * @return the [[Seq]] of [[Ship]]
+   * @return the [[Set]] of [[Ship]]
    */
-  def getShips: Seq[Ship]
+  def getShips: Set[Ship]
 
   /**
    * Adds a ship to the player board.
@@ -24,7 +24,7 @@ trait PlayerBoard:
 
   /**
    * Checks if the set of positions is occupied by any element on the player board.
-   * @param positions the [[Seq]] of [[Position]] to check
+   * @param positions the [[Set]] of [[Position]] to check
    * @return `true` if any position is occupied, `false` otherwise
    */
-  def isAnyPositionOccupied(positions: Seq[Position]): Boolean
+  def isAnyPositionOccupied(positions: Set[Position]): Boolean
