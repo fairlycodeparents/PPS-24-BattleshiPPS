@@ -1,8 +1,6 @@
 package it.unibo.shipps.model
 
-/**
- * Represents the ship positioning logic in the game.
- */
+/** Represents the ship positioning logic in the game. */
 trait ShipPositioning:
 
   /**

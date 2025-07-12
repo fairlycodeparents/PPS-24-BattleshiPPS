@@ -2,9 +2,7 @@ package it.unibo.shipps.model
 
 import scala.util.{Either, Left, Right}
 
-/**
- * Factory to create [[Ship]] instances.
- */
+/** Factory to create [[Ship]] instances. */
 trait ShipFactory:
   /**
    * Creates a [[Ship]] of the specified type, anchor, and orientation.

@@ -1,8 +1,6 @@
 package it.unibo.shipps.model
 
-/**
- * Represents the player board in the game.
- */
+/** Represents the player board in the game. */
 trait PlayerBoard:
   /**
    * Returns the list of ships currently on the player board.

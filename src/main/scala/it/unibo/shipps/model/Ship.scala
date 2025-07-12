@@ -1,8 +1,6 @@
 package it.unibo.shipps.model
 
-/**
- * Represents a ship in the game.
- */
+/** Represents a ship in the game. */
 trait Ship:
   /**
    * Moves the ship to a new position.
@@ -17,24 +15,16 @@ trait Ship:
    */
   def rotate(): Ship
 
-  /**
-   * @return the shape of the [[Ship]]
-   */
+  /** @return the shape of the [[Ship]] */
   def getShape(): ShipShape
 
-  /**
-   * @return the anchor [[Position]] of the [[Ship]]
-   */
+  /** @return the anchor [[Position]] of the [[Ship]] */
   def getAnchor(): Position
 
-  /**
-   * @return the set of grid positions occupied by the [[Ship]]
-   */
+  /** @return the set of grid positions occupied by the [[Ship]] */
   def getPositions(): Set[Position]
 
-/**
- * Predefined ship types with associated length.
- */
+/** Predefined ship types with associated length. */
 enum ShipType(val length: Int):
   case Frigate   extends ShipType(2)
   case Submarine extends ShipType(3)
