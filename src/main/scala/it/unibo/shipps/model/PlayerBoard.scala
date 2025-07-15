@@ -4,6 +4,10 @@ package it.unibo.shipps.model
  * Represents the player board in the game.
  */
 trait PlayerBoard:
+
+  val width: Int
+  val height: Int
+
   /**
    * Returns the list of ships currently on the player board.
    * @return the [[Seq]] of [[Ship]]
