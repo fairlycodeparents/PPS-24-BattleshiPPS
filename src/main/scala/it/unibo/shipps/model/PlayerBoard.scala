@@ -1,5 +1,7 @@
 package it.unibo.shipps.model
 
+import it.unibo.shipps.exceptions.UnexistingShipException
+
 /** Represents the player board in the game. */
 trait PlayerBoard:
   /** Returns the list of ships currently on the player board.
@@ -24,3 +26,17 @@ trait PlayerBoard:
     * @return `true` if any position is occupied, `false` otherwise
     */
   def isAnyPositionOccupied(positions: Set[Position]): Boolean
+
+/** Companion object for [[PlayerBoard]]. */
+object PlayerBoard:
+  def apply(ships: Set[Ship] = Set.empty): PlayerBoard = PlayerBoardImpl(ships)
+
+  private case class PlayerBoardImpl(ships: Set[Ship]) extends PlayerBoard:
+
+    override def getShips: Set[Ship] = ships
+
+    override def addShip(ship: Ship): PlayerBoard = PlayerBoardImpl(ships + ship)
+
+    override def removeShip(ship: Ship): PlayerBoard = throw UnexistingShipException()
+
+    override def isAnyPositionOccupied(positions: Set[Position]): Boolean = false
