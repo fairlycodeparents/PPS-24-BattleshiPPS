@@ -9,10 +9,10 @@ class ShipTest extends AnyFunSuite:
   val factory: ShipFactory = DefaultShipFactory
 
   test("ShipType should have correct lengths"):
-    ShipType.Frigate.length should be (2)
-    ShipType.Submarine.length should be (3)
-    ShipType.Destroyer.length should be (4)
-    ShipType.Carrier.length should be (5)
+    ShipType.Frigate.length should be(2)
+    ShipType.Submarine.length should be(3)
+    ShipType.Destroyer.length should be(4)
+    ShipType.Carrier.length should be(5)
 
   test("Ship should be created correctly"):
     factory.createShip(ShipType.Frigate, ConcretePosition(2, 3), Orientation.Horizontal) match
@@ -22,11 +22,10 @@ class ShipTest extends AnyFunSuite:
       case Left(error) =>
         fail(s"Error in ship creation: $error")
 
-
   test("Ship should occupy the right positions "):
     factory.createShip(ShipType.Frigate, ConcretePosition(2, 3), Orientation.Horizontal) match
       case Right(ship) =>
-        ship.getPositions shouldBe Set(ConcretePosition(2,3), ConcretePosition(3,3))
+        ship.getPositions shouldBe Set(ConcretePosition(2, 3), ConcretePosition(3, 3))
       case Left(error) =>
         fail(s"Error in ship creation: $error")
 

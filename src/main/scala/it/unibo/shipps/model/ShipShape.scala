@@ -9,18 +9,18 @@ trait ShipShape:
   def getOrientation: Orientation
 
   /** Rotates the [[Orientation]] of the [[ShipShape]].
-   *
-   * @return a new [[ShipShape]] with the rotated orientation
-   */
+    *
+    * @return a new [[ShipShape]] with the rotated orientation
+    */
   def rotateOrientation: ShipShape
 
 final case class ShipShapeImpl(
-                              orientation: Orientation,
-                              length: Int
-                              ) extends ShipShape:
+    orientation: Orientation,
+    length: Int
+) extends ShipShape:
 
-  override def getLength: Int = length
-  override def getOrientation: Orientation = orientation
+  override def getLength: Int               = length
+  override def getOrientation: Orientation  = orientation
   override def rotateOrientation: ShipShape = ShipShapeImpl(orientation.rotate(), length)
 
 /** Represents the orientation of a [[Ship]] */
