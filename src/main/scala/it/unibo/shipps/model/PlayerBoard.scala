@@ -46,3 +46,10 @@ object PlayerBoard:
 
     override def isAnyPositionOccupied(positions: Set[Position]): Boolean =
         positions.exists(pos => ships.exists(ship => ship.getPositions.contains(pos)))
+
+    override def toString: String =
+      (0 until size).map(row =>
+        (0 until size).map(col =>
+          if (isAnyPositionOccupied(Set(ConcretePosition(col, row)))) "X" else "O"
+          ).mkString(" | ") + " |"
+      ).mkString("\n", "\n", "\n")

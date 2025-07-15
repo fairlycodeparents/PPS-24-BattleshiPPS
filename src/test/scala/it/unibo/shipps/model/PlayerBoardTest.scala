@@ -41,3 +41,18 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
       .addShip(ship)
     a [PositionOccupiedException] should be thrownBy:
       board.addShip(ship)
+
+  it should "print a nice and clear string representation" in:
+    PlayerBoard(Set(ship)).toString shouldEqual (
+      "\n" +
+        "O | O | O | O | O | O | O | O | O | O |\n" +
+        "O | O | O | O | O | O | O | O | O | O |\n" +
+        "O | O | O | O | O | O | O | O | O | O |\n" +
+        "O | O | X | X | O | O | O | O | O | O |\n" +
+        "O | O | O | O | O | O | O | O | O | O |\n" +
+        "O | O | O | O | O | O | O | O | O | O |\n" +
+        "O | O | O | O | O | O | O | O | O | O |\n" +
+        "O | O | O | O | O | O | O | O | O | O |\n" +
+        "O | O | O | O | O | O | O | O | O | O |\n" +
+        "O | O | O | O | O | O | O | O | O | O |\n"
+      )
