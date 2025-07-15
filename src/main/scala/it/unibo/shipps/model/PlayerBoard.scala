@@ -29,6 +29,16 @@ trait PlayerBoard:
 
 /** Companion object for [[PlayerBoard]]. */
 object PlayerBoard:
+  /**
+   * The size of the player board, which is a square grid of size 10x10.
+   */
+  val size: Int = 10
+
+  /**
+   * Creates a new instance of [[PlayerBoard]] with the specified ships.
+   * @param ships the [[Set]] of [[Ship]] to initialize the board with
+   * @return a new [[PlayerBoard]] instance
+   */
   def apply(ships: Set[Ship] = Set.empty): PlayerBoard = PlayerBoardImpl(ships)
 
   private case class PlayerBoardImpl(ships: Set[Ship]) extends PlayerBoard:

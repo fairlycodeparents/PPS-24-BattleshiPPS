@@ -23,7 +23,9 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     PlayerBoard().addShip(ship).getShips should contain(ship)
 
   it should "consider any position as not occupied" in:
-    val boardPositions: Set[Position] = (0 until 10).flatMap(x => (0 until 10).map(y => ConcretePosition(x, y))).toSet
+    val boardPositions: Set[Position] = (0 until PlayerBoard.size).flatMap(x => 
+      (0 until PlayerBoard.size).map(y => ConcretePosition(x, y))
+    ).toSet
     PlayerBoard().isAnyPositionOccupied(boardPositions) shouldBe false
 
   "A player board" should "allow removing a ship that does exist" in:
