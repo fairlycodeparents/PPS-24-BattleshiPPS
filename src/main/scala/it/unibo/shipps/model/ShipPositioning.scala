@@ -6,9 +6,7 @@ case class SimplePosition(x0: Int, y0: Int) extends Position:
   override def x(): Int = x0
   override def y(): Int = y0
 
-/**
- * Represents the ship positioning logic in the game.
- */
+/** Represents the ship positioning logic in the game. */
 trait ShipPositioning:
 
   def isValidPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit] =
@@ -18,25 +16,23 @@ trait ShipPositioning:
     else
       Right(())
 
-  /**
-   * Places a ship on the player board at the specified position.
-   * @param board
-   * @param ship
-   * @param position
-   * @return
-   */
+  /** Places a ship on the player board at the specified position.
+    * @param board
+    * @param ship
+    * @param position
+    * @return
+    */
   def placeShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
     val movedShip = ship.move(position)
     isValidPlacement(board, movedShip) match
       case Left(error) => Left(error)
       case Right(_) => Right(board.addShip(movedShip))
 
-  /**
-   * Checks if the user selected a ship or not.
-   * @param board the [[PlayerBoard]] to check against
-   * @param selectedShip the [[Position]] where the user selected a ship
-   * @return an [[Either]] containing an error message if the position is invalid, or the [[Ship]] if valid
-   */
+  /** Checks if the user selected a ship or not.
+    * @param board the [[PlayerBoard]] to check against
+    * @param selectedShip the [[Position]] where the user selected a ship
+    * @return an [[Either]] containing an error message if the position is invalid, or the [[Ship]] if valid
+    */
   def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship] =
     val ships = board.getShips
     val shipAtPosition = ships.find(ship => ship.getPositions().contains(selectedShip))
@@ -44,12 +40,11 @@ trait ShipPositioning:
       case Some(ship) => Right(ship)
       case None => Left("No ship found at the selected position.")
 
-  /**
-   * Randomly positions the ships on the player board.
-   * @param board the [[PlayerBoard]] to position the ships on
-   * @param ships the list of [[Ship]] to be positioned
-   * @return an [[Either]] containing an error message if positioning fails, or the updated [[PlayerBoard]]
-   */
+  /** Randomly positions the ships on the player board.
+    * @param board the [[PlayerBoard]] to position the ships on
+    * @param ships the list of [[Ship]] to be positioned
+    * @return an [[Either]] containing an error message if positioning fails, or the updated [[PlayerBoard]]
+    */
   def randomPositioning(board: PlayerBoard, ships: List[Ship]): Either[String, PlayerBoard] =
     val maxAttempts = 1000
     def tryPlaceShips(b: PlayerBoard, remaining: List[Ship], attempts: Int): Either[String, PlayerBoard] =
