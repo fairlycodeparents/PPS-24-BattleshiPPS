@@ -1,5 +1,6 @@
 package it.unibo.shipps.model
 
+import scala.annotation.tailrec
 import scala.util.Random
 
 case class SimplePosition(x0: Int, y0: Int) extends Position:
@@ -9,6 +10,11 @@ case class SimplePosition(x0: Int, y0: Int) extends Position:
 /** Represents the ship positioning logic in the game. */
 trait ShipPositioning:
 
+  /** Checks if the ship can be placed on the player board without overlapping with other ships or going out of bounds.
+    * @param board the [[PlayerBoard]] to check against
+    * @param ship the [[Ship]] to be placed
+    * @return an [[Either]] containing an error message if the placement is invalid, or `Unit` if valid
+    */
   def isValidPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit] =
     val positions = ship.getPositions
     if board.isAnyPositionOccupied(positions) then
@@ -47,6 +53,7 @@ trait ShipPositioning:
     */
   def randomPositioning(board: PlayerBoard, ships: List[Ship]): Either[String, PlayerBoard] =
     val maxAttempts = 1000
+    @tailrec
     def tryPlaceShips(b: PlayerBoard, remaining: List[Ship], attempts: Int): Either[String, PlayerBoard] =
       if remaining.isEmpty then Right(b)
       else if attempts > maxAttempts then Left("Failed to place all ships after maximum attempts.")
