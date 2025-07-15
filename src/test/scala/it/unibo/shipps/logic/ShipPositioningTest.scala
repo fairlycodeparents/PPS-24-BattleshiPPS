@@ -4,7 +4,17 @@ import it.unibo.shipps.model
 import it.unibo.shipps.model.Orientation.Vertical
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import it.unibo.shipps.model.{ConcretePosition, PlayerBoard, Position, Ship, ShipImpl, ShipPositioning, ShipShape, ShipShapeImpl, ShipType}
+import it.unibo.shipps.model.{
+  ConcretePosition,
+  PlayerBoard,
+  Position,
+  Ship,
+  ShipImpl,
+  ShipPositioning,
+  ShipShape,
+  ShipShapeImpl,
+  ShipType
+}
 import org.scalatest.EitherValues.convertEitherToValuable
 import org.scalatest.EitherValues.convertLeftProjectionToValuable
 
