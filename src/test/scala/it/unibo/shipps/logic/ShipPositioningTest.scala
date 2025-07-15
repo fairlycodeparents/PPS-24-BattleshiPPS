@@ -11,42 +11,42 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
 
   // Mock implementations per i test
   case class MockPosition(x_pos: Int, y_pos: Int) extends Position {
-    /**
-     * Returns the x coordinate of the position.
-     *
-     * @return the x coordinate
-     */
+
+    /** Returns the x coordinate of the position.
+      *
+      * @return the x coordinate
+      */
     override def x(): Int = x_pos
 
-    /**
-     * Returns the y coordinate of the position.
-     *
-     * @return the y coordinate
-     */
+    /** Returns the y coordinate of the position.
+      *
+      * @return the y coordinate
+      */
     override def y(): Int = y_pos
   }
 
   case class MockShipShape() extends ShipShape {
-    /**
-     * @return the length of the [[Ship]]
-     */
+
+    /** @return the length of the [[Ship]] */
     override def getLength(): Int = ???
 
-    /**
-     * @return the [[Orientation]] of the [[Ship]]
-     */
+    /** @return the [[Orientation]] of the [[Ship]] */
     override def getOrientation(): model.Orientation = ???
   }
 
-  case class MockShip(shipType: ShipType, anchor: Position, orientation: Orientation = Orientation.Horizontal,
-                       positions: Set[Position] = Set.empty) extends it.unibo.shipps.model.Ship:
+  case class MockShip(
+      shipType: ShipType,
+      anchor: Position,
+      orientation: Orientation = Orientation.Horizontal,
+      positions: Set[Position] = Set.empty
+  ) extends it.unibo.shipps.model.Ship:
 
     def move(pos: Position): Ship = this.copy(anchor = pos)
 
     def rotate(): Ship =
       val newOrientation = orientation match
         case Orientation.Horizontal => Orientation.Vertical
-        case Orientation.Vertical => Orientation.Horizontal
+        case Orientation.Vertical   => Orientation.Horizontal
       this.copy(orientation = newOrientation)
 
     def getShape(): ShipShape = MockShipShape()
@@ -59,7 +59,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
       (0 until shipType.length).map { offset =>
         orientation match
           case Orientation.Horizontal => MockPosition(anchor.x() + offset, anchor.y())
-          case Orientation.Vertical => MockPosition(anchor.x(), anchor.y() + offset)
+          case Orientation.Vertical   => MockPosition(anchor.x(), anchor.y() + offset)
       }.toSet
 
   case class MockPlayerBoard(ships: Seq[Ship] = Seq.empty) extends PlayerBoard:
@@ -76,7 +76,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
       val allOccupiedPositions = ships.flatMap(_.getPositions()).toSet
       positions.exists(allOccupiedPositions.contains)
 
-    override val width: Int = 10
+    override val width: Int  = 10
     override val height: Int = 10
 
   enum Orientation:
@@ -85,8 +85,8 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   // Test cases
   val shipPositioning: ShipPositioning = new ShipPositioning {}
   test("getShipAt should successfully return a ship at a given position") {
-    val ship = MockShip(ShipType.Frigate, MockPosition(1, 1))
-    val board = MockPlayerBoard(Seq(ship))
+    val ship     = MockShip(ShipType.Frigate, MockPosition(1, 1))
+    val board    = MockPlayerBoard(Seq(ship))
     val position = MockPosition(1, 1)
 
     val result = shipPositioning.getShipAt(board, position)
@@ -96,18 +96,18 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("getShipAt should return an error when no ship is found at the position") {
-    val board = MockPlayerBoard()
+    val board    = MockPlayerBoard()
     val position = MockPosition(2, 2)
 
     val result = shipPositioning.getShipAt(board, position)
 
     assert(result.isLeft, "Expected an error when no ship is found at the position")
-    result.left.value should include ("No ship found at the selected position.")
+    result.left.value should include("No ship found at the selected position.")
   }
 
   test("placeShip should successfully place a ship on empty board") {
-    val board = MockPlayerBoard()
-    val ship = MockShip(ShipType.Frigate, MockPosition(0, 0))
+    val board    = MockPlayerBoard()
+    val ship     = MockShip(ShipType.Frigate, MockPosition(0, 0))
     val position = MockPosition(2, 3)
 
     val result = shipPositioning.placeShip(board, ship, position)
@@ -119,9 +119,9 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("placeShip should fail when ship overlaps with existing ship") {
-    val existingShip = MockShip(ShipType.Frigate, MockPosition(1, 1))
-    val board = MockPlayerBoard(Seq(existingShip))
-    val newShip = MockShip(ShipType.Submarine, MockPosition(0, 0))
+    val existingShip        = MockShip(ShipType.Frigate, MockPosition(1, 1))
+    val board               = MockPlayerBoard(Seq(existingShip))
+    val newShip             = MockShip(ShipType.Submarine, MockPosition(0, 0))
     val overlappingPosition = MockPosition(1, 1)
 
     val result = shipPositioning.placeShip(board, newShip, overlappingPosition)

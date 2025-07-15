@@ -10,8 +10,8 @@ case class SimplePosition(x0: Int, y0: Int) extends Position:
 trait ShipPositioning:
 
   def isValidPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit] =
-    val positions = ship.getPositions()
-    if board.isAnyPositionOccupied(positions.toSeq) then
+    val positions = ship.getPositions
+    if board.isAnyPositionOccupied(positions) then
       Left("Ship overlaps with another ship or is out of bounds.")
     else
       Right(())
@@ -26,7 +26,7 @@ trait ShipPositioning:
     val movedShip = ship.move(position)
     isValidPlacement(board, movedShip) match
       case Left(error) => Left(error)
-      case Right(_) => Right(board.addShip(movedShip))
+      case Right(_)    => Right(board.addShip(movedShip))
 
   /** Checks if the user selected a ship or not.
     * @param board the [[PlayerBoard]] to check against
@@ -34,11 +34,11 @@ trait ShipPositioning:
     * @return an [[Either]] containing an error message if the position is invalid, or the [[Ship]] if valid
     */
   def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship] =
-    val ships = board.getShips
-    val shipAtPosition = ships.find(ship => ship.getPositions().contains(selectedShip))
+    val ships          = board.getShips
+    val shipAtPosition = ships.find(ship => ship.getPositions.contains(selectedShip))
     shipAtPosition match
       case Some(ship) => Right(ship)
-      case None => Left("No ship found at the selected position.")
+      case None       => Left("No ship found at the selected position.")
 
   /** Randomly positions the ships on the player board.
     * @param board the [[PlayerBoard]] to position the ships on
@@ -51,7 +51,7 @@ trait ShipPositioning:
       if remaining.isEmpty then Right(b)
       else if attempts > maxAttempts then Left("Failed to place all ships after maximum attempts.")
       else
-        val ship = remaining.head
+        val ship      = remaining.head
         val movedShip = ship.move(SimplePosition(Random.nextInt(board.width), Random.nextInt(board.height)))
         isValidPlacement(b, movedShip) match
           case Right(_) =>
