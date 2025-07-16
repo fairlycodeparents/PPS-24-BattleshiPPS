@@ -13,7 +13,7 @@ trait ShipPositioning:
     * @return an [[Either]] containing an error message if the placement is invalid, or `Unit` if valid
     */
   private def isValidPlacement(board: PlayerBoard, ship: Ship, excludeShip: Option[Ship]): Either[String, Unit] =
-    val positions = ship.getPositions
+    val positions    = ship.getPositions
     val boardToCheck = excludeShip.map(board.removeShip).getOrElse(board)
     if boardToCheck.isAnyPositionOccupied(positions) then
       Left("Ship overlaps with another ship or is out of bounds.")
