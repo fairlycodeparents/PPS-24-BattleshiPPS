@@ -3,10 +3,6 @@ package it.unibo.shipps.model
 import scala.annotation.tailrec
 import scala.util.Random
 
-case class SimplePosition(x0: Int, y0: Int) extends Position:
-  override def x(): Int = x0
-  override def y(): Int = y0
-
 /** Represents the ship positioning logic in the game. */
 trait ShipPositioning:
 
@@ -59,7 +55,7 @@ trait ShipPositioning:
       else if attempts > maxAttempts then Left("Failed to place all ships after maximum attempts.")
       else
         val ship      = remaining.head
-        val movedShip = ship.move(SimplePosition(Random.nextInt(board.width), Random.nextInt(board.height)))
+        val movedShip = ship.move(ConcretePosition(Random.nextInt(board.width), Random.nextInt(board.height)))
         isValidPlacement(b, movedShip) match
           case Right(_) =>
             tryPlaceShips(b.addShip(movedShip), remaining.tail, 0)
