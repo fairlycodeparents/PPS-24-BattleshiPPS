@@ -4,17 +4,7 @@ import it.unibo.shipps.model
 import it.unibo.shipps.model.Orientation.Vertical
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import it.unibo.shipps.model.{
-  ConcretePosition,
-  PlayerBoard,
-  Position,
-  Ship,
-  ShipImpl,
-  ShipPositioning,
-  ShipShape,
-  ShipShapeImpl,
-  ShipType
-}
+import it.unibo.shipps.model.{ConcretePosition, DefaultShipFactory, PlayerBoard, Position, Ship, ShipPositioning, ShipType}
 import org.scalatest.EitherValues.convertEitherToValuable
 import org.scalatest.EitherValues.convertLeftProjectionToValuable
 
@@ -40,7 +30,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   // Test cases
   val shipPositioning: ShipPositioning = new ShipPositioning {}
   test("getShipAt should successfully return a ship at a given position") {
-    val ship     = ShipImpl(ShipType.Frigate, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 2))
+    val ship     = DefaultShipFactory.createShip(ShipType.Frigate, ConcretePosition(1, 1), Vertical).value
     val board    = MockPlayerBoard(Set(ship))
     val position = ConcretePosition(1, 1)
 
@@ -62,7 +52,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
 
   test("placeShip should successfully place a ship on empty board") {
     val board    = MockPlayerBoard()
-    val ship     = ShipImpl(ShipType.Frigate, ConcretePosition(0, 0), ShipShapeImpl(Vertical, 2))
+    val ship     = DefaultShipFactory.createShip(ShipType.Frigate, ConcretePosition(1, 1), Vertical).value
     val position = ConcretePosition(2, 3)
 
     val result = shipPositioning.placeShip(board, ship, position)
@@ -74,9 +64,9 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("placeShip should fail when ship overlaps with existing ship") {
-    val existingShip        = ShipImpl(ShipType.Frigate, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 2))
+    val existingShip        = DefaultShipFactory.createShip(ShipType.Frigate, ConcretePosition(1, 1), Vertical).value
     val board               = MockPlayerBoard(Set(existingShip))
-    val newShip             = ShipImpl(ShipType.Submarine, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 3))
+    val newShip             = DefaultShipFactory.createShip(ShipType.Submarine, ConcretePosition(1, 1), Vertical).value
     val overlappingPosition = ConcretePosition(1, 1)
 
     val result = shipPositioning.placeShip(board, newShip, overlappingPosition)
@@ -88,27 +78,28 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   test("randomPositioning should return an error if unable to place all ships") {
     val board = MockPlayerBoard()
     val ships = List(
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5)),
-      ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 5))
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value
     )
 
     val result = shipPositioning.randomPositioning(board, ships)
@@ -120,8 +111,8 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   test("randomPositioning should place all ships successfully") {
     val board = MockPlayerBoard()
     val ships = List(
-      ShipImpl(ShipType.Frigate, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 2)),
-      ShipImpl(ShipType.Submarine, ConcretePosition(1, 1), ShipShapeImpl(Vertical, 3))
+      DefaultShipFactory.createShip(ShipType.Frigate, ConcretePosition(1, 1), Vertical).value,
+      DefaultShipFactory.createShip(ShipType.Submarine, ConcretePosition(1, 1), Vertical).value
     )
 
     val result = shipPositioning.randomPositioning(board, ships)
