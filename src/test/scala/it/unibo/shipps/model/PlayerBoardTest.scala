@@ -16,14 +16,14 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     PlayerBoard().getShips shouldBe empty
 
   it should "throw UnexistingShipException if a ship is removed" in:
-    a [UnexistingShipException] should be thrownBy:
+    a[UnexistingShipException] should be thrownBy:
       PlayerBoard().removeShip(ship).getShips shouldBe empty
 
   it should "allow adding a ship" in:
     PlayerBoard().addShip(ship).getShips should contain(ship)
 
   it should "consider any position as not occupied" in:
-    val boardPositions: Set[Position] = (0 until PlayerBoard.size).flatMap(x => 
+    val boardPositions: Set[Position] = (0 until PlayerBoard.size).flatMap(x =>
       (0 until PlayerBoard.size).map(y => ConcretePosition(x, y))
     ).toSet
     PlayerBoard().isAnyPositionOccupied(boardPositions) shouldBe false
@@ -41,7 +41,7 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
   it should "throw PositionOccupiedException if a ship is added to an occupied position" in:
     val board = PlayerBoard()
       .addShip(ship)
-    a [PositionOccupiedException] should be thrownBy:
+    a[PositionOccupiedException] should be thrownBy:
       board.addShip(ship)
 
   it should "print a nice and clear string representation" in:
@@ -57,4 +57,4 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
         "O | O | O | O | O | O | O | O | O | O |\n" +
         "O | O | O | O | O | O | O | O | O | O |\n" +
         "O | O | O | O | O | O | O | O | O | O |\n"
-      )
+    )
