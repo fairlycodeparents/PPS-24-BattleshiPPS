@@ -4,7 +4,15 @@ import it.unibo.shipps.model
 import it.unibo.shipps.model.Orientation.Vertical
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import it.unibo.shipps.model.{ConcretePosition, DefaultShipFactory, PlayerBoard, Position, Ship, ShipPositioning, ShipType}
+import it.unibo.shipps.model.{
+  ConcretePosition,
+  DefaultShipFactory,
+  PlayerBoard,
+  Position,
+  Ship,
+  ShipPositioning,
+  ShipType
+}
 import org.scalatest.EitherValues.convertEitherToValuable
 import org.scalatest.EitherValues.convertLeftProjectionToValuable
 
@@ -80,8 +88,8 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
 
   test("randomPositioning should return an error if unable to place all ships") {
     val board = MockPlayerBoard()
-    val ships = createMultipleShips(21,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value)
+    val ships =
+      createMultipleShips(21, DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value)
 
     val result = shipPositioning.randomPositioning(board, ships)
 
