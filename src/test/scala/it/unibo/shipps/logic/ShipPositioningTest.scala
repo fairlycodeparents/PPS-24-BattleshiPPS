@@ -27,6 +27,9 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
     override val width: Int  = 10
     override val height: Int = 10
 
+  def createMultipleShips(count: Int, shipType: Ship): List[Ship] =
+    List.fill(count)(shipType)
+
   // Test cases
   val shipPositioning: ShipPositioning = new ShipPositioning {}
   test("getShipAt should successfully return a ship at a given position") {
@@ -77,30 +80,8 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
 
   test("randomPositioning should return an error if unable to place all ships") {
     val board = MockPlayerBoard()
-    val ships = List(
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value,
-      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value
-    )
+    val ships = createMultipleShips(21,
+      DefaultShipFactory.createShip(ShipType.Carrier, ConcretePosition(1, 1), Vertical).value)
 
     val result = shipPositioning.randomPositioning(board, ships)
 
