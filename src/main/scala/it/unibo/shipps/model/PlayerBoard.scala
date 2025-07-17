@@ -4,10 +4,6 @@ import it.unibo.shipps.exceptions.{PositionOccupiedException, UnexistingShipExce
 
 /** Represents the player board in the game. */
 trait PlayerBoard:
-
-  val width: Int
-  val height: Int
-
   /** Returns the list of ships currently on the player board.
     * @return the [[Set]] of [[Ship]]
     */
