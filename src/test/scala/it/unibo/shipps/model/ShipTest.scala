@@ -1,4 +1,4 @@
-package it.unibo.shipps
+package it.unibo.shipps.model
 
 import it.unibo.shipps.model.*
 import org.scalatest.funsuite.AnyFunSuite
