@@ -13,7 +13,7 @@ trait ShipPositioning:
     * @return
     */
   def placeShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
-    val movedShip = ship.move(position)
+    val movedShip            = ship.move(position)
     val boardWithoutOriginal = board.removeShip(ship)
     if boardWithoutOriginal.isAnyPositionOccupied(movedShip.getPositions) then
       Left("Ship overlaps with another ship or is out of bounds.")
