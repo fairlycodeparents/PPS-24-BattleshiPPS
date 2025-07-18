@@ -1,7 +1,7 @@
 package it.unibo.shipps.logic
 
 import it.unibo.shipps.model
-import it.unibo.shipps.model.Orientation.Vertical
+import it.unibo.shipps.model.Orientation.{Horizontal, Vertical}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import it.unibo.shipps.model.{ConcretePosition, PlayerBoard, Position, Ship, ShipImpl, ShipPositioning, ShipType}
@@ -66,6 +66,16 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
 
     assert(result.isLeft, "Expected an error when placing a ship that overlaps with an existing ship")
     result.left.value should include("overlap")
+  }
+
+  test("placeShip should fail when ship is out of bounds") {
+    val ship     = ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), Horizontal)
+    val board    = PlayerBoard(Set(ship))
+
+    val result = shipPositioning.placeShip(board, ship, ConcretePosition(8, 8))
+
+    assert(result.isLeft, "Expected an error when placing a ship out of bounds")
+    result.left.value should include("out of bounds")
   }
 
   test("randomPositioning should return an error if unable to place all ships") {
