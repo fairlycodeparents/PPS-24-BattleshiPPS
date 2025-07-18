@@ -6,6 +6,15 @@ import scala.util.Random
 /** Represents the ship positioning logic in the game. */
 trait ShipPositioning:
 
+    /** Checks if the ship is out of bounds of the player board.
+        * @param ship the [[Ship]] to check
+        * @return `true` if the ship is out of bounds, `false` otherwise
+        */
+  private def isShipOutOfBounds(ship: Ship): Boolean =
+    ship.getPositions.exists(pos =>
+      pos.x() < 0 || pos.x() >= PlayerBoard.size || pos.y() < 0 || pos.y() >= PlayerBoard.size
+    )
+
   /** Places a ship on the player board at the specified position.
     * @param board the [[PlayerBoard]] to place the ship on
     * @param ship the [[Ship]] to be placed
@@ -13,10 +22,12 @@ trait ShipPositioning:
     * @return
     */
   def placeShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
-    val movedShip            = ship.move(position)
+    val movedShip = ship.move(position)
     val boardWithoutOriginal = board.removeShip(ship)
-    if boardWithoutOriginal.isAnyPositionOccupied(movedShip.getPositions) then
-      Left("Ship overlaps with another ship or is out of bounds.")
+    if isShipOutOfBounds(movedShip) then
+      Left("Ship is out of bounds.")
+    else if boardWithoutOriginal.isAnyPositionOccupied(movedShip.getPositions) then
+      Left("Ship overlaps with another ship.")
     else
       Right(boardWithoutOriginal.addShip(movedShip))
 
@@ -40,14 +51,17 @@ trait ShipPositioning:
   def randomPositioning(board: PlayerBoard, ships: List[Ship]): Either[String, PlayerBoard] =
     val maxAttempts = 1000
     @tailrec
-    def tryPlaceShips(b: PlayerBoard, remaining: List[Ship], attempts: Int): Either[String, PlayerBoard] =
+    def tryPlaceShips(b: PlayerBoard, remaining: List[Ship], attempts: Int): Either[String, PlayerBoard] = {
       if remaining.isEmpty then Right(b)
       else if attempts > maxAttempts then Left("Failed to place all ships after maximum attempts.")
       else
-        val ship      = remaining.head
-        val movedShip = ship.move(ConcretePosition(Random.nextInt(PlayerBoard.size), Random.nextInt(PlayerBoard.size)))
-        if b.isAnyPositionOccupied(movedShip.getPositions) then
+        val ship = remaining.head
+        val randomX = Random.nextInt(PlayerBoard.size)
+        val randomY = Random.nextInt(PlayerBoard.size)
+        val movedShip = ship.move(ConcretePosition(randomX, randomY))
+        if isShipOutOfBounds(movedShip) || b.isAnyPositionOccupied(movedShip.getPositions) then
           tryPlaceShips(b, remaining, attempts + 1)
         else
           tryPlaceShips(b.addShip(movedShip), remaining.tail, 0)
+    }
     tryPlaceShips(board, ships, 0)
