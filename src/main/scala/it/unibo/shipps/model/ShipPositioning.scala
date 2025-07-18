@@ -15,21 +15,32 @@ trait ShipPositioning:
       pos.x < 0 || pos.x >= PlayerBoard.size || pos.y < 0 || pos.y >= PlayerBoard.size
     )
 
+  /** Change the position of a ship on the player board.
+   * @param board    the [[PlayerBoard]] to place the ship on
+   * @param ship     the [[Ship]] to be placed
+   * @param position the [[Position]] where the ship should be placed
+   * @return an [[Either]] containing an error message if the ship cannot be moved, or the updated [[PlayerBoard]]
+   */
+  def moveShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
+    val movedShip = ship.move(position)
+    val boardWithoutOriginal = board.removeShip(ship)
+    placeShip(boardWithoutOriginal, movedShip) match
+      case Left(error) => Left(error)
+      case Right(board) => Right(board)
+
   /** Places a ship on the player board at the specified position.
     * @param board the [[PlayerBoard]] to place the ship on
     * @param ship the [[Ship]] to be placed
     * @param position the [[Position]] where the ship should be placed
     * @return
     */
-  def placeShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
-    val movedShip            = ship.move(position)
-    val boardWithoutOriginal = board.removeShip(ship)
-    if isShipOutOfBounds(movedShip) then
+  def placeShip(board: PlayerBoard, ship: Ship): Either[String, PlayerBoard] =
+    if isShipOutOfBounds(ship) then
       Left("Ship is out of bounds.")
-    else if boardWithoutOriginal.isAnyPositionOccupied(movedShip.getPositions) then
+    else if board.isAnyPositionOccupied(ship.getPositions) then
       Left("Ship overlaps with another ship.")
     else
-      Right(boardWithoutOriginal.addShip(movedShip))
+      Right(board.addShip(ship))
 
   /** Checks if the user selected a ship or not.
     * @param board the [[PlayerBoard]] to check against
