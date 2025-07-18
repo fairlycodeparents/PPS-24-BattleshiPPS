@@ -44,8 +44,8 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("placeShip should successfully place a ship on empty board") {
-    val ship     = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
-    val board    = PlayerBoard()
+    val ship  = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val board = PlayerBoard()
 
     val result = shipPositioning.placeShip(board, ship)
 
@@ -56,9 +56,9 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("placeShip should fail when ship overlaps with existing ship") {
-    val existingShip        = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
-    val newShip             = ShipImpl(ShipType.Submarine, Position(1, 1), Vertical)
-    val board               = PlayerBoard(Set(existingShip))
+    val existingShip = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val newShip      = ShipImpl(ShipType.Submarine, Position(1, 1), Vertical)
+    val board        = PlayerBoard(Set(existingShip))
 
     val result = shipPositioning.placeShip(board, newShip)
 
@@ -77,8 +77,8 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("moveShip should successfully move a ship to a new position") {
-    val ship = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
-    val board = PlayerBoard(Set(ship))
+    val ship        = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val board       = PlayerBoard(Set(ship))
     val newPosition = Position(3, 1)
 
     val result = shipPositioning.moveShip(board, ship, newPosition)
@@ -90,9 +90,9 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("moveShip should fail when ship overlaps with another ship") {
-    val overlappedShip = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val overlappedShip  = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
     val overlappingShip = ShipImpl(ShipType.Submarine, Position(2, 1), Vertical)
-    val board = PlayerBoard(Set(overlappedShip, overlappingShip))
+    val board           = PlayerBoard(Set(overlappedShip, overlappingShip))
 
     val result = shipPositioning.moveShip(board, overlappingShip, Position(1, 0))
 
@@ -101,7 +101,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("moveShip should fail when ship is out of bounds") {
-    val ship = ShipImpl(ShipType.Carrier, Position(1, 1), Horizontal)
+    val ship  = ShipImpl(ShipType.Carrier, Position(1, 1), Horizontal)
     val board = PlayerBoard(Set(ship))
 
     val result = shipPositioning.moveShip(board, ship, Position(8, 8))

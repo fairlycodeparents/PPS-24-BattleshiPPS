@@ -16,16 +16,16 @@ trait ShipPositioning:
     )
 
   /** Change the position of a ship on the player board.
-   * @param board    the [[PlayerBoard]] to place the ship on
-   * @param ship     the [[Ship]] to be placed
-   * @param position the [[Position]] where the ship should be placed
-   * @return an [[Either]] containing an error message if the ship cannot be moved, or the updated [[PlayerBoard]]
-   */
+    * @param board    the [[PlayerBoard]] to place the ship on
+    * @param ship     the [[Ship]] to be placed
+    * @param position the [[Position]] where the ship should be placed
+    * @return an [[Either]] containing an error message if the ship cannot be moved, or the updated [[PlayerBoard]]
+    */
   def moveShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
-    val movedShip = ship.move(position)
+    val movedShip            = ship.move(position)
     val boardWithoutOriginal = board.removeShip(ship)
     placeShip(boardWithoutOriginal, movedShip) match
-      case Left(error) => Left(error)
+      case Left(error)  => Left(error)
       case Right(board) => Right(board)
 
   /** Places a ship on the player board at the specified position.
