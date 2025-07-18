@@ -51,17 +51,17 @@ trait ShipPositioning:
   def randomPositioning(board: PlayerBoard, ships: List[Ship]): Either[String, PlayerBoard] =
     val maxAttempts = 1000
     @tailrec
-    def tryPlaceShips(b: PlayerBoard, remaining: List[Ship], attempts: Int): Either[String, PlayerBoard] = {
-      if remaining.isEmpty then Right(b)
+    def tryPlaceShips(playerBoard: PlayerBoard, remaining: List[Ship], attempts: Int): Either[String, PlayerBoard] = {
+      if remaining.isEmpty then Right(playerBoard)
       else if attempts > maxAttempts then Left("Failed to place all ships after maximum attempts.")
       else
         val ship      = remaining.head
         val randomX   = Random.nextInt(PlayerBoard.size)
         val randomY   = Random.nextInt(PlayerBoard.size)
         val movedShip = ship.move(ConcretePosition(randomX, randomY))
-        if isShipOutOfBounds(movedShip) || b.isAnyPositionOccupied(movedShip.getPositions) then
-          tryPlaceShips(b, remaining, attempts + 1)
+        if isShipOutOfBounds(movedShip) || playerBoard.isAnyPositionOccupied(movedShip.getPositions) then
+          tryPlaceShips(playerBoard, remaining, attempts + 1)
         else
-          tryPlaceShips(b.addShip(movedShip), remaining.tail, 0)
+          tryPlaceShips(playerBoard.addShip(movedShip), remaining.tail, 0)
     }
     tryPlaceShips(board, ships, 0)
