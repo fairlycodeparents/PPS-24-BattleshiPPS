@@ -4,14 +4,14 @@ import it.unibo.shipps.model
 import it.unibo.shipps.model.Orientation.{Horizontal, Vertical}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import it.unibo.shipps.model.{PlayerBoard, Position, Ship, ShipImpl, ShipPositioning, ShipType}
+import it.unibo.shipps.model.{PlayerBoard, Position, Ship, ShipImpl, ShipPositioning, ShipPositioningImpl, ShipType}
 import org.scalatest.EitherValues.convertEitherToValuable
 import org.scalatest.EitherValues.convertLeftProjectionToValuable
 
 class ShipPositioningTest extends AnyFunSuite with Matchers {
 
   /** The ship positioning logic to be tested */
-  val shipPositioning: ShipPositioning = new ShipPositioning {}
+  val shipPositioning: ShipPositioning = ShipPositioningImpl
 
   /** Creates a list of ships of the specified type and count.
     * @param count the number of ships to create
