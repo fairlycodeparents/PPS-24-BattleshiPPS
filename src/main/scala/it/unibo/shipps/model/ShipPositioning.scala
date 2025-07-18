@@ -6,10 +6,10 @@ import scala.util.Random
 /** Represents the ship positioning logic in the game. */
 trait ShipPositioning:
 
-    /** Checks if the ship is out of bounds of the player board.
-        * @param ship the [[Ship]] to check
-        * @return `true` if the ship is out of bounds, `false` otherwise
-        */
+  /** Checks if the ship is out of bounds of the player board.
+    * @param ship the [[Ship]] to check
+    * @return `true` if the ship is out of bounds, `false` otherwise
+    */
   private def isShipOutOfBounds(ship: Ship): Boolean =
     ship.getPositions.exists(pos =>
       pos.x() < 0 || pos.x() >= PlayerBoard.size || pos.y() < 0 || pos.y() >= PlayerBoard.size
@@ -22,7 +22,7 @@ trait ShipPositioning:
     * @return
     */
   def placeShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
-    val movedShip = ship.move(position)
+    val movedShip            = ship.move(position)
     val boardWithoutOriginal = board.removeShip(ship)
     if isShipOutOfBounds(movedShip) then
       Left("Ship is out of bounds.")
@@ -55,9 +55,9 @@ trait ShipPositioning:
       if remaining.isEmpty then Right(b)
       else if attempts > maxAttempts then Left("Failed to place all ships after maximum attempts.")
       else
-        val ship = remaining.head
-        val randomX = Random.nextInt(PlayerBoard.size)
-        val randomY = Random.nextInt(PlayerBoard.size)
+        val ship      = remaining.head
+        val randomX   = Random.nextInt(PlayerBoard.size)
+        val randomY   = Random.nextInt(PlayerBoard.size)
         val movedShip = ship.move(ConcretePosition(randomX, randomY))
         if isShipOutOfBounds(movedShip) || b.isAnyPositionOccupied(movedShip.getPositions) then
           tryPlaceShips(b, remaining, attempts + 1)

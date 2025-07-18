@@ -69,8 +69,8 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("placeShip should fail when ship is out of bounds") {
-    val ship     = ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), Horizontal)
-    val board    = PlayerBoard(Set(ship))
+    val ship  = ShipImpl(ShipType.Carrier, ConcretePosition(1, 1), Horizontal)
+    val board = PlayerBoard(Set(ship))
 
     val result = shipPositioning.placeShip(board, ship, ConcretePosition(8, 8))
 
