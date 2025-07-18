@@ -45,34 +45,66 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
 
   test("placeShip should successfully place a ship on empty board") {
     val ship     = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
-    val board    = PlayerBoard(Set(ship))
-    val position = Position(2, 3)
+    val board    = PlayerBoard()
 
-    val result = shipPositioning.placeShip(board, ship, position)
+    val result = shipPositioning.placeShip(board, ship)
 
     assert(result.isRight, "Expected successful placement of ship on empty board")
     val updatedBoard = result.value
     updatedBoard.getShips should have size 1
-    updatedBoard.getShips.head.getAnchor shouldBe position
+    updatedBoard.getShips.head.getAnchor shouldBe Position(1, 1)
   }
 
   test("placeShip should fail when ship overlaps with existing ship") {
     val existingShip        = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
     val newShip             = ShipImpl(ShipType.Submarine, Position(1, 1), Vertical)
-    val board               = PlayerBoard(Set(existingShip, newShip))
-    val overlappingPosition = Position(1, 1)
+    val board               = PlayerBoard(Set(existingShip))
 
-    val result = shipPositioning.placeShip(board, newShip, overlappingPosition)
+    val result = shipPositioning.placeShip(board, newShip)
 
     assert(result.isLeft, "Expected an error when placing a ship that overlaps with an existing ship")
     result.left.value should include("overlap")
   }
 
   test("placeShip should fail when ship is out of bounds") {
-    val ship  = ShipImpl(ShipType.Carrier, Position(1, 1), Horizontal)
+    val ship  = ShipImpl(ShipType.Carrier, Position(8, 8), Horizontal)
+    val board = PlayerBoard()
+
+    val result = shipPositioning.placeShip(board, ship)
+
+    assert(result.isLeft, "Expected an error when placing a ship out of bounds")
+    result.left.value should include("out of bounds")
+  }
+
+  test("moveShip should successfully move a ship to a new position") {
+    val ship = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val board = PlayerBoard(Set(ship))
+    val newPosition = Position(3, 1)
+
+    val result = shipPositioning.moveShip(board, ship, newPosition)
+
+    assert(result.isRight, "Expected successful movement of ship")
+    val updatedBoard = result.value
+    updatedBoard.getShips should have size 1
+    updatedBoard.getShips.head.getAnchor shouldBe newPosition
+  }
+
+  test("moveShip should fail when ship overlaps with another ship") {
+    val overlappedShip = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val overlappingShip = ShipImpl(ShipType.Submarine, Position(2, 1), Vertical)
+    val board = PlayerBoard(Set(overlappedShip, overlappingShip))
+
+    val result = shipPositioning.moveShip(board, overlappingShip, Position(1, 0))
+
+    assert(result.isLeft, "Expected an error when moving a ship that overlaps with another ship")
+    result.left.value should include("overlaps with another ship")
+  }
+
+  test("moveShip should fail when ship is out of bounds") {
+    val ship = ShipImpl(ShipType.Carrier, Position(1, 1), Horizontal)
     val board = PlayerBoard(Set(ship))
 
-    val result = shipPositioning.placeShip(board, ship, Position(8, 8))
+    val result = shipPositioning.moveShip(board, ship, Position(8, 8))
 
     assert(result.isLeft, "Expected an error when placing a ship out of bounds")
     result.left.value should include("out of bounds")
