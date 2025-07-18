@@ -7,20 +7,56 @@ import scala.util.Random
 trait ShipPositioning:
 
   /** Checks if the ship is out of bounds of the player board.
-    * @param ship the [[Ship]] to check
-    * @return `true` if the ship is out of bounds, `false` otherwise
-    */
-  private def isShipOutOfBounds(ship: Ship): Boolean =
+   * @param ship the [[Ship]] to check
+   * @return `true` if the ship is out of bounds, `false` otherwise
+   */
+  def isShipOutOfBounds(ship: Ship): Boolean
+
+  /** Validates if a ship can be placed on the board.
+   * @param board the [[PlayerBoard]] to validate against
+   * @param ship  the [[Ship]] to validate
+   * @return an [[Either]] containing validation error or unit
+   */
+  def validateShipPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit]
+
+  /** Change the position of a ship on the player board.
+   * @param board    the [[PlayerBoard]] to place the ship on
+   * @param ship     the [[Ship]] to be placed
+   * @param position the [[Position]] where the ship should be placed
+   * @return an [[Either]] containing an error message if the ship cannot be moved, or the updated [[PlayerBoard]]
+   */
+  def moveShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard]
+
+  /** Places a ship on the player board at the specified position.
+   * @param board the [[PlayerBoard]] to place the ship on
+   * @param ship  the [[Ship]] to be placed
+   * @return
+   */
+  def placeShip(board: PlayerBoard, ship: Ship): Either[String, PlayerBoard]
+
+  /** Checks if the user selected a ship or not.
+   * @param board        the [[PlayerBoard]] to check against
+   * @param selectedShip the [[Position]] where the user selected a ship
+   * @return an [[Either]] containing an error message if the position is invalid, or the [[Ship]] if valid
+   */
+  def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship]
+
+  /** Randomly positions the ships on the player board.
+   * @param board the [[PlayerBoard]] to position the ships on
+   * @param ships the list of [[Ship]] to be positioned
+   * @return an [[Either]] containing an error message if positioning fails, or the updated [[PlayerBoard]]
+   */
+  def randomPositioning(board: PlayerBoard, ships: List[Ship]): Either[String, PlayerBoard]
+
+/** Companion object for [[ShipPositioning]]. */
+object ShipPositioningImpl extends ShipPositioning:
+
+  override def isShipOutOfBounds(ship: Ship): Boolean =
     ship.getPositions.exists(pos =>
       pos.x < 0 || pos.x >= PlayerBoard.size || pos.y < 0 || pos.y >= PlayerBoard.size
     )
 
-  /** Validates if a ship can be placed on the board.
-    * @param board the [[PlayerBoard]] to validate against
-    * @param ship  the [[Ship]] to validate
-    * @return an [[Either]] containing validation error or unit
-    */
-  private def validateShipPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit] =
+  override def validateShipPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit] =
     if isShipOutOfBounds(ship) then
       Left("Ship is out of bounds.")
     else if board.isAnyPositionOccupied(ship.getPositions) then
@@ -28,43 +64,22 @@ trait ShipPositioning:
     else
       Right(())
 
-  /** Change the position of a ship on the player board.
-    * @param board    the [[PlayerBoard]] to place the ship on
-    * @param ship     the [[Ship]] to be placed
-    * @param position the [[Position]] where the ship should be placed
-    * @return an [[Either]] containing an error message if the ship cannot be moved, or the updated [[PlayerBoard]]
-    */
-  def moveShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
+  override def moveShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
     for {
       boardWithoutShip <- Right(board.removeShip(ship))
       movedShip        <- Right(ship.move(position))
       updatedBoard     <- placeShip(boardWithoutShip, movedShip)
     } yield updatedBoard
 
-  /** Places a ship on the player board at the specified position.
-    * @param board the [[PlayerBoard]] to place the ship on
-    * @param ship the [[Ship]] to be placed
-    * @return
-    */
-  def placeShip(board: PlayerBoard, ship: Ship): Either[String, PlayerBoard] =
+  override def placeShip(board: PlayerBoard, ship: Ship): Either[String, PlayerBoard] =
     validateShipPlacement(board, ship).map(_ => board.addShip(ship))
 
-  /** Checks if the user selected a ship or not.
-    * @param board the [[PlayerBoard]] to check against
-    * @param selectedShip the [[Position]] where the user selected a ship
-    * @return an [[Either]] containing an error message if the position is invalid, or the [[Ship]] if valid
-    */
-  def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship] =
+  override def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship] =
     board.getShips
       .find(_.getPositions.contains(selectedShip))
       .toRight("No ship found at the selected position.")
 
-  /** Randomly positions the ships on the player board.
-    * @param board the [[PlayerBoard]] to position the ships on
-    * @param ships the list of [[Ship]] to be positioned
-    * @return an [[Either]] containing an error message if positioning fails, or the updated [[PlayerBoard]]
-    */
-  def randomPositioning(board: PlayerBoard, ships: List[Ship]): Either[String, PlayerBoard] =
+  override def randomPositioning(board: PlayerBoard, ships: List[Ship]): Either[String, PlayerBoard] =
     val maxAttempts = 1000
     @tailrec
     def tryPlaceShips(playerBoard: PlayerBoard, remaining: List[Ship], attempts: Int): Either[String, PlayerBoard] = {
