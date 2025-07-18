@@ -57,6 +57,6 @@ object PlayerBoard:
     override def toString: String =
       (0 until size).map(row =>
         (0 until size).map(col =>
-          if (isAnyPositionOccupied(Set(ConcretePosition(col, row)))) "X" else "O"
+          if (isAnyPositionOccupied(Set(Position(col, row)))) "X" else "O"
         ).mkString(" | ") + " |"
       ).mkString("\n", "\n", "\n")

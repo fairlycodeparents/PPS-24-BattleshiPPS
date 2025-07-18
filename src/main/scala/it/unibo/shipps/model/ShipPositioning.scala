@@ -12,7 +12,7 @@ trait ShipPositioning:
     */
   private def isShipOutOfBounds(ship: Ship): Boolean =
     ship.getPositions.exists(pos =>
-      pos.x() < 0 || pos.x() >= PlayerBoard.size || pos.y() < 0 || pos.y() >= PlayerBoard.size
+      pos.x < 0 || pos.x >= PlayerBoard.size || pos.y < 0 || pos.y >= PlayerBoard.size
     )
 
   /** Places a ship on the player board at the specified position.
@@ -58,7 +58,7 @@ trait ShipPositioning:
         val ship      = remaining.head
         val randomX   = Random.nextInt(PlayerBoard.size)
         val randomY   = Random.nextInt(PlayerBoard.size)
-        val movedShip = ship.move(ConcretePosition(randomX, randomY))
+        val movedShip = ship.move(Position(randomX, randomY))
         if isShipOutOfBounds(movedShip) || playerBoard.isAnyPositionOccupied(movedShip.getPositions) then
           tryPlaceShips(playerBoard, remaining, attempts + 1)
         else

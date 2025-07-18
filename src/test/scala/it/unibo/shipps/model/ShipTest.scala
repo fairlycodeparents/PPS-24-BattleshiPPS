@@ -5,7 +5,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers.*
 
 class ShipTest extends AnyFunSuite:
-  val position: Position = ConcretePosition(2, 3)
+  val position: Position = Position(2, 3)
   val ship: Ship         = ShipImpl(ShipType.Frigate, position, Orientation.Horizontal)
 
   test("ShipType should have correct lengths"):
@@ -20,13 +20,13 @@ class ShipTest extends AnyFunSuite:
 
   test("Ship should be able to rotate"):
     val rotatedShip = ship.rotate
-    rotatedShip.getPositions shouldBe Set(position, ConcretePosition(2, 4))
+    rotatedShip.getPositions shouldBe Set(position, Position(2, 4))
 
   test("Ship should occupy the right positions "):
-    ship.getPositions shouldBe Set(position, ConcretePosition(3, 3))
+    ship.getPositions shouldBe Set(position, Position(3, 3))
     val rotatedShip = ship.rotate
-    rotatedShip.getPositions shouldBe Set(position, ConcretePosition(2, 4))
+    rotatedShip.getPositions shouldBe Set(position, Position(2, 4))
 
   test("Ship should be able to move"):
-    val movedShip = ship.move(ConcretePosition(5, 6))
-    movedShip.getAnchor shouldBe ConcretePosition(5, 6)
+    val movedShip = ship.move(Position(5, 6))
+    movedShip.getAnchor shouldBe Position(5, 6)
