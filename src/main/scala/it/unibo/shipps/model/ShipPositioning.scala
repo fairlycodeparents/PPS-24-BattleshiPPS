@@ -16,10 +16,10 @@ trait ShipPositioning:
     )
 
   /** Validates if a ship can be placed on the board.
-   * @param board the [[PlayerBoard]] to validate against
-   * @param ship  the [[Ship]] to validate
-   * @return an [[Either]] containing validation error or unit
-   */
+    * @param board the [[PlayerBoard]] to validate against
+    * @param ship  the [[Ship]] to validate
+    * @return an [[Either]] containing validation error or unit
+    */
   private def validateShipPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit] =
     if isShipOutOfBounds(ship) then
       Left("Ship is out of bounds.")
