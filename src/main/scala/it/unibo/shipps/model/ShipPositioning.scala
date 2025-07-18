@@ -15,6 +15,19 @@ trait ShipPositioning:
       pos.x < 0 || pos.x >= PlayerBoard.size || pos.y < 0 || pos.y >= PlayerBoard.size
     )
 
+  /** Validates if a ship can be placed on the board.
+   * @param board the [[PlayerBoard]] to validate against
+   * @param ship  the [[Ship]] to validate
+   * @return an [[Either]] containing validation error or unit
+   */
+  private def validateShipPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit] =
+    if isShipOutOfBounds(ship) then
+      Left("Ship is out of bounds.")
+    else if board.isAnyPositionOccupied(ship.getPositions) then
+      Left("Ship overlaps with another ship.")
+    else
+      Right(())
+
   /** Change the position of a ship on the player board.
     * @param board    the [[PlayerBoard]] to place the ship on
     * @param ship     the [[Ship]] to be placed
@@ -22,25 +35,19 @@ trait ShipPositioning:
     * @return an [[Either]] containing an error message if the ship cannot be moved, or the updated [[PlayerBoard]]
     */
   def moveShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
-    val movedShip            = ship.move(position)
-    val boardWithoutOriginal = board.removeShip(ship)
-    placeShip(boardWithoutOriginal, movedShip) match
-      case Left(error)  => Left(error)
-      case Right(board) => Right(board)
+    for {
+      boardWithoutShip <- Right(board.removeShip(ship))
+      movedShip        <- Right(ship.move(position))
+      updatedBoard     <- placeShip(boardWithoutShip, movedShip)
+    } yield updatedBoard
 
   /** Places a ship on the player board at the specified position.
     * @param board the [[PlayerBoard]] to place the ship on
     * @param ship the [[Ship]] to be placed
-    * @param position the [[Position]] where the ship should be placed
     * @return
     */
   def placeShip(board: PlayerBoard, ship: Ship): Either[String, PlayerBoard] =
-    if isShipOutOfBounds(ship) then
-      Left("Ship is out of bounds.")
-    else if board.isAnyPositionOccupied(ship.getPositions) then
-      Left("Ship overlaps with another ship.")
-    else
-      Right(board.addShip(ship))
+    validateShipPlacement(board, ship).map(_ => board.addShip(ship))
 
   /** Checks if the user selected a ship or not.
     * @param board the [[PlayerBoard]] to check against
@@ -48,11 +55,9 @@ trait ShipPositioning:
     * @return an [[Either]] containing an error message if the position is invalid, or the [[Ship]] if valid
     */
   def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship] =
-    val ships          = board.getShips
-    val shipAtPosition = ships.find(ship => ship.getPositions.contains(selectedShip))
-    shipAtPosition match
-      case Some(ship) => Right(ship)
-      case None       => Left("No ship found at the selected position.")
+    board.getShips
+      .find(_.getPositions.contains(selectedShip))
+      .toRight("No ship found at the selected position.")
 
   /** Randomly positions the ships on the player board.
     * @param board the [[PlayerBoard]] to position the ships on
