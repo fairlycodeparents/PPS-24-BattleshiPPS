@@ -7,45 +7,45 @@ import scala.util.Random
 trait ShipPositioning:
 
   /** Checks if the ship is out of bounds of the player board.
-   * @param ship the [[Ship]] to check
-   * @return `true` if the ship is out of bounds, `false` otherwise
-   */
+    * @param ship the [[Ship]] to check
+    * @return `true` if the ship is out of bounds, `false` otherwise
+    */
   def isShipOutOfBounds(ship: Ship): Boolean
 
   /** Validates if a ship can be placed on the board.
-   * @param board the [[PlayerBoard]] to validate against
-   * @param ship  the [[Ship]] to validate
-   * @return an [[Either]] containing validation error or unit
-   */
+    * @param board the [[PlayerBoard]] to validate against
+    * @param ship  the [[Ship]] to validate
+    * @return an [[Either]] containing validation error or unit
+    */
   def validateShipPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit]
 
   /** Change the position of a ship on the player board.
-   * @param board    the [[PlayerBoard]] to place the ship on
-   * @param ship     the [[Ship]] to be placed
-   * @param position the [[Position]] where the ship should be placed
-   * @return an [[Either]] containing an error message if the ship cannot be moved, or the updated [[PlayerBoard]]
-   */
+    * @param board    the [[PlayerBoard]] to place the ship on
+    * @param ship     the [[Ship]] to be placed
+    * @param position the [[Position]] where the ship should be placed
+    * @return an [[Either]] containing an error message if the ship cannot be moved, or the updated [[PlayerBoard]]
+    */
   def moveShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard]
 
   /** Places a ship on the player board at the specified position.
-   * @param board the [[PlayerBoard]] to place the ship on
-   * @param ship  the [[Ship]] to be placed
-   * @return
-   */
+    * @param board the [[PlayerBoard]] to place the ship on
+    * @param ship  the [[Ship]] to be placed
+    * @return
+    */
   def placeShip(board: PlayerBoard, ship: Ship): Either[String, PlayerBoard]
 
   /** Checks if the user selected a ship or not.
-   * @param board        the [[PlayerBoard]] to check against
-   * @param selectedShip the [[Position]] where the user selected a ship
-   * @return an [[Either]] containing an error message if the position is invalid, or the [[Ship]] if valid
-   */
+    * @param board        the [[PlayerBoard]] to check against
+    * @param selectedShip the [[Position]] where the user selected a ship
+    * @return an [[Either]] containing an error message if the position is invalid, or the [[Ship]] if valid
+    */
   def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship]
 
   /** Randomly positions the ships on the player board.
-   * @param board the [[PlayerBoard]] to position the ships on
-   * @param ships the list of [[Ship]] to be positioned
-   * @return an [[Either]] containing an error message if positioning fails, or the updated [[PlayerBoard]]
-   */
+    * @param board the [[PlayerBoard]] to position the ships on
+    * @param ships the list of [[Ship]] to be positioned
+    * @return an [[Either]] containing an error message if positioning fails, or the updated [[PlayerBoard]]
+    */
   def randomPositioning(board: PlayerBoard, ships: List[Ship]): Either[String, PlayerBoard]
 
 /** Companion object for [[ShipPositioning]]. */
