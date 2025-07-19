@@ -7,15 +7,15 @@ import scala.swing.Swing
 case class GameState(board: PlayerBoard, selectedShip: Option[Ship])
 
 class GameController(
-                      initialBoard: PlayerBoard,
-                      val positioning: ShipPositioning,
-                      var view: SimpleGui
-                    ):
+    initialBoard: PlayerBoard,
+    val positioning: ShipPositioning,
+    var view: SimpleGui
+):
 
   private var state = GameState(initialBoard, None)
 
   private def handleCellAction(pos: Position)(
-    shipAction: (PlayerBoard, Ship, Position) => Either[String, PlayerBoard]
+      shipAction: (PlayerBoard, Ship, Position) => Either[String, PlayerBoard]
   ): Unit =
     state = state.selectedShip match
       case None =>
