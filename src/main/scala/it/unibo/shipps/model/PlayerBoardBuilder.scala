@@ -38,35 +38,32 @@ object PlayerBoardBuilder:
   /** Creates a [[PlayerBoard]] from a list of placements. */
   def board(placements: Placement*): PlayerBoard = // TODO: refactor to use the ShipPositionFactory instead
     placements.foldLeft(PlayerBoard()): (board, placement) =>
-      DefaultShipFactory.createShip(
+      val ship = ShipImpl(
         placement.shipType,
         placement.start,
         Orientation.valueOf(placement.orientation.toString)
-      ) match
-        case Right(ship) =>
-          if board.isAnyPositionOccupied(ship.getPositions) then throw PositionOccupiedException(placement.start)
-          else board.addShip(ship)
-        case Left(error) =>
-          throw new IllegalArgumentException(error)
+      )
+      if board.isAnyPositionOccupied(ship.getPositions) then throw PositionOccupiedException(placement.start)
+      else board.addShip(ship)
 
   /* Helpers to define readable coordinates: maps letters A–J to columns 0–9. */
   object A:
-    def apply(row: Int): ConcretePosition = ConcretePosition(0, row - 1)
+    def apply(row: Int): Position = Position(0, row - 1)
   object B:
-    def apply(row: Int): ConcretePosition = ConcretePosition(1, row - 1)
+    def apply(row: Int): Position = Position(1, row - 1)
   object C:
-    def apply(row: Int): ConcretePosition = ConcretePosition(2, row - 1)
+    def apply(row: Int): Position = Position(2, row - 1)
   object D:
-    def apply(row: Int): ConcretePosition = ConcretePosition(3, row - 1)
+    def apply(row: Int): Position = Position(3, row - 1)
   object E:
-    def apply(row: Int): ConcretePosition = ConcretePosition(4, row - 1)
+    def apply(row: Int): Position = Position(4, row - 1)
   object F:
-    def apply(row: Int): ConcretePosition = ConcretePosition(5, row - 1)
+    def apply(row: Int): Position = Position(5, row - 1)
   object G:
-    def apply(row: Int): ConcretePosition = ConcretePosition(6, row - 1)
+    def apply(row: Int): Position = Position(6, row - 1)
   object H:
-    def apply(row: Int): ConcretePosition = ConcretePosition(7, row - 1)
+    def apply(row: Int): Position = Position(7, row - 1)
   object I:
-    def apply(row: Int): ConcretePosition = ConcretePosition(8, row - 1)
+    def apply(row: Int): Position = Position(8, row - 1)
   object J:
-    def apply(row: Int): ConcretePosition = ConcretePosition(9, row - 1)
+    def apply(row: Int): Position = Position(9, row - 1)
