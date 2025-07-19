@@ -59,39 +59,39 @@ trait ShipPositioning:
 object ShipPositioningImpl extends ShipPositioning:
 
   /** Checks if the ship is out of bounds of the player board.
-   *
-   * @param ship the [[Ship]] to check
-   * @return an [[Either]] containing an error message if the ship is out of bounds, or unit if it is within bounds
-   */
+    *
+    * @param ship the [[Ship]] to check
+    * @return an [[Either]] containing an error message if the ship is out of bounds, or unit if it is within bounds
+    */
   private def checkBounds(ship: Ship): Either[String, Unit] =
     if !isShipOutOfBounds(ship) then Right(())
     else Left("Ship is out of bounds.")
 
   /** Checks if the ship overlaps with any existing ships on the board.
-   *
-   * @param board the [[PlayerBoard]] to check against
-   * @param ship  the [[Ship]] to check for overlap
-   * @return an [[Either]] containing an error message if there is an overlap, or unit if no overlap exists
-   */
+    *
+    * @param board the [[PlayerBoard]] to check against
+    * @param ship  the [[Ship]] to check for overlap
+    * @return an [[Either]] containing an error message if there is an overlap, or unit if no overlap exists
+    */
   private def checkOverlap(board: PlayerBoard, ship: Ship): Either[String, Unit] =
     if !board.isAnyPositionOccupied(ship.getPositions) then Right(())
     else Left("Ship overlaps with another ship.")
 
   /** Generic method to shift a ship on the board.
-   * @param board           the [[PlayerBoard]] containing the ship
-   * @param ship            the original [[Ship]] to transform
-   * @param shift           function that shift the ship
-   * @return an [[Either]]  containing error message if shift fails, or updated [[PlayerBoard]]
-   */
+    * @param board           the [[PlayerBoard]] containing the ship
+    * @param ship            the original [[Ship]] to transform
+    * @param shift           function that shift the ship
+    * @return an [[Either]]  containing error message if shift fails, or updated [[PlayerBoard]]
+    */
   private def ShiftShip(
-                             board: PlayerBoard,
-                             ship: Ship,
-                             shift: Ship => Ship
-                           ): Either[String, PlayerBoard] =
+      board: PlayerBoard,
+      ship: Ship,
+      shift: Ship => Ship
+  ): Either[String, PlayerBoard] =
     for
       boardWithoutShip <- Right(board.removeShip(ship))
-      shiftedShip <- Right(shift(ship))
-      updatedBoard <- placeShip(boardWithoutShip, shiftedShip)
+      shiftedShip      <- Right(shift(ship))
+      updatedBoard     <- placeShip(boardWithoutShip, shiftedShip)
     yield updatedBoard
 
   override def isShipOutOfBounds(ship: Ship): Boolean =
