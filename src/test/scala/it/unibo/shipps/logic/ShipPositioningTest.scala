@@ -110,6 +110,39 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
     result.left.value should include("out of bounds")
   }
 
+  test("rotateShip should successfully rotate a ship") {
+    val ship  = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val board = PlayerBoard(Set(ship))
+
+    val result = shipPositioning.rotateShip(board, ship)
+
+    assert(result.isRight, "Expected successful rotation of ship")
+    val updatedBoard = result.value
+    updatedBoard.getShips should have size 1
+    updatedBoard.getShips.head.getShape.getOrientation shouldBe Horizontal
+  }
+
+  test("rotateShip should fail when rotated ship overlaps with another ship") {
+    val existingShip = ShipImpl(ShipType.Submarine, Position(1, 2), Vertical)
+    val shipToRotate = ShipImpl(ShipType.Frigate, Position(1, 1), Horizontal)
+    val board        = PlayerBoard(Set(existingShip, shipToRotate))
+
+    val result = shipPositioning.rotateShip(board, shipToRotate)
+
+    assert(result.isLeft, "Expected an error when rotating a ship that overlaps with another ship")
+    result.left.value should include("overlaps with another ship")
+  }
+
+  test("rotateShip should fail when rotated ship is out of bounds") {
+    val ship  = ShipImpl(ShipType.Carrier, Position(1, 8), Horizontal)
+    val board = PlayerBoard(Set(ship))
+
+    val result = shipPositioning.rotateShip(board, ship)
+
+    assert(result.isLeft, "Expected an error when rotating a ship out of bounds")
+    result.left.value should include("out of bounds")
+  }
+
   test("randomPositioning should return an error if unable to place all ships") {
     val board = PlayerBoard()
     val ships =
