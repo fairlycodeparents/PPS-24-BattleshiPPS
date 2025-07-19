@@ -43,13 +43,13 @@ class PlayerBoardBuilderTest extends AnyFlatSpec with should.Matchers:
       .board(
         place a Carrier at A(1) horizontal,
         place a Submarine at A(2) horizontal,
-        place a Frigate at J(10) vertical
+        place a Frigate at J(4) vertical
       )
       .getShips.size shouldEqual 3
 
-  it should "throw PositionOccupiedException if ships overlap" in:
-    a[PositionOccupiedException] should be thrownBy:
+  it should "throw RuntimeException if ships overlap" in:
+    a[RuntimeException] should be thrownBy:
       PlayerBoardBuilder.board(
         place a Carrier at A(1) horizontal,
-        place a Submarine at A(1) horizontal
+        place a Submarine at B(1) vertical
       )

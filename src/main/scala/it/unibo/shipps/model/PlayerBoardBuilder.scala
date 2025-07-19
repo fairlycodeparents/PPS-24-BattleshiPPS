@@ -36,15 +36,14 @@ object PlayerBoardBuilder:
     def vertical: Placement = Placement(shipType, pos, Orientation.Vertical)
 
   /** Creates a [[PlayerBoard]] from a list of placements. */
-  def board(placements: Placement*): PlayerBoard = // TODO: refactor to use the ShipPositionFactory instead
+  def board(placements: Placement*): PlayerBoard =
     placements.foldLeft(PlayerBoard()): (board, placement) =>
-      val ship = ShipImpl(
-        placement.shipType,
-        placement.start,
-        Orientation.valueOf(placement.orientation.toString)
-      )
-      if board.isAnyPositionOccupied(ship.getPositions) then throw PositionOccupiedException(placement.start)
-      else board.addShip(ship)
+      ShipPositioningImpl.placeShip(
+        board,
+        ShipImpl(placement.shipType, placement.start, placement.orientation)
+      ) match
+        case Left(error)         => throw new RuntimeException(error)
+        case Right(updatedBoard) => updatedBoard
 
   /* Helpers to define readable coordinates: maps letters A–J to columns 0–9. */
   object A:
