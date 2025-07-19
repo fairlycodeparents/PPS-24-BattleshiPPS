@@ -24,6 +24,17 @@ class GameController(
           case Right(updatedBoard) => GameState(updatedBoard, None)
           case Left(_)             => state
 
+  private def handleDoubleCellClick(state: GameState, pos: Position): GameState =
+    state.selectedShip match
+      case None =>
+        positioning.getShipAt(state.board, pos) match
+          case Right(ship) => state.copy(selectedShip = Some(ship))
+          case Left(_) => state
+      case Some(ship) =>
+        positioning.rotateShip(state.board, ship) match
+          case Right(updatedBoard) => GameState(updatedBoard, None)
+          case Left(_) => state
+
   def onCellClick(pos: Position): Unit =
     val newState = handleCellClick(state, pos)
     state = newState
@@ -32,6 +43,8 @@ class GameController(
     }
 
   def onCellDoubleClick(pos: Position): Unit =
-    state.board.getShips.find(_.getPositions.contains(pos)).foreach { ship =>
-      // TODO: rotate
+    val newState = handleDoubleCellClick(state, pos)
+    state = newState
+    Swing.onEDT {
+      view.update(state.board, state.selectedShip)
     }
