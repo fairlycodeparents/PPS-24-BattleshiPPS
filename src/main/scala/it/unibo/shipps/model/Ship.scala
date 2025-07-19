@@ -38,13 +38,9 @@ final case class ShipImpl(
   override def getAnchor: Position = anchor
   override def getPositions: Set[Position] = orientation match
     case Orientation.Horizontal =>
-      (0 until getShape.getLength).map(i => ConcretePosition(anchor.x() + i, anchor.y())).toSet
+      (0 until getShape.getLength).map(i => Position(anchor.x + i, anchor.y)).toSet
     case Orientation.Vertical =>
-      (0 until getShape.getLength).map(i => ConcretePosition(anchor.x(), anchor.y() + i)).toSet
+      (0 until getShape.getLength).map(i => Position(anchor.x, anchor.y + i)).toSet
   override def getShape: ShipShape       = ShipShapeImpl(orientation, shipType.length)
   override def move(pos: Position): Ship = ShipImpl(shipType, pos, getShape.getOrientation)
   override def rotate: Ship              = ShipImpl(shipType, anchor, getShape.rotateOrientation.getOrientation)
-
-final case class ConcretePosition(xCoord: Int, yCoord: Int) extends Position: // TODO: remove
-  override def x(): Int = xCoord
-  override def y(): Int = yCoord

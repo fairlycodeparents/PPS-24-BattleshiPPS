@@ -7,7 +7,7 @@ import matchers.*
 
 /** Test suite for the PlayerBoard class. */
 class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
-  val position: Position = ConcretePosition(2, 3)
+  val position: Position = Position(2, 3)
   val ship: Ship         = ShipImpl(ShipType.Frigate, position, Orientation.Horizontal)
 
   "An empty player board" should "be initialised with no ships" in:
@@ -22,7 +22,7 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
 
   it should "consider any position as not occupied" in:
     val boardPositions: Set[Position] = (0 until PlayerBoard.size).flatMap(x =>
-      (0 until PlayerBoard.size).map(y => ConcretePosition(x, y))
+      (0 until PlayerBoard.size).map(y => Position(x, y))
     ).toSet
     PlayerBoard().isAnyPositionOccupied(boardPositions) shouldBe false
 
