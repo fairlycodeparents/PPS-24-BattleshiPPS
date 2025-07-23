@@ -2,7 +2,11 @@ package it.unibo.shipps.view
 
 import it.unibo.shipps.model.*
 import it.unibo.shipps.controller.GameController
+
+import java.awt
+import java.awt.event.KeyListener
 import scala.swing.*
+import scala.swing.MenuBar.NoMenuBar.{focusable, keys}
 import scala.swing.event.*
 
 case class ClickState(pos: Option[Position], time: Long)
@@ -13,7 +17,15 @@ class SimpleGui(controller: GameController) extends MainFrame:
   title = "BattleshiPPS"
   preferredSize = new Dimension(SIZE, SIZE)
 
-  private val gridPanel = new GridPanel(PlayerBoard.size, PlayerBoard.size)
+  private val gridPanel = new GridPanel(PlayerBoard.size, PlayerBoard.size) {
+    focusable = true
+    listenTo(keys)
+
+    reactions += {
+      case KeyPressed(_, Key.R, _, _) => controller.onKeyBoardClick(controller.currentState.board.getShips.toList)
+    }
+  }
+
   contents = gridPanel
 
   private val doubleClickMillis = 500

@@ -13,6 +13,7 @@ class GameController(
 ):
 
   private var state = GameState(initialBoard, None)
+  def currentState: GameState = state
 
   private def handleCellAction(pos: Position)(
       shipAction: (PlayerBoard, Ship, Position) => Either[String, PlayerBoard]
@@ -28,6 +29,9 @@ class GameController(
           case Left(_)             => state
     updateView()
 
+  private def handleKeyboardClick(ships: List[Ship], board: PlayerBoard): Either[String, GameState] =
+    positioning.randomPositioning(PlayerBoard(), ships).map(newBoard => GameState(newBoard, None))
+
   private def updateView(): Unit =
     Swing.onEDT(view.update(state.board, state.selectedShip))
 
@@ -36,3 +40,11 @@ class GameController(
 
   def onCellDoubleClick(pos: Position): Unit =
     handleCellAction(pos) { (board, ship, _) => positioning.rotateShip(board, ship) }
+
+  def onKeyBoardClick(ships: List[Ship]): Unit =
+    handleKeyboardClick(ships, state.board) match
+      case Right(newState) =>
+        state = newState
+        updateView()
+      case Left(_) =>
+        println("Error randomizing ships")
