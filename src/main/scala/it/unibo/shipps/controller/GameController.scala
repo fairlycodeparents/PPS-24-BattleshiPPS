@@ -12,7 +12,7 @@ class GameController(
     var view: SimpleGui
 ):
 
-  private var state = GameState(initialBoard, None)
+  private var state           = GameState(initialBoard, None)
   def currentState: GameState = state
 
   private def handleCellAction(pos: Position)(
