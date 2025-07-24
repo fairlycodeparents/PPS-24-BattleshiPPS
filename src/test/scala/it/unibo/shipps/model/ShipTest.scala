@@ -1,12 +1,12 @@
 package it.unibo.shipps.model
 
-import it.unibo.shipps.model.*
+import it.unibo.shipps.model.ShipType.*
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers.*
 
 class ShipTest extends AnyFunSuite:
   val position: Position = Position(2, 3)
-  val ship: Ship         = ShipImpl(ShipType.Frigate, position, Orientation.Horizontal)
+  val ship: Ship         = Frigate.horizontalAt(position)
 
   test("ShipType should have correct lengths"):
     ShipType.Frigate.length should be(2)

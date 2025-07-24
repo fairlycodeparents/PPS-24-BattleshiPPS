@@ -1,6 +1,7 @@
 package it.unibo.shipps
 
 import it.unibo.shipps.model.*
+import it.unibo.shipps.model.ShipType.*
 import it.unibo.shipps.controller.*
 import it.unibo.shipps.view.*
 
@@ -12,10 +13,10 @@ object Main extends SimpleSwingApplication:
     val initialBoard                 = PlayerBoard()
     val positioning: ShipPositioning = ShipPositioningImpl
     val ships = List(
-      ShipImpl(ShipType.Carrier, Position(0, 0), Orientation.Horizontal),
-      ShipImpl(ShipType.Destroyer, Position(0, 0), Orientation.Horizontal),
-      ShipImpl(ShipType.Submarine, Position(0, 0), Orientation.Horizontal),
-      ShipImpl(ShipType.Frigate, Position(0, 0), Orientation.Horizontal)
+      Carrier.horizontalAt(0, 0),
+      Destroyer.horizontalAt(0, 0),
+      Submarine.horizontalAt(0, 0),
+      Frigate.horizontalAt(0, 0)
     )
     val board = positioning.randomPositioning(initialBoard, ships)
       .getOrElse(initialBoard)

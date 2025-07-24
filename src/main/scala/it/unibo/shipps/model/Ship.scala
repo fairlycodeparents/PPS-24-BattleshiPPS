@@ -29,20 +29,24 @@ enum ShipType(val length: Int):
   case Destroyer extends ShipType(4)
   case Carrier   extends ShipType(5)
 
-final case class ShipImpl(
+  def at(position: Position, orientation: Orientation = Orientation.Horizontal): Ship =
+    ShipImpl(this, position, orientation)
+  def at(pos: Position): Ship            = at(pos)
+  def at(x: Int, y: Int): Ship           = at(Position(x, y))
+  def verticalAt(pos: Position): Ship    = at(pos, Orientation.Vertical)
+  def verticalAt(x: Int, y: Int): Ship   = at(Position(x, y), Orientation.Vertical)
+  def horizontalAt(pos: Position): Ship  = at(pos, Orientation.Horizontal)
+  def horizontalAt(x: Int, y: Int): Ship = at(Position(x, y), Orientation.Horizontal)
+
+final private case class ShipImpl(
     shipType: ShipType,
     position: Position,
     orientation: Orientation
 ) extends Ship:
-
   override def anchor: Position = position
-  override def positions: Set[Position] =
-    val length = shipType.length
-    orientation match
-      case Orientation.Horizontal =>
-        (0 until length).map(i => Position(anchor.x + i, anchor.y)).toSet
-      case Orientation.Vertical =>
-        (0 until length).map(i => Position(anchor.x, anchor.y + i)).toSet
-  override def shape: ShipShape          = ShipShapeImpl(orientation, shipType.length)
+  override lazy val positions: Set[Position] = orientation match
+    case Orientation.Horizontal => (0 until shipType.length).map(i => Position(anchor.x + i, anchor.y)).toSet
+    case Orientation.Vertical   => (0 until shipType.length).map(i => Position(anchor.x, anchor.y + i)).toSet
+  override lazy val shape: ShipShape     = ShipShapeImpl(orientation, shipType.length)
   override def move(pos: Position): Ship = copy(position = pos)
   override def rotate: Ship              = copy(orientation = orientation.rotate)
