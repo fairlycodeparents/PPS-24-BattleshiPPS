@@ -48,3 +48,6 @@ class GameController(
         updateView()
       case Left(_) =>
         println("Error randomizing ships")
+
+  def onStartGame(): Unit =
+    println("starting game...")

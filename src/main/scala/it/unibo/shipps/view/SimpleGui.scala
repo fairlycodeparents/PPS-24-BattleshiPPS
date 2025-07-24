@@ -17,6 +17,13 @@ class SimpleGui(controller: GameController) extends MainFrame:
   title = "BattleshiPPS"
   preferredSize = new Dimension(SIZE, SIZE)
 
+  private val controlPanel = new FlowPanel {
+    hGap      = 5
+    vGap      = 5
+    border    = Swing.EmptyBorder(2, 0, 2, 0)
+    contents += createStartGameButton()
+    }
+
   private val gridPanel = new GridPanel(PlayerBoard.size, PlayerBoard.size) {
     focusable = true
     listenTo(keys)
@@ -26,10 +33,25 @@ class SimpleGui(controller: GameController) extends MainFrame:
     }
   }
 
-  contents = gridPanel
+  contents = new BorderPanel {
+    layout(gridPanel)     = BorderPanel.Position.Center
+    layout(controlPanel)  = BorderPanel.Position.South
+  }
 
   private val doubleClickMillis = 500
   private var clickState        = ClickState(None, 0L)
+
+  private def createStartGameButton(): Button =
+    val btn = new Button("Start Game") {
+      background = java.awt.Color.GREEN
+      foreground = java.awt.Color.BLACK
+    }
+
+    listenTo(btn)
+    reactions += {
+      case ButtonClicked(`btn`) => controller.onStartGame()
+    }
+    btn
 
   private def createButton(pos: Position, board: PlayerBoard, selectedBtn: Option[Ship]): Button =
     val btn = new Button:
