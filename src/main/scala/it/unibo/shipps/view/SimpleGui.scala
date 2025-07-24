@@ -18,11 +18,11 @@ class SimpleGui(controller: GameController) extends MainFrame:
   preferredSize = new Dimension(SIZE, SIZE)
 
   private val controlPanel = new FlowPanel {
-    hGap      = 5
-    vGap      = 5
-    border    = Swing.EmptyBorder(2, 0, 2, 0)
+    hGap = 5
+    vGap = 5
+    border = Swing.EmptyBorder(2, 0, 2, 0)
     contents += createStartGameButton()
-    }
+  }
 
   private val gridPanel = new GridPanel(PlayerBoard.size, PlayerBoard.size) {
     focusable = true
@@ -34,8 +34,8 @@ class SimpleGui(controller: GameController) extends MainFrame:
   }
 
   contents = new BorderPanel {
-    layout(gridPanel)     = BorderPanel.Position.Center
-    layout(controlPanel)  = BorderPanel.Position.South
+    layout(gridPanel) = BorderPanel.Position.Center
+    layout(controlPanel) = BorderPanel.Position.South
   }
 
   private val doubleClickMillis = 500
