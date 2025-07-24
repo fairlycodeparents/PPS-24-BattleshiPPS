@@ -15,18 +15,18 @@ class ShipTest extends AnyFunSuite:
     ShipType.Carrier.length should be(5)
 
   test("Ship should be created correctly"):
-    ship.getAnchor shouldBe position
-    ship.getShape shouldBe ShipShapeImpl(Orientation.Horizontal, ShipType.Frigate.length)
+    ship.anchor shouldBe position
+    ship.shape shouldBe ShipShapeImpl(Orientation.Horizontal, ShipType.Frigate.length)
 
   test("Ship should be able to rotate"):
     val rotatedShip = ship.rotate
-    rotatedShip.getPositions shouldBe Set(position, Position(2, 4))
+    rotatedShip.positions shouldBe Set(position, Position(2, 4))
 
   test("Ship should occupy the right positions "):
-    ship.getPositions shouldBe Set(position, Position(3, 3))
+    ship.positions shouldBe Set(position, Position(3, 3))
     val rotatedShip = ship.rotate
-    rotatedShip.getPositions shouldBe Set(position, Position(2, 4))
+    rotatedShip.positions shouldBe Set(position, Position(2, 4))
 
   test("Ship should be able to move"):
     val movedShip = ship.move(Position(5, 6))
-    movedShip.getAnchor shouldBe Position(5, 6)
+    movedShip.anchor shouldBe Position(5, 6)

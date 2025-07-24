@@ -24,7 +24,7 @@ class SimpleGui(controller: GameController) extends MainFrame:
       opaque = true
       border = Swing.LineBorder(java.awt.Color.LIGHT_GRAY)
       background =
-        if selectedBtn.exists(_.getPositions.contains(pos)) then java.awt.Color.GRAY
+        if selectedBtn.exists(_.positions.contains(pos)) then java.awt.Color.GRAY
         else if board.isAnyPositionOccupied(Set(pos)) then java.awt.Color.BLACK
         else java.awt.Color.CYAN
     btn

@@ -18,7 +18,7 @@ class PlayerBoardBuilderTest extends AnyFlatSpec with should.Matchers:
       .board(
         place a Carrier at A(1) horizontal
       )
-      .getShips.head.getPositions shouldEqual Set(
+      .getShips.head.positions shouldEqual Set(
       Position(0, 0),
       Position(1, 0),
       Position(2, 0),
@@ -31,7 +31,7 @@ class PlayerBoardBuilderTest extends AnyFlatSpec with should.Matchers:
       .board(
         place a Destroyer at B(2) vertical
       )
-      .getShips.head.getPositions shouldEqual Set(
+      .getShips.head.positions shouldEqual Set(
       Position(1, 1),
       Position(1, 2),
       Position(1, 3),

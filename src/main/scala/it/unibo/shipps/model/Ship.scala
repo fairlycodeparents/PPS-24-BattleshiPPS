@@ -1,7 +1,7 @@
 package it.unibo.shipps.model
 
 /** Represents a ship in the game. */
-trait Ship:
+sealed trait Ship:
   /** Moves the ship to a new position.
     * @param pos the new anchor [[Position]]
     * @return a new instance of [[Ship]] with the updated position
@@ -14,13 +14,13 @@ trait Ship:
   def rotate: Ship
 
   /** @return the shape of the [[Ship]] */
-  def getShape: ShipShape
+  def shape: ShipShape
 
   /** @return the anchor [[Position]] of the [[Ship]] */
-  def getAnchor: Position
+  def anchor: Position
 
   /** @return the set of grid positions occupied by the [[Ship]] */
-  def getPositions: Set[Position]
+  def positions: Set[Position]
 
 /** Predefined ship types with associated length. */
 enum ShipType(val length: Int):
@@ -31,16 +31,18 @@ enum ShipType(val length: Int):
 
 final case class ShipImpl(
     shipType: ShipType,
-    anchor: Position,
+    position: Position,
     orientation: Orientation
 ) extends Ship:
 
-  override def getAnchor: Position = anchor
-  override def getPositions: Set[Position] = orientation match
-    case Orientation.Horizontal =>
-      (0 until getShape.getLength).map(i => Position(anchor.x + i, anchor.y)).toSet
-    case Orientation.Vertical =>
-      (0 until getShape.getLength).map(i => Position(anchor.x, anchor.y + i)).toSet
-  override def getShape: ShipShape       = ShipShapeImpl(orientation, shipType.length)
-  override def move(pos: Position): Ship = ShipImpl(shipType, pos, getShape.getOrientation)
-  override def rotate: Ship              = ShipImpl(shipType, anchor, getShape.rotateOrientation.getOrientation)
+  override def anchor: Position = position
+  override def positions: Set[Position] =
+    val length = shipType.length
+    orientation match
+      case Orientation.Horizontal =>
+        (0 until length).map(i => Position(anchor.x + i, anchor.y)).toSet
+      case Orientation.Vertical =>
+        (0 until length).map(i => Position(anchor.x, anchor.y + i)).toSet
+  override def shape: ShipShape          = ShipShapeImpl(orientation, shipType.length)
+  override def move(pos: Position): Ship = copy(position = pos)
+  override def rotate: Ship              = copy(orientation = orientation.rotate)

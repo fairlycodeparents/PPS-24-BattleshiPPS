@@ -21,7 +21,7 @@ final case class ShipShapeImpl(
 
   override def getLength: Int               = length
   override def getOrientation: Orientation  = orientation
-  override def rotateOrientation: ShipShape = ShipShapeImpl(orientation.rotate(), length)
+  override def rotateOrientation: ShipShape = ShipShapeImpl(orientation.rotate, length)
 
 /** Represents the orientation of a [[Ship]] */
 enum Orientation:
@@ -30,6 +30,6 @@ enum Orientation:
   /** Rotates the orientation.
     * @return the opposite [[Orientation]]
     */
-  def rotate(): Orientation = this match
+  def rotate: Orientation = this match
     case Horizontal => Vertical
     case Vertical   => Horizontal

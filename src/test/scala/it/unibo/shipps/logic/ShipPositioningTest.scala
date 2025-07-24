@@ -52,7 +52,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
     assert(result.isRight, "Expected successful placement of ship on empty board")
     val updatedBoard = result.value
     updatedBoard.getShips should have size 1
-    updatedBoard.getShips.head.getAnchor shouldBe Position(1, 1)
+    updatedBoard.getShips.head.anchor shouldBe Position(1, 1)
   }
 
   test("placeShip should fail when ship overlaps with existing ship") {
@@ -86,7 +86,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
     assert(result.isRight, "Expected successful movement of ship")
     val updatedBoard = result.value
     updatedBoard.getShips should have size 1
-    updatedBoard.getShips.head.getAnchor shouldBe newPosition
+    updatedBoard.getShips.head.anchor shouldBe newPosition
   }
 
   test("moveShip should fail when ship overlaps with another ship") {
@@ -119,7 +119,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
     assert(result.isRight, "Expected successful rotation of ship")
     val updatedBoard = result.value
     updatedBoard.getShips should have size 1
-    updatedBoard.getShips.head.getShape.getOrientation shouldBe Horizontal
+    updatedBoard.getShips.head.shape.getOrientation shouldBe Horizontal
   }
 
   test("rotateShip should fail when rotated ship overlaps with another ship") {
