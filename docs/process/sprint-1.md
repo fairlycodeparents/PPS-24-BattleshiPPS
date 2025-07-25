@@ -14,20 +14,90 @@ spostare e/o ruotare a proprio piacimento le proprie navi, a partire da una disp
 La scadenza dello sprint è il 21/07/2025.
 
 ## Backlog
-| Priorità | Nome                            | Descrizione                                                                                                                               | Stima |
-|----------|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|-------|
-| 1        | Organizzazione progetto         | Il progetto dovrà essere impostato per adattarsi alla metodologia agile SCRUM. Gestito tramite un approccio Git Flow                      | 5     |
-| 2        | Mockup                          | Come utente, vorrei avere una prima visualizzazione del layout dell’applicazione                                                          | 1     |
-| 3        | Posizionamento navi             | Come utente, vorrei poter posizionare le navi nella mappa                                                                                 | 12    |
-| 4        | Posizionamento random           | Come utente, vorrei la possibilità di schierare in modo automatico le mie navi                                                            | 5     |
-| 5        | Testing comprensibile           | Il testing dovrà implementare un DSL che permette di controllare in modo chiaro ed efficace il corretto funzionamento del progetto        | 10    |
-| 6        | Fase d'attacco                  | Come utente, vorrei poter scegliere una casella dell’avversario da colpire                                                                | 15    |
-| 7        | Modalità multiplayer            | Come utente, vorrei poter giocare contro un altro giocatore sul mio dispositivo                                                           | 6     |
-| 8        | Modalità vs bot                 | Come utente, vorrei poter giocare contro un bot nel mio dispositivo                                                                       | 7     |
-| 9        | Selezione delle impostazioni    | Come utente, vorrei poter scegliere alcune regole di gioco come il numero di barche schierabili e il tipo di partita (multiplayer o bot)  | 7     |
-| 10       | Scelta della difficoltà del bot | Come utente, vorrei avere la possibilità di scegliere la difficoltà di gioco                                                              | 12    |
-| 11       | Ostacoli                        | Come utente, vorrei una mappa diversa, con ostacoli in cui le navi non possono essere posizionate                                         | 5     |
-| 12       | Colpi speciali                  | All’interno del gioco ci saranno colpi speciali, come colpi ad area che potranno essere attivati (una volta per partita) dai giocatori.   | 10    |
+<table>
+  <thead>
+    <tr>
+      <th>Priorità</th>
+      <th>Nome</th>
+      <th>Descrizione</th>
+      <th>Stima</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Organizzazione progetto</td>
+      <td>Il progetto dovrà essere impostato per adattarsi alla metodologia agile SCRUM. Gestito tramite un approccio Git Flow</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Mockup</td>
+      <td>Come utente, vorrei avere una prima visualizzazione del layout dell’applicazione</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Posizionamento navi</td>
+      <td>Come utente, vorrei poter posizionare le navi nella mappa</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Posizionamento random</td>
+      <td>Come utente, vorrei la possibilità di schierare in modo automatico le mie navi</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Testing comprensibile</td>
+      <td>Il testing dovrà implementare un DSL che permette di controllare in modo chiaro ed efficace il corretto funzionamento del progetto</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Fase d'attacco</td>
+      <td>Come utente, vorrei poter scegliere una casella dell’avversario da colpire</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Modalità multiplayer</td>
+      <td>Come utente, vorrei poter giocare contro un altro giocatore sul mio dispositivo</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Modalità vs bot</td>
+      <td>Come utente, vorrei poter giocare contro un bot nel mio dispositivo</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Selezione delle impostazioni</td>
+      <td>Come utente, vorrei poter scegliere alcune regole di gioco come il numero di barche schierabili e il tipo di partita (multiplayer o bot)</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Scelta della difficoltà del bot</td>
+      <td>Come utente, vorrei avere la possibilità di scegliere la difficoltà di gioco</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>Ostacoli</td>
+      <td>Come utente, vorrei una mappa diversa, con ostacoli in cui le navi non possono essere posizionate</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Colpi speciali</td>
+      <td>All’interno del gioco ci saranno colpi speciali, come colpi ad area che potranno essere attivati (una volta per partita) dai giocatori.</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Sprint Review
 Lo stakeholder è soddisfatto della demo funzionante poiché sono stati raggiunti gli obiettivi prefissati: è possibile 
