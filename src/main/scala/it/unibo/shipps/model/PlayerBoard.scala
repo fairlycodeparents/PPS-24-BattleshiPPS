@@ -43,7 +43,7 @@ object PlayerBoard:
     override def getShips: Set[Ship] = ships
 
     override def addShip(ship: Ship): PlayerBoard = {
-      if (isAnyPositionOccupied(ship.getPositions)) throw PositionOccupiedException(ship.getPositions.head)
+      if (isAnyPositionOccupied(ship.positions)) throw PositionOccupiedException(ship.positions.head)
       else PlayerBoardImpl(ships + ship)
     }
 
@@ -52,7 +52,7 @@ object PlayerBoard:
       else throw UnexistingShipException()
 
     override def isAnyPositionOccupied(positions: Set[Position]): Boolean =
-      positions.exists(pos => ships.exists(ship => ship.getPositions.contains(pos)))
+      positions.exists(pos => ships.exists(ship => ship.positions.contains(pos)))
 
     override def toString: String =
       (0 until size).map(row =>

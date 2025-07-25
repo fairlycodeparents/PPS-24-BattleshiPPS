@@ -8,7 +8,7 @@ import matchers.*
 /** Test suite for the PlayerBoard class. */
 class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
   val position: Position = Position(2, 3)
-  val ship: Ship         = ShipImpl(ShipType.Frigate, position, Orientation.Horizontal)
+  val ship: Ship         = ShipType.Frigate.horizontalAt(position)
 
   "An empty player board" should "be initialised with no ships" in:
     PlayerBoard().getShips shouldBe empty

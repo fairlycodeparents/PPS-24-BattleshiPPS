@@ -23,7 +23,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
 
   // Test cases
   test("getShipAt should successfully return a ship at a given position") {
-    val ship     = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val ship     = ShipType.Frigate.verticalAt(1, 1)
     val board    = PlayerBoard(Set(ship))
     val position = Position(1, 1)
 
@@ -44,7 +44,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("placeShip should successfully place a ship on empty board") {
-    val ship  = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val ship  = ShipType.Frigate.verticalAt(1, 1)
     val board = PlayerBoard()
 
     val result = shipPositioning.placeShip(board, ship)
@@ -52,12 +52,12 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
     assert(result.isRight, "Expected successful placement of ship on empty board")
     val updatedBoard = result.value
     updatedBoard.getShips should have size 1
-    updatedBoard.getShips.head.getAnchor shouldBe Position(1, 1)
+    updatedBoard.getShips.head.anchor shouldBe Position(1, 1)
   }
 
   test("placeShip should fail when ship overlaps with existing ship") {
-    val existingShip = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
-    val newShip      = ShipImpl(ShipType.Submarine, Position(1, 1), Vertical)
+    val existingShip = ShipType.Frigate.verticalAt(1, 1)
+    val newShip      = ShipType.Submarine.verticalAt(1, 1)
     val board        = PlayerBoard(Set(existingShip))
 
     val result = shipPositioning.placeShip(board, newShip)
@@ -67,7 +67,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("placeShip should fail when ship is out of bounds") {
-    val ship  = ShipImpl(ShipType.Carrier, Position(8, 8), Horizontal)
+    val ship  = ShipType.Carrier.horizontalAt(8, 8)
     val board = PlayerBoard()
 
     val result = shipPositioning.placeShip(board, ship)
@@ -77,7 +77,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("moveShip should successfully move a ship to a new position") {
-    val ship        = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val ship        = ShipType.Frigate.verticalAt(1, 1)
     val board       = PlayerBoard(Set(ship))
     val newPosition = Position(3, 1)
 
@@ -86,12 +86,12 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
     assert(result.isRight, "Expected successful movement of ship")
     val updatedBoard = result.value
     updatedBoard.getShips should have size 1
-    updatedBoard.getShips.head.getAnchor shouldBe newPosition
+    updatedBoard.getShips.head.anchor shouldBe newPosition
   }
 
   test("moveShip should fail when ship overlaps with another ship") {
-    val overlappedShip  = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
-    val overlappingShip = ShipImpl(ShipType.Submarine, Position(2, 1), Vertical)
+    val overlappedShip  = ShipType.Frigate.verticalAt(1, 1)
+    val overlappingShip = ShipType.Submarine.verticalAt(2, 1)
     val board           = PlayerBoard(Set(overlappedShip, overlappingShip))
 
     val result = shipPositioning.moveShip(board, overlappingShip, Position(1, 0))
@@ -101,7 +101,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("moveShip should fail when ship is out of bounds") {
-    val ship  = ShipImpl(ShipType.Carrier, Position(1, 1), Horizontal)
+    val ship  = ShipType.Carrier.horizontalAt(1, 1)
     val board = PlayerBoard(Set(ship))
 
     val result = shipPositioning.moveShip(board, ship, Position(8, 8))
@@ -111,7 +111,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("rotateShip should successfully rotate a ship") {
-    val ship  = ShipImpl(ShipType.Frigate, Position(1, 1), Vertical)
+    val ship  = ShipType.Frigate.verticalAt(1, 1)
     val board = PlayerBoard(Set(ship))
 
     val result = shipPositioning.rotateShip(board, ship)
@@ -119,12 +119,12 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
     assert(result.isRight, "Expected successful rotation of ship")
     val updatedBoard = result.value
     updatedBoard.getShips should have size 1
-    updatedBoard.getShips.head.getShape.getOrientation shouldBe Horizontal
+    updatedBoard.getShips.head.shape.getOrientation shouldBe Horizontal
   }
 
   test("rotateShip should fail when rotated ship overlaps with another ship") {
-    val existingShip = ShipImpl(ShipType.Submarine, Position(1, 2), Vertical)
-    val shipToRotate = ShipImpl(ShipType.Frigate, Position(1, 1), Horizontal)
+    val existingShip = ShipType.Submarine.verticalAt(1, 2)
+    val shipToRotate = ShipType.Frigate.horizontalAt(1, 1)
     val board        = PlayerBoard(Set(existingShip, shipToRotate))
 
     val result = shipPositioning.rotateShip(board, shipToRotate)
@@ -134,7 +134,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   }
 
   test("rotateShip should fail when rotated ship is out of bounds") {
-    val ship  = ShipImpl(ShipType.Carrier, Position(1, 8), Horizontal)
+    val ship  = ShipType.Carrier.horizontalAt(1, 8)
     val board = PlayerBoard(Set(ship))
 
     val result = shipPositioning.rotateShip(board, ship)
@@ -146,7 +146,7 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   test("randomPositioning should return an error if unable to place all ships") {
     val board = PlayerBoard()
     val ships =
-      createMultipleShips(21, ShipImpl(ShipType.Carrier, Position(1, 1), Vertical))
+      createMultipleShips(21, ShipType.Carrier.verticalAt(1, 1))
 
     val result = shipPositioning.randomPositioning(board, ships)
 
@@ -157,8 +157,8 @@ class ShipPositioningTest extends AnyFunSuite with Matchers {
   test("randomPositioning should place all ships successfully") {
     val board = PlayerBoard()
     val ships = List(
-      ShipImpl(ShipType.Frigate, Position(1, 1), Vertical),
-      ShipImpl(ShipType.Submarine, Position(1, 1), Vertical)
+      ShipType.Frigate.verticalAt(1, 1),
+      ShipType.Submarine.verticalAt(1, 1)
     )
 
     val result = shipPositioning.randomPositioning(board, ships)
