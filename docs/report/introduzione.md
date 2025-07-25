@@ -5,7 +5,6 @@ parent: Report
 ---
 
 # Introduzione
-<img src="../assets/img/icon.png" alt="Battleship Game" width="500px" height="500px" />
 
 ## Obiettivo
 L'obiettivo di questo progetto è quello di realizzare un gioco in stile "battaglia navale". L'applicazione permetterà:
