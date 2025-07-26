@@ -10,12 +10,12 @@ enum GamePhase:
   case Positioning, Battle, GameOver
 
 case class GameState(
-                      board: PlayerBoard,
-                      enemyBoard: PlayerBoard,
-                      shipAttack: ShipAttack,
-                      selectedShip: Option[Ship],
-                      gamePhase: GamePhase
-                    )
+    board: PlayerBoard,
+    enemyBoard: PlayerBoard,
+    shipAttack: ShipAttack,
+    selectedShip: Option[Ship],
+    gamePhase: GamePhase
+)
 
 class GameController(
     initialBoard: PlayerBoard,
@@ -37,26 +37,32 @@ class GameController(
             case Left(_)     => state
         case Some(ship) =>
           shipAction(state.board, ship, pos) match
-            case Right(updatedBoard) => GameState(updatedBoard, enemyBoard, ShipAttack(enemyBoard, Set.empty), None, Positioning)
-            case Left(_)             => state
+            case Right(updatedBoard) =>
+              GameState(updatedBoard, enemyBoard, ShipAttack(enemyBoard, Set.empty), None, Positioning)
+            case Left(_) => state
       updateView()
 
   private def handleKeyboardClick(ships: List[Ship], board: PlayerBoard): Either[String, GameState] =
-    positioning.randomPositioning(PlayerBoard(), ships).map(newBoard => GameState(newBoard, enemyBoard, ShipAttack(enemyBoard, Set.empty), None, Positioning))
+    positioning.randomPositioning(PlayerBoard(), ships).map(newBoard =>
+      GameState(newBoard, enemyBoard, ShipAttack(enemyBoard, Set.empty), None, Positioning)
+    )
 
   private def updateView(): Unit =
     val displayBoard = state.gamePhase match
-      case GamePhase.Positioning  => state.board
-      case GamePhase.Battle       => PlayerBoard()
-      case GamePhase.GameOver     => state.enemyBoard
+      case GamePhase.Positioning => state.board
+      case GamePhase.Battle      => PlayerBoard()
+      case GamePhase.GameOver    => state.enemyBoard
 
-    Swing.onEDT(view.update(displayBoard, if state.gamePhase == GamePhase.Positioning then state.selectedShip else None))
+    Swing.onEDT(view.update(
+      displayBoard,
+      if state.gamePhase == GamePhase.Positioning then state.selectedShip else None
+    ))
 
   def onCellClick(pos: Position): Unit = {
     state.gamePhase match
-      case GamePhase.Positioning  => handleCellAction(pos)(positioning.moveShip)
-      case GamePhase.Battle       => handleBattleClick(pos)
-      case GamePhase.GameOver     => println("Game is over, no actions allowed")
+      case GamePhase.Positioning => handleCellAction(pos)(positioning.moveShip)
+      case GamePhase.Battle      => handleBattleClick(pos)
+      case GamePhase.GameOver    => println("Game is over, no actions allowed")
   }
 
   private def handleBattleClick(pos: Position): Unit =
@@ -97,7 +103,11 @@ class GameController(
   def onStartGame(): Unit =
     state.gamePhase match
       case GamePhase.Positioning =>
-        state = state.copy(gamePhase = Battle, enemyBoard = positioning.randomPositioning(PlayerBoard(), state.board.getShips.toList).getOrElse(PlayerBoard()))
+        state = state.copy(
+          gamePhase = Battle,
+          enemyBoard =
+            positioning.randomPositioning(PlayerBoard(), state.board.getShips.toList).getOrElse(PlayerBoard())
+        )
         println("Battle started! Find and sink all enemy ships!")
         updateView()
       case GamePhase.Battle =>

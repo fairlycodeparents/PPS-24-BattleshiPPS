@@ -67,7 +67,7 @@ class SimpleGui(controller: GameController) extends MainFrame:
 
       case GamePhase.Battle =>
         val damagedShipAtPosition = state.shipAttack.damagedShips.find(_.hitPositions.contains(buttonPosition))
-        val wasMissed             = state.shipAttack.attackedPositions.contains(buttonPosition)
+        val wasMissed = state.shipAttack.attackedPositions.contains(buttonPosition)
           && damagedShipAtPosition.isEmpty
 
         damagedShipAtPosition match
@@ -92,7 +92,7 @@ class SimpleGui(controller: GameController) extends MainFrame:
   private def getButtonText(buttonPosistion: Position, state: GameState): String =
     state.gamePhase match
       case GamePhase.Battle =>
-        val wasHit = state.shipAttack.damagedShips.exists(_.hitPositions.contains(buttonPosistion))
+        val wasHit    = state.shipAttack.damagedShips.exists(_.hitPositions.contains(buttonPosistion))
         val wasMissed = state.shipAttack.attackedPositions.contains(buttonPosistion) && !wasHit
 
         if wasHit then "O"
