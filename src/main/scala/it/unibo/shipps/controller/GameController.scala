@@ -15,7 +15,28 @@ case class GameState(
     shipAttack: ShipAttack,
     selectedShip: Option[Ship],
     gamePhase: GamePhase
-)
+):
+  def selectShip(ship: Ship): GameState =
+    copy(selectedShip = Some(ship))
+
+  def randomizeBoard(newBoard: PlayerBoard): GameState =
+    copy(board = newBoard, selectedShip = None)
+
+  def moveShipTo(newBoard: PlayerBoard): GameState =
+    copy(board = newBoard, selectedShip = None)
+
+  def rotateShipTo(newBoard: PlayerBoard): GameState =
+    copy(board = newBoard, selectedShip = None)
+
+  def processAttack(newAttack: ShipAttack): GameState =
+    copy(shipAttack = newAttack)
+
+  def startBattle(newEnemyBoard: PlayerBoard): GameState =
+    copy(
+      gamePhase = GamePhase.Battle,
+      enemyBoard = newEnemyBoard,
+      shipAttack = ShipAttack(newEnemyBoard, Set.empty)
+    )
 
 class GameController(
     initialBoard: PlayerBoard,
@@ -33,19 +54,39 @@ class GameController(
       state = state.selectedShip match
         case None =>
           positioning.getShipAt(state.board, pos) match
-            case Right(ship) => state.copy(selectedShip = Some(ship))
+            case Right(ship) => state.selectShip(ship)
             case Left(_)     => state
         case Some(ship) =>
           shipAction(state.board, ship, pos) match
             case Right(updatedBoard) =>
-              GameState(updatedBoard, enemyBoard, ShipAttack(enemyBoard, Set.empty), None, Positioning)
+              if shipAction == positioning.moveShip then
+                state.moveShipTo(updatedBoard)
+              else
+                state.rotateShipTo(updatedBoard)
             case Left(_) => state
       updateView()
 
-  private def handleKeyboardClick(ships: List[Ship], board: PlayerBoard): Either[String, GameState] =
-    positioning.randomPositioning(PlayerBoard(), ships).map(newBoard =>
-      GameState(newBoard, enemyBoard, ShipAttack(enemyBoard, Set.empty), None, Positioning)
-    )
+  private def handleBattleClick(pos: Position): Unit =
+    val (newShipAttack, attackResult) = state.shipAttack.attack(pos)
+
+    attackResult match
+      case Right(result) =>
+        state = state.processAttack(newShipAttack)
+
+        result match
+          case AttackResult.Miss =>
+            println(s"Miss at $pos!")
+          case AttackResult.Hit(ship) =>
+            println(s"Hit ${ship} at $pos!")
+          case AttackResult.Sunk(ship) =>
+            println(s"Sunk ${ship}!")
+          case AttackResult.AlreadyAttacked =>
+            println(s"Already attacked position $pos")
+
+        updateView()
+
+      case Left(error) =>
+        println(s"Attack error: $error")
 
   private def updateView(): Unit =
     val displayBoard = state.gamePhase match
@@ -65,49 +106,24 @@ class GameController(
       case GamePhase.GameOver    => println("Game is over, no actions allowed")
   }
 
-  private def handleBattleClick(pos: Position): Unit =
-    val (newShipAttack, attackResult) = state.shipAttack.attack(pos)
-
-    attackResult match
-      case Right(result) =>
-        state = state.copy(shipAttack = newShipAttack)
-
-        result match
-          case AttackResult.Miss =>
-            println(s"Miss at $pos!")
-          case AttackResult.Hit(ship) =>
-            println(s"Hit ${ship} at $pos!")
-          case AttackResult.Sunk(ship) =>
-            println(s"Sunk ${ship}!")
-          case AttackResult.AlreadyAttacked =>
-            println(s"Already attacked position $pos")
-
-        updateView()
-
-      case Left(error) =>
-        println(s"Attack error: $error")
-
   def onCellDoubleClick(pos: Position): Unit =
     if state.gamePhase == GamePhase.Positioning then
       handleCellAction(pos) { (board, ship, _) => positioning.rotateShip(board, ship) }
 
   def onKeyBoardClick(ships: List[Ship]): Unit =
     if state.gamePhase == GamePhase.Positioning then
-      handleKeyboardClick(ships, state.board) match
-        case Right(newState) =>
-          state = newState
+      positioning.randomPositioning(PlayerBoard(), ships) match
+        case Right(newBoard) =>
+          state = state.randomizeBoard(newBoard)
           updateView()
-        case Left(_) =>
+        case Left(error) =>
           println("Error randomizing ships")
 
   def onStartGame(): Unit =
     state.gamePhase match
       case GamePhase.Positioning =>
-        state = state.copy(
-          gamePhase = Battle,
-          enemyBoard =
-            positioning.randomPositioning(PlayerBoard(), state.board.getShips.toList).getOrElse(PlayerBoard())
-        )
+        state = state.startBattle(positioning.randomPositioning(PlayerBoard(), state.board.getShips.toList)
+          .getOrElse(PlayerBoard()))
         println("Battle started! Find and sink all enemy ships!")
         updateView()
       case GamePhase.Battle =>
