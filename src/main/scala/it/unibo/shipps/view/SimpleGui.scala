@@ -1,7 +1,7 @@
 package it.unibo.shipps.view
 
 import it.unibo.shipps.model.*
-import it.unibo.shipps.controller.GameController
+import it.unibo.shipps.controller.{GameController, GamePhase, GameState}
 
 import java.awt
 import java.awt.event.KeyListener
@@ -29,7 +29,9 @@ class SimpleGui(controller: GameController) extends MainFrame:
     listenTo(keys)
 
     reactions += {
-      case KeyPressed(_, Key.R, _, _) => controller.onKeyBoardClick(controller.currentState.board.getShips.toList)
+      case KeyPressed(_, Key.R, _, _) =>
+        if controller.state.gamePhase == GamePhase.Positioning then
+          controller.onKeyBoardClick(controller.state.board.getShips.toList)
     }
   }
 
@@ -53,15 +55,50 @@ class SimpleGui(controller: GameController) extends MainFrame:
     }
     btn
 
-  private def createButton(pos: Position, board: PlayerBoard, selectedBtn: Option[Ship]): Button =
-    val btn = new Button:
+  private def getButtonColor(buttonPosition: Position, state: GameState): java.awt.Color =
+    state.gamePhase match
+      case GamePhase.Positioning =>
+        if state.selectedShip.exists(_.positions.contains(buttonPosition)) then
+          java.awt.Color.YELLOW
+        else if state.board.isAnyPositionOccupied(Set(buttonPosition)) then
+          java.awt.Color.BLACK
+        else
+          java.awt.Color.CYAN
+
+      case GamePhase.Battle =>
+        val damagedShipAtPosition = state.shipAttack.damagedShips.find(_.hitPositions.contains(buttonPosition))
+        val wasMissed             = state.shipAttack.attackedPositions.contains(buttonPosition)
+          && damagedShipAtPosition.isEmpty
+
+        damagedShipAtPosition match
+          case Some(damagedShip) if damagedShip.isSunk =>
+            java.awt.Color.RED
+          case Some(_) =>
+            java.awt.Color.ORANGE
+          case None if wasMissed =>
+            java.awt.Color.LIGHT_GRAY
+          case None =>
+            java.awt.Color.CYAN
+
+      case GamePhase.GameOver => java.awt.Color.CYAN
+
+  private def createButton(buttonPosistion: Position, board: PlayerBoard, selectedButton: Option[Ship]): Button =
+    val btn = new Button(getButtonText(buttonPosistion, controller.state)):
       opaque = true
       border = Swing.LineBorder(java.awt.Color.LIGHT_GRAY)
-      background =
-        if selectedBtn.exists(_.positions.contains(pos)) then java.awt.Color.GRAY
-        else if board.isAnyPositionOccupied(Set(pos)) then java.awt.Color.BLACK
-        else java.awt.Color.CYAN
+      background = getButtonColor(buttonPosistion, controller.state)
     btn
+
+  private def getButtonText(buttonPosistion: Position, state: GameState): String =
+    state.gamePhase match
+      case GamePhase.Battle =>
+        val wasHit = state.shipAttack.damagedShips.exists(_.hitPositions.contains(buttonPosistion))
+        val wasMissed = state.shipAttack.attackedPositions.contains(buttonPosistion) && !wasHit
+
+        if wasHit then "O"
+        else if wasMissed then "X"
+        else ""
+      case _ => ""
 
   def update(board: PlayerBoard, selected: Option[Ship]): Unit =
     val buttons =

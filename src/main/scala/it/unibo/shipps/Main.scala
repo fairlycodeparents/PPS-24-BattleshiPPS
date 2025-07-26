@@ -20,7 +20,7 @@ object Main extends SimpleSwingApplication:
     )
     val board = positioning.randomPositioning(initialBoard, ships)
       .getOrElse(initialBoard)
-    val controller = new GameController(board, positioning, null)
+    val controller = new GameController(board, board, positioning, null)
     val view       = new SimpleGui(controller)
     controller.view = view
     view.update(board, None)
