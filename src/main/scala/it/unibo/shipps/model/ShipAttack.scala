@@ -1,10 +1,13 @@
 package it.unibo.shipps.model
 
+import it.unibo.shipps.model.AttackResult.EndOfGame
+
 /** Represents the result of an attack on a position. */
 enum AttackResult:
   case Miss
   case Hit(ship: Ship)
   case Sunk(ship: Ship)
+  case EndOfGame(ship: Ship)
   case AlreadyAttacked
 
 object ShipAttack:
@@ -26,7 +29,7 @@ object ShipAttack:
   private def processValidAttack(board: PlayerBoard, position: Position): (PlayerBoard, Either[String, AttackResult]) =
     val newBoard = board.hit(position)
     val result = board.shipAtPosition(position)
-      .map(attackShip(board, position))
+      .map(attackShip(newBoard, position))
       .getOrElse(Right(AttackResult.Miss))
     (newBoard, result)
 
@@ -34,16 +37,23 @@ object ShipAttack:
     for
       damagedShip <- Right(findDamagedShip(board, ship))
       updatedShip <- damagedShip.hit(position).toRight("Invalid attack")
-    yield determineAttackResult(updatedShip)
+    yield determineAttackResult(updatedShip, board)
 
   private def findDamagedShip(board: PlayerBoard, ship: Ship): DamagedShip =
     damagedShips(board)
       .find(_.ship == ship)
       .getOrElse(DamagedShip(ship, Set.empty))
 
-  private def determineAttackResult(damagedShip: DamagedShip): AttackResult =
-    if damagedShip.isSunk then AttackResult.Sunk(damagedShip.ship)
+  private def determineAttackResult(damagedShip: DamagedShip, board: PlayerBoard): AttackResult =
+    if damagedShip.isSunk then determineEndOfGame(damagedShip, board)
     else AttackResult.Hit(damagedShip.ship)
+
+  private def determineEndOfGame(damagedShip: DamagedShip, board: PlayerBoard): AttackResult =
+    if areAllShipsSunk(board) then EndOfGame(damagedShip.ship)
+    else AttackResult.Sunk(damagedShip.ship)
+
+  private def areAllShipsSunk(board: PlayerBoard): Boolean =
+    damagedShips(board).count(damagedShip => damagedShip.isSunk) == board.getShips.size
 
   /** Returns all damaged ships on the board. */
   def damagedShips(board: PlayerBoard): Set[DamagedShip] =
