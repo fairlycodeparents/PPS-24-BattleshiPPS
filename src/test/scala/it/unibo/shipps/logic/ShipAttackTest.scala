@@ -15,36 +15,35 @@ class ShipAttackTest extends AnyFlatSpec with should.Matchers:
   val destroyer: Ship       = Destroyer.horizontalAt(H(9))
   val ships: Set[Ship]      = Set(frigate, submarine, carrier, destroyer)
   val board: PlayerBoard    = PlayerBoard(ships)
-  val baseState: ShipAttack = ShipAttack(board, Set.empty, Set.empty)
 
-  def attack(state: ShipAttack, pos: Position): AttackResult =
-    val (_, result) = state.attack(pos)
+  def attack(board: PlayerBoard, pos: Position): (PlayerBoard, AttackResult) =
+    val (newBoard, result) = ShipAttack.attack(board, pos)
     result should matchPattern { case Right(_) => }
-    result.toOption.get
+    (newBoard, result.toOption.get)
 
   "A ship" should "be hit" in:
-    val result = attack(baseState, A(5))
+    val (_, result) = attack(board, A(5))
     result should matchPattern { case Hit(`frigate`) => }
 
-  "Attack" should "be missed on empty sea" in:
-    val result = attack(baseState, A(1))
+  it should "be sunk after all its positions are hit" in:
+    val (newBoard, _) = attack(board, A(5))
+    val (_, result) = attack(newBoard, B(5))
+    result shouldBe Sunk(frigate)
+
+  it should "not be attacked many times" in:
+    val (newBoard, _) = attack(board,A(5))
+    val (_, result) = attack(newBoard,A(5))
+    result shouldBe AlreadyAttacked
+
+  "An attack on the open sea" should "be a Miss" in :
+    val (_, result) = attack(board, A(1))
     result shouldBe Miss
 
-  "A ship" should "be sunk after all its positions are hit" in:
-    val (state1, _) = baseState.attack(A(5))
-    val (_, result) = state1.attack(B(5))
-    result shouldBe Right(Sunk(frigate))
+  it should "not be repeated on the same position" in :
+    val (newBoard, _) = attack(board, A(1))
+    val (_, result) = attack(newBoard, A(1))
+    result shouldBe AlreadyAttacked
 
-  "A ship position" should "not be attacked many times" in:
-    val (state1, _) = baseState.attack(A(5))
-    val (_, result) = state1.attack(A(5))
-    result shouldBe Right(AlreadyAttacked)
-
-  "A sea position" should "not be attacked many times" in:
-    val (state1, _) = baseState.attack(A(1))
-    val (_, result) = state1.attack(A(1))
-    result shouldBe Right(AlreadyAttacked)
-
-  "An invalid position" should "not be chosen" in:
-    val (newState, result) = baseState.attack(Position(11, 11))
+  "An invalid position" should "not be chosen" in :
+    val (newBoard, result) = ShipAttack.attack(board, Position(11, 11))
     result shouldBe Left("Invalid attack position")
