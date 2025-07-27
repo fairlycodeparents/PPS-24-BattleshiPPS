@@ -26,6 +26,9 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     ).toSet
     PlayerBoard().isAnyPositionOccupied(boardPositions) shouldBe false
 
+  it should "return an empty set of hit positions" in:
+    PlayerBoard().hitPositons shouldBe empty
+
   "A player board" should "allow removing a ship that does exist" in:
     PlayerBoard()
       .addShip(ship)
@@ -64,3 +67,12 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
         "O | O | O | O | O | O | O | O | O | O |\n" +
         "O | O | O | O | O | O | O | O | O | O |\n"
     )
+
+  it should "return an empty set of damaged ships when no hits have occurred" in:
+    PlayerBoard().hitPositons shouldBe empty
+
+  it should "return a set of damaged ships" in:
+    PlayerBoard()
+      .addShip(ship)
+      .hit(position)
+      .hitPositons shouldEqual Set(position)

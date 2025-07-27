@@ -33,6 +33,16 @@ trait PlayerBoard:
     */
   def shipAtPosition(position: Position): Option[Ship]
 
+  /** Returns all the positions that has been hit.
+    * @return the [[Set]] of [[Position]] that have been hit on the player board
+    */
+  def hitPositons: Set[Position]
+
+  /** Records a hit on the player board at the specified position.
+    * @param target the position where the hit occurred
+    */
+  def hit(target: Position): PlayerBoard
+
 /** Companion object for [[PlayerBoard]]. */
 object PlayerBoard:
   /** The size of the player board, which is a square grid of size 10x10. */
@@ -42,19 +52,19 @@ object PlayerBoard:
     * @param ships the [[Set]] of [[Ship]] to initialize the board with
     * @return a new [[PlayerBoard]] instance
     */
-  def apply(ships: Set[Ship] = Set.empty): PlayerBoard = PlayerBoardImpl(ships)
+  def apply(ships: Set[Ship] = Set.empty): PlayerBoard = PlayerBoardImpl(ships, Set.empty)
 
-  private case class PlayerBoardImpl(ships: Set[Ship]) extends PlayerBoard:
+  private case class PlayerBoardImpl(ships: Set[Ship], hit: Set[Position]) extends PlayerBoard:
 
     override def getShips: Set[Ship] = ships
 
     override def addShip(ship: Ship): PlayerBoard = {
       if (isAnyPositionOccupied(ship.positions)) throw PositionOccupiedException(ship.positions.head)
-      else PlayerBoardImpl(ships + ship)
+      else PlayerBoardImpl(ships + ship, hit)
     }
 
     override def removeShip(ship: Ship): PlayerBoard =
-      if (ships.contains(ship)) PlayerBoardImpl(ships - ship)
+      if (ships.contains(ship)) PlayerBoardImpl(ships - ship, hit)
       else throw UnexistingShipException()
 
     override def isAnyPositionOccupied(positions: Set[Position]): Boolean =
@@ -62,6 +72,10 @@ object PlayerBoard:
 
     override def shipAtPosition(position: Position): Option[Ship] =
       ships.find(_.positions.contains(position))
+
+    override def hitPositons: Set[Position] = hit
+
+    override def hit(target: Position): PlayerBoard = PlayerBoardImpl(ships, hit + target)
 
     override def toString: String =
       (0 until size).map(row =>
