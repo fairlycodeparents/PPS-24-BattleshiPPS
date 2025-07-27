@@ -42,6 +42,14 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     a[PositionOccupiedException] should be thrownBy:
       board.addShip(ship)
 
+  it should "return the ship at a specific position" in:
+    val board = PlayerBoard()
+      .addShip(ship)
+      .shipAtPosition(position) shouldEqual Some(ship)
+
+  it should "return an empty optional if no ship is at the specified position" in:
+    PlayerBoard().shipAtPosition(position) shouldEqual None
+
   it should "print a nice and clear string representation" in:
     PlayerBoard(Set(ship)).toString shouldEqual (
       "\n" +

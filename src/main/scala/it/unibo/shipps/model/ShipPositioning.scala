@@ -109,9 +109,7 @@ object ShipPositioningImpl extends ShipPositioning:
     validateShipPlacement(board, ship).map(_ => board.addShip(ship))
 
   override def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship] =
-    board.getShips
-      .find(_.positions.contains(selectedShip))
-      .toRight("No ship found at the selected position.")
+    board.shipAtPosition(selectedShip).toRight("No ship found at the selected position.")
 
   override def moveShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
     ShiftShip(board, ship, _.move(position))
