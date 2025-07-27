@@ -58,10 +58,9 @@ object PlayerBoard:
 
     override def getShips: Set[Ship] = ships
 
-    override def addShip(ship: Ship): PlayerBoard = {
+    override def addShip(ship: Ship): PlayerBoard =
       if (isAnyPositionOccupied(ship.positions)) throw PositionOccupiedException(ship.positions.head)
       else PlayerBoardImpl(ships + ship, hit)
-    }
 
     override def removeShip(ship: Ship): PlayerBoard =
       if (ships.contains(ship)) PlayerBoardImpl(ships - ship, hit)
