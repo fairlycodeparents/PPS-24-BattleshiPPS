@@ -11,14 +11,14 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
   val ship: Ship         = ShipType.Frigate.horizontalAt(position)
 
   "An empty player board" should "be initialised with no ships" in:
-    PlayerBoard().getShips shouldBe empty
+    PlayerBoard().ships shouldBe empty
 
   it should "throw UnexistingShipException if a ship is removed" in:
     a[UnexistingShipException] should be thrownBy:
-      PlayerBoard().removeShip(ship).getShips shouldBe empty
+      PlayerBoard().removeShip(ship).ships shouldBe empty
 
   it should "allow adding a ship" in:
-    PlayerBoard().addShip(ship).getShips should contain(ship)
+    PlayerBoard().addShip(ship).ships should contain(ship)
 
   it should "consider any position as not occupied" in:
     val boardPositions: Set[Position] = (0 until PlayerBoard.size).flatMap(x =>
@@ -27,7 +27,7 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     PlayerBoard().isAnyPositionOccupied(boardPositions) shouldBe false
 
   it should "return an empty set of hit positions" in:
-    PlayerBoard().hitPositons shouldBe empty
+    PlayerBoard().hits shouldBe empty
 
   "A player board" should "allow removing a ship that does exist" in:
     PlayerBoard()
@@ -69,10 +69,10 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     )
 
   it should "return an empty set of damaged ships when no hits have occurred" in:
-    PlayerBoard().hitPositons shouldBe empty
+    PlayerBoard().hits shouldBe empty
 
   it should "return a set of damaged ships" in:
     PlayerBoard()
       .addShip(ship)
       .hit(position)
-      .hitPositons shouldEqual Set(position)
+      .hits shouldEqual Set(position)

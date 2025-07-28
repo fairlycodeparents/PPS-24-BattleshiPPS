@@ -31,7 +31,7 @@ class SimpleGui(controller: GameController) extends MainFrame:
     reactions += {
       case KeyPressed(_, Key.R, _, _) =>
         if controller.state.gamePhase == GamePhase.Positioning then
-          controller.onKeyBoardClick(controller.state.board.getShips.toList)
+          controller.onKeyBoardClick(controller.state.board.ships.toList)
     }
   }
 

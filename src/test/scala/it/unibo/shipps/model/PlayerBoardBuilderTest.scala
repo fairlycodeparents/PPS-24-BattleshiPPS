@@ -3,7 +3,6 @@ package it.unibo.shipps.model
 import org.scalatest.*
 import flatspec.*
 
-import it.unibo.shipps.exceptions.PositionOccupiedException
 import it.unibo.shipps.model.PlayerBoardBuilder.*
 import it.unibo.shipps.model.ShipType.*
 
@@ -14,11 +13,10 @@ import scala.language.postfixOps
 class PlayerBoardBuilderTest extends AnyFlatSpec with should.Matchers:
 
   "The DSL of PlayerBoardBuilder" should "support placement of a single horizontal ship" in:
-    PlayerBoardBuilder
-      .board(
+    board(
         place a Carrier at A(1) horizontal
       )
-      .getShips.head.positions shouldEqual Set(
+      .ships.head.positions shouldEqual Set(
       Position(0, 0),
       Position(1, 0),
       Position(2, 0),
@@ -31,7 +29,7 @@ class PlayerBoardBuilderTest extends AnyFlatSpec with should.Matchers:
       .board(
         place a Destroyer at B(2) vertical
       )
-      .getShips.head.positions shouldEqual Set(
+      .ships.head.positions shouldEqual Set(
       Position(1, 1),
       Position(1, 2),
       Position(1, 3),
@@ -45,7 +43,7 @@ class PlayerBoardBuilderTest extends AnyFlatSpec with should.Matchers:
         place a Submarine at A(2) horizontal,
         place a Frigate at J(4) vertical
       )
-      .getShips.size shouldEqual 3
+      .ships.size shouldEqual 3
 
   it should "throw RuntimeException if ships overlap" in:
     a[RuntimeException] should be thrownBy:

@@ -122,7 +122,7 @@ class GameController(
   def onStartGame(): Unit =
     state.gamePhase match
       case GamePhase.Positioning =>
-        state = state.startBattle(positioning.randomPositioning(PlayerBoard(), state.board.getShips.toList)
+        state = state.startBattle(positioning.randomPositioning(PlayerBoard(), state.board.ships.toList)
           .getOrElse(PlayerBoard()))
         println("Battle started! Find and sink all enemy ships!")
         updateView()

@@ -1,6 +1,5 @@
 package it.unibo.shipps.model
 
-import it.unibo.shipps.exceptions.PositionOccupiedException
 import it.unibo.shipps.model.ShipType.*
 
 import scala.language.postfixOps
