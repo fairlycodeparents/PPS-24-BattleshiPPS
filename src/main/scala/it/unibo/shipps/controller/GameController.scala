@@ -26,7 +26,7 @@ case class GameState(
 
   def rotateShipTo(newBoard: PlayerBoard): GameState =
     copy(board = newBoard, selectedShip = None)
-  
+
   def startBattle(newEnemyBoard: PlayerBoard): GameState =
     copy(
       gamePhase = GamePhase.Battle,

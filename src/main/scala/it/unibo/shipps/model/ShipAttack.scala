@@ -68,9 +68,9 @@ object ShipAttack:
 
 /** Represents a ship with its damage state. */
 case class DamagedShip(
-                        ship: Ship,
-                        hitPositions: Set[Position]
-                      ):
+    ship: Ship,
+    hitPositions: Set[Position]
+):
   /** @return true if the [[Ship]] is completely sunk. */
   def isSunk: Boolean = hitPositions == ship.positions
 
