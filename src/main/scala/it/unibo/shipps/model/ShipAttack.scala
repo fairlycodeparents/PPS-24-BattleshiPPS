@@ -1,49 +1,70 @@
 package it.unibo.shipps.model
 
-import it.unibo.shipps.model.AttackResult.AlreadyAttacked
+import it.unibo.shipps.model.AttackResult.EndOfGame
 
 /** Represents the result of an attack on a position. */
 enum AttackResult:
   case Miss
   case Hit(ship: Ship)
   case Sunk(ship: Ship)
+  case EndOfGame(ship: Ship)
   case AlreadyAttacked
 
-case class ShipAttack(board: PlayerBoard, damagedShips: Set[DamagedShip], attackedPositions: Set[Position] = Set.empty):
+object ShipAttack:
+  /** Performs an attack on the given [[PlayerBoard]] at the given [[Position]]. */
+  def attack(board: PlayerBoard, position: Position): (PlayerBoard, Either[String, AttackResult]) =
+    validateAttack(board, position)
+      .map(_ => processValidAttack(board, position))
+      .getOrElse(handleInvalidAttack(board, position))
 
-  val shipPositioning: ShipPositioning = ShipPositioningImpl
+  private def validateAttack(board: PlayerBoard, position: Position): Option[Unit] =
+    Option.when(!board.hitPositons.contains(position) && isValidPosition(position))(())
 
-  /** Performs an attack on the given [[Position]]. */
-  def attack(position: Position): (ShipAttack, Either[String, AttackResult]) =
-    if attackedPositions.contains(position) then
-      return (this, Right(AlreadyAttacked))
-    if invalidPos(position) then
-      return (this, Left("Invalid attack position"))
-    shipPositioning.getShipAt(board, position) match
-      case Left(_) =>
-        val newGrid = copy(attackedPositions = attackedPositions + position)
-        (newGrid, Right(AttackResult.Miss))
-      case Right(ship) =>
-        val damagedShip = findDamagedShip(ship).getOrElse(DamagedShip(ship, Set.empty))
-        damagedShip.hit(position) match
-          case None => (this, Left("Invalid attack"))
-          case Some(updatedShip) =>
-            val updatedShips = damagedShips.filterNot(_.ship == ship) + updatedShip
-            val newGrid = copy(
-              damagedShips = updatedShips,
-              attackedPositions = attackedPositions + position
-            )
-            val result = if updatedShip.isSunk then
-              AttackResult.Sunk(updatedShip.ship)
-            else
-              AttackResult.Hit(updatedShip.ship)
-            (newGrid, Right(result))
+  private def handleInvalidAttack(board: PlayerBoard, position: Position): (PlayerBoard, Either[String, AttackResult]) =
+    if board.hitPositons.contains(position) then
+      (board, Right(AttackResult.AlreadyAttacked))
+    else
+      (board, Left("Invalid attack position"))
 
-  private def findDamagedShip(ship: Ship): Option[DamagedShip] =
-    damagedShips.find(_.ship == ship)
+  private def processValidAttack(board: PlayerBoard, position: Position): (PlayerBoard, Either[String, AttackResult]) =
+    val newBoard = board.hit(position)
+    val result = board.shipAtPosition(position)
+      .map(attackShip(newBoard, position))
+      .getOrElse(Right(AttackResult.Miss))
+    (newBoard, result)
 
-  private def invalidPos(pos: Position): Boolean =
-    pos.x < 0 || pos.x >= PlayerBoard.size || pos.y < 0 || pos.y >= PlayerBoard.size
+  private def attackShip(board: PlayerBoard, position: Position)(ship: Ship): Either[String, AttackResult] =
+    for
+      damagedShip <- Right(findDamagedShip(board, ship))
+      updatedShip <- damagedShip.hit(position).toRight("Invalid attack")
+    yield determineAttackResult(updatedShip, board)
+
+  private def findDamagedShip(board: PlayerBoard, ship: Ship): DamagedShip =
+    damagedShips(board)
+      .find(_.ship == ship)
+      .getOrElse(DamagedShip(ship, Set.empty))
+
+  private def determineAttackResult(damagedShip: DamagedShip, board: PlayerBoard): AttackResult =
+    if damagedShip.isSunk then determineEndOfGame(damagedShip, board)
+    else AttackResult.Hit(damagedShip.ship)
+
+  private def determineEndOfGame(damagedShip: DamagedShip, board: PlayerBoard): AttackResult =
+    if areAllShipsSunk(board) then EndOfGame(damagedShip.ship)
+    else AttackResult.Sunk(damagedShip.ship)
+
+  private def areAllShipsSunk(board: PlayerBoard): Boolean =
+    damagedShips(board).count(damagedShip => damagedShip.isSunk) == board.getShips.size
+
+  /** Returns all damaged ships on the board. */
+  def damagedShips(board: PlayerBoard): Set[DamagedShip] =
+    board.getShips.view
+      .map(ship => ship -> board.hitPositons.intersect(ship.positions))
+      .collect { case (ship, hitPositions) if hitPositions.nonEmpty => DamagedShip(ship, hitPositions) }
+      .toSet
+
+  private def isValidPosition(position: Position): Boolean =
+    position.x >= 0 && position.x < PlayerBoard.size &&
+      position.y >= 0 && position.y < PlayerBoard.size
 
 /** Represents a ship with its damage state. */
 case class DamagedShip(

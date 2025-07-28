@@ -12,7 +12,6 @@ enum GamePhase:
 case class GameState(
     board: PlayerBoard,
     enemyBoard: PlayerBoard,
-    shipAttack: ShipAttack,
     selectedShip: Option[Ship],
     gamePhase: GamePhase
 ):
@@ -28,14 +27,10 @@ case class GameState(
   def rotateShipTo(newBoard: PlayerBoard): GameState =
     copy(board = newBoard, selectedShip = None)
 
-  def processAttack(newAttack: ShipAttack): GameState =
-    copy(shipAttack = newAttack)
-
   def startBattle(newEnemyBoard: PlayerBoard): GameState =
     copy(
       gamePhase = GamePhase.Battle,
-      enemyBoard = newEnemyBoard,
-      shipAttack = ShipAttack(newEnemyBoard, Set.empty)
+      enemyBoard = newEnemyBoard
     )
 
 class GameController(
@@ -45,7 +40,7 @@ class GameController(
     var view: SimpleGui
 ):
 
-  var state: GameState = GameState(initialBoard, enemyBoard, ShipAttack(enemyBoard, Set.empty), None, Positioning)
+  var state: GameState = GameState(initialBoard, enemyBoard, None, Positioning)
 
   private def handleCellAction(pos: Position)(
       shipAction: (PlayerBoard, Ship, Position) => Either[String, PlayerBoard]
@@ -67,11 +62,11 @@ class GameController(
       updateView()
 
   private def handleBattleClick(pos: Position): Unit =
-    val (newShipAttack, attackResult) = state.shipAttack.attack(pos)
+    val (newBoard, attackResult) = ShipAttack.attack(state.board, pos)
 
     attackResult match
       case Right(result) =>
-        state = state.processAttack(newShipAttack)
+        state = state.copy(board = newBoard)
 
         result match
           case AttackResult.Miss =>

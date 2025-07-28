@@ -66,8 +66,8 @@ class SimpleGui(controller: GameController) extends MainFrame:
           java.awt.Color.CYAN
 
       case GamePhase.Battle =>
-        val damagedShipAtPosition = state.shipAttack.damagedShips.find(_.hitPositions.contains(buttonPosition))
-        val wasMissed = state.shipAttack.attackedPositions.contains(buttonPosition)
+        val damagedShipAtPosition = ShipAttack.damagedShips(state.board).find(_.hitPositions.contains(buttonPosition))
+        val wasMissed = state.board.hitPositons.contains(buttonPosition)
           && damagedShipAtPosition.isEmpty
 
         damagedShipAtPosition match
@@ -92,8 +92,8 @@ class SimpleGui(controller: GameController) extends MainFrame:
   private def getButtonText(buttonPosistion: Position, state: GameState): String =
     state.gamePhase match
       case GamePhase.Battle =>
-        val wasHit    = state.shipAttack.damagedShips.exists(_.hitPositions.contains(buttonPosistion))
-        val wasMissed = state.shipAttack.attackedPositions.contains(buttonPosistion) && !wasHit
+        val wasHit    = ShipAttack.damagedShips(state.board).exists(_.hitPositions.contains(buttonPosistion))
+        val wasMissed = state.board.hitPositons.contains(buttonPosistion) && !wasHit
 
         if wasHit then "O"
         else if wasMissed then "X"
