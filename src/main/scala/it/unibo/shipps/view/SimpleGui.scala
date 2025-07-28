@@ -67,7 +67,7 @@ class SimpleGui(controller: GameController) extends MainFrame:
 
       case GamePhase.Battle =>
         val damagedShipAtPosition = ShipAttack.damagedShips(state.board).find(_.hitPositions.contains(buttonPosition))
-        val wasMissed = state.board.hitPositons.contains(buttonPosition)
+        val wasMissed = state.board.hits.contains(buttonPosition)
           && damagedShipAtPosition.isEmpty
 
         damagedShipAtPosition match
@@ -93,7 +93,7 @@ class SimpleGui(controller: GameController) extends MainFrame:
     state.gamePhase match
       case GamePhase.Battle =>
         val wasHit    = ShipAttack.damagedShips(state.board).exists(_.hitPositions.contains(buttonPosistion))
-        val wasMissed = state.board.hitPositons.contains(buttonPosistion) && !wasHit
+        val wasMissed = state.board.hits.contains(buttonPosistion) && !wasHit
 
         if wasHit then "O"
         else if wasMissed then "X"

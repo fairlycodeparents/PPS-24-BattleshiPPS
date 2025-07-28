@@ -18,10 +18,10 @@ object ShipAttack:
       .getOrElse(handleInvalidAttack(board, position))
 
   private def validateAttack(board: PlayerBoard, position: Position): Option[Unit] =
-    Option.when(!board.hitPositons.contains(position) && isValidPosition(position))(())
+    Option.when(!board.hits.contains(position) && isValidPosition(position))(())
 
   private def handleInvalidAttack(board: PlayerBoard, position: Position): (PlayerBoard, Either[String, AttackResult]) =
-    if board.hitPositons.contains(position) then
+    if board.hits.contains(position) then
       (board, Right(AttackResult.AlreadyAttacked))
     else
       (board, Left("Invalid attack position"))
@@ -53,12 +53,12 @@ object ShipAttack:
     else AttackResult.Sunk(damagedShip.ship)
 
   private def areAllShipsSunk(board: PlayerBoard): Boolean =
-    damagedShips(board).count(damagedShip => damagedShip.isSunk) == board.getShips.size
+    damagedShips(board).count(damagedShip => damagedShip.isSunk) == board.ships.size
 
   /** Returns all damaged ships on the board. */
   def damagedShips(board: PlayerBoard): Set[DamagedShip] =
-    board.getShips.view
-      .map(ship => ship -> board.hitPositons.intersect(ship.positions))
+    board.ships.view
+      .map(ship => ship -> board.hits.intersect(ship.positions))
       .collect { case (ship, hitPositions) if hitPositions.nonEmpty => DamagedShip(ship, hitPositions) }
       .toSet
 
