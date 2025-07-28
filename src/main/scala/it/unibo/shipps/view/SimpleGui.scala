@@ -101,6 +101,13 @@ class SimpleGui(controller: GameController) extends MainFrame:
       case _ => ""
 
   def update(board: PlayerBoard, selected: Option[Ship]): Unit =
+    if controller.state.gamePhase == GamePhase.GameOver then
+      Dialog.showMessage(
+        this,
+        "Game Over! Tutte le navi sono state affondate!",
+        title = "Game Finished",
+        Dialog.Message.Info
+      )
     val buttons =
       for
         y <- 0 until PlayerBoard.size

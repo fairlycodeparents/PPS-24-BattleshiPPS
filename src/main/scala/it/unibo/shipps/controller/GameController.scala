@@ -77,6 +77,9 @@ class GameController(
             println(s"Sunk ${ship}!")
           case AttackResult.AlreadyAttacked =>
             println(s"Already attacked position $pos")
+          case AttackResult.EndOfGame(_) => 
+            println("Game over! All enemy ships sunk!")
+            state = state.copy(gamePhase = GamePhase.GameOver)
 
         updateView()
 
