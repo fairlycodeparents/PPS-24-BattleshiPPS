@@ -1,6 +1,5 @@
 package it.unibo.shipps.model
 
-import it.unibo.shipps.exceptions.PositionOccupiedException
 import it.unibo.shipps.model.ShipType.*
 
 import scala.language.postfixOps
@@ -40,7 +39,7 @@ object PlayerBoardBuilder:
     placements.foldLeft(PlayerBoard()): (board, placement) =>
       ShipPositioningImpl.placeShip(
         board,
-        ShipImpl(placement.shipType, placement.start, placement.orientation)
+        placement.shipType.at(placement.start, placement.orientation)
       ) match
         case Left(error)         => throw new RuntimeException(error)
         case Right(updatedBoard) => updatedBoard

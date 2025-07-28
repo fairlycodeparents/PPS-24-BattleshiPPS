@@ -74,7 +74,7 @@ object ShipPositioningImpl extends ShipPositioning:
     * @return an [[Either]] containing an error message if there is an overlap, or unit if no overlap exists
     */
   private def checkOverlap(board: PlayerBoard, ship: Ship): Either[String, Unit] =
-    if !board.isAnyPositionOccupied(ship.getPositions) then Right(())
+    if !board.isAnyPositionOccupied(ship.positions) then Right(())
     else Left("Ship overlaps with another ship.")
 
   /** Generic method to shift a ship on the board.
@@ -95,7 +95,7 @@ object ShipPositioningImpl extends ShipPositioning:
     yield updatedBoard
 
   override def isShipOutOfBounds(ship: Ship): Boolean =
-    ship.getPositions.exists(pos =>
+    ship.positions.exists(pos =>
       pos.x < 0 || pos.x >= PlayerBoard.size || pos.y < 0 || pos.y >= PlayerBoard.size
     )
 
@@ -109,9 +109,7 @@ object ShipPositioningImpl extends ShipPositioning:
     validateShipPlacement(board, ship).map(_ => board.addShip(ship))
 
   override def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship] =
-    board.getShips
-      .find(_.getPositions.contains(selectedShip))
-      .toRight("No ship found at the selected position.")
+    board.shipAtPosition(selectedShip).toRight("No ship found at the selected position.")
 
   override def moveShip(board: PlayerBoard, ship: Ship, position: Position): Either[String, PlayerBoard] =
     ShiftShip(board, ship, _.move(position))
@@ -130,7 +128,7 @@ object ShipPositioningImpl extends ShipPositioning:
         val randomX   = Random.nextInt(PlayerBoard.size)
         val randomY   = Random.nextInt(PlayerBoard.size)
         val movedShip = ship.move(Position(randomX, randomY))
-        if isShipOutOfBounds(movedShip) || playerBoard.isAnyPositionOccupied(movedShip.getPositions) then
+        if isShipOutOfBounds(movedShip) || playerBoard.isAnyPositionOccupied(movedShip.positions) then
           tryPlaceShips(playerBoard, remaining, attempts + 1)
         else
           tryPlaceShips(playerBoard.addShip(movedShip), remaining.tail, 0)
