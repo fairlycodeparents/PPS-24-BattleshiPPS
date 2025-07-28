@@ -14,8 +14,8 @@ class PlayerBoardBuilderTest extends AnyFlatSpec with should.Matchers:
 
   "The DSL of PlayerBoardBuilder" should "support placement of a single horizontal ship" in:
     board(
-        place a Carrier at A(1) horizontal
-      )
+      place a Carrier at A(1) horizontal
+    )
       .ships.head.positions shouldEqual Set(
       Position(0, 0),
       Position(1, 0),
