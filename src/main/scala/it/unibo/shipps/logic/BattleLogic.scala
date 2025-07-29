@@ -2,6 +2,7 @@ package it.unibo.shipps.logic
 
 import it.unibo.shipps.controller.*
 import it.unibo.shipps.model.{AttackResult, Position, Ship, ShipAttack}
+import it.unibo.shipps.view.renderer.ColorScheme
 
 object BattleLogic {
   def processBattleClick(
@@ -46,5 +47,13 @@ object BattleLogic {
     val updatedAttackResults = ship.positions.foldLeft(state.attackResult) { (results, position) =>
       results + (position -> sunkResult)
     }
-    state.copy(attackResult = updatedAttackResults)
+
+    val updatedCellColors = ship.positions.foldLeft(state.cellColors) { (colors, position) =>
+      colors + (position -> ColorScheme.SUNK)
+    }
+
+    state.copy(
+      attackResult = updatedAttackResults,
+      cellColors = updatedCellColors
+    )
 }

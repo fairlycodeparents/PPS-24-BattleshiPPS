@@ -4,6 +4,7 @@ import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
 import it.unibo.shipps.logic.BattleLogic
 import it.unibo.shipps.model.*
 import it.unibo.shipps.view.SimpleGui
+import it.unibo.shipps.view.renderer.ColorScheme
 
 import scala.swing.Swing
 
@@ -15,7 +16,8 @@ case class GameState(
     enemyBoard: PlayerBoard,
     selectedShip: Option[Ship],
     gamePhase: GamePhase,
-    attackResult: Map[Position, AttackResult] = Map.empty
+    attackResult: Map[Position, AttackResult] = Map.empty,
+    cellColors: Map[Position, java.awt.Color] = Map.empty
 ):
   def selectShip(ship: Ship): GameState =
     copy(selectedShip = Some(ship))
@@ -37,7 +39,26 @@ case class GameState(
     )
 
   def addAttackResult(position: Position, result: AttackResult): GameState =
-    copy(attackResult = attackResult + (position -> result))
+    result match
+      case AttackResult.AlreadyAttacked =>
+        this
+      case AttackResult.Miss =>
+        copy(
+          attackResult = attackResult + (position -> result),
+          cellColors = cellColors + (position     -> ColorScheme.MISS)
+        )
+      case AttackResult.Hit(_) =>
+        ColorScheme.HIT
+        copy(
+          attackResult = attackResult + (position -> result),
+          cellColors = cellColors + (position     -> ColorScheme.HIT)
+        )
+      case AttackResult.Sunk(_) | AttackResult.EndOfGame(_) =>
+        ColorScheme.SUNK
+        copy(
+          attackResult = attackResult + (position -> result),
+          cellColors = cellColors + (position     -> ColorScheme.SUNK)
+        )
 
 class GameController(
     initialBoard: PlayerBoard,
