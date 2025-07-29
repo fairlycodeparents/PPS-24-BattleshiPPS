@@ -1,6 +1,7 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
+import it.unibo.shipps.logic.BattleLogic
 import it.unibo.shipps.model.*
 import it.unibo.shipps.view.SimpleGui
 
@@ -67,44 +68,10 @@ class GameController(
       updateView()
 
   private def handleBattleClick(pos: Position): Unit =
-    val (newEnemyBoard, attackResult) = ShipAttack.attack(state.enemyBoard, pos)
-
-    attackResult match
-      case Right(result) =>
-        state = state.copy(enemyBoard = newEnemyBoard).addAttackResult(pos, result)
-
-        result match
-          case AttackResult.Miss =>
-            println(s"Miss at $pos!")
-            state = state.addAttackResult(pos, result)
-
-          case AttackResult.Hit(ship) =>
-            println(s"Hit ${ship} at $pos!")
-            state = state.addAttackResult(pos, result)
-
-          case AttackResult.Sunk(ship) =>
-            println(s"Sunk ${ship}!")
-            state = updateSunkShipResult(ship, AttackResult.Sunk(ship))
-
-          case AttackResult.AlreadyAttacked =>
-            println(s"Already attacked position $pos")
-            state = state.addAttackResult(pos, result)
-
-          case AttackResult.EndOfGame(ship) =>
-            println("Game over! All enemy ships sunk!")
-            state = updateSunkShipResult(ship, AttackResult.EndOfGame(ship))
-            state = state.copy(gamePhase = GamePhase.GameOver)
-
-        updateView()
-
-      case Left(error) =>
-        println(s"Attack error: $error")
-
-  private def updateSunkShipResult(ship: Ship, sunkResult: AttackResult): GameState =
-    val updatedAttackResults = ship.positions.foldLeft(state.attackResult) { (results, position) =>
-      results + (position -> sunkResult)
-    }
-    state.copy(attackResult = updatedAttackResults)
+    val (newState, messages) = BattleLogic.processBattleClick(state, pos)
+    state = newState
+    messages.foreach(println)
+    updateView()
 
   private def updateView(): Unit =
     val displayBoard = state.gamePhase match
