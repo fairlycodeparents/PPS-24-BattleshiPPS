@@ -48,13 +48,11 @@ case class GameState(
           cellColors = cellColors + (position     -> ColorScheme.MISS)
         )
       case AttackResult.Hit(_) =>
-        ColorScheme.HIT
         copy(
           attackResult = attackResult + (position -> result),
           cellColors = cellColors + (position     -> ColorScheme.HIT)
         )
       case AttackResult.Sunk(_) | AttackResult.EndOfGame(_) =>
-        ColorScheme.SUNK
         copy(
           attackResult = attackResult + (position -> result),
           cellColors = cellColors + (position     -> ColorScheme.SUNK)
