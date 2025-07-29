@@ -4,7 +4,6 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import it.unibo.shipps.model.PlayerFactory.*
 
-
 class PlayerTest extends AnyFlatSpec with should.Matchers:
   "A human player" should "be created" in:
     val player = createHumanPlayer("player1")

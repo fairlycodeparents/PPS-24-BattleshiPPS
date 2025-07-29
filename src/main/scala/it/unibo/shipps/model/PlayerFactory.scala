@@ -1,7 +1,6 @@
 package it.unibo.shipps.model
 
-object PlayerFactory{
+object PlayerFactory {
   def createHumanPlayer(name: String): Player = HumanPlayer(name)
-  def createBotPlayer: Player = BotPlayer()
+  def createBotPlayer: Player                 = BotPlayer()
 }
-
