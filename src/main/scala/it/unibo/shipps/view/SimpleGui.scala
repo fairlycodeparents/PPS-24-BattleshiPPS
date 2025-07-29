@@ -76,9 +76,13 @@ class SimpleGui(controller: GameController) extends MainFrame:
           case Some(AttackResult.EndOfGame(_)) =>
             java.awt.Color.RED
           case Some(AttackResult.AlreadyAttacked) =>
-            java.awt.Color.LIGHT_GRAY
+            getButtonBackgroundAt(buttonPosition)
           case None =>
             java.awt.Color.CYAN
+
+  private def getButtonBackgroundAt(pos: Position): java.awt.Color =
+    val idx = pos.y * PlayerBoard.size + pos.x
+    gridPanel.contents(idx).background
 
   private def createButton(buttonPosition: Position, board: PlayerBoard, selectedButton: Option[Ship]): Button =
     val btn = new Button(getButtonText(buttonPosition, controller.state)):
@@ -91,12 +95,14 @@ class SimpleGui(controller: GameController) extends MainFrame:
     state.gamePhase match
       case GamePhase.Battle | GamePhase.GameOver =>
         state.attackResult.get(buttonPosition) match
-          case Some(AttackResult.Miss)            => "X"
-          case Some(AttackResult.Hit(_))          => "O"
-          case Some(AttackResult.Sunk(_))         => "O"
-          case Some(AttackResult.EndOfGame(_))    => "O"
-          case Some(AttackResult.AlreadyAttacked) => "X"
-          case None                               => ""
+          case Some(AttackResult.Miss)         => "X"
+          case Some(AttackResult.Hit(_))       => "O"
+          case Some(AttackResult.Sunk(_))      => "O"
+          case Some(AttackResult.EndOfGame(_)) => "O"
+          case Some(AttackResult.AlreadyAttacked) =>
+            val idx = buttonPosition.y * PlayerBoard.size + buttonPosition.x
+            gridPanel.contents(idx).asInstanceOf[Button].text
+          case None => ""
       case _ => ""
 
   def update(board: PlayerBoard, selected: Option[Ship]): Unit =
