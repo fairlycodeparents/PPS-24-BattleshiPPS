@@ -65,39 +65,38 @@ class SimpleGui(controller: GameController) extends MainFrame:
         else
           java.awt.Color.CYAN
 
-      case GamePhase.Battle =>
-        val damagedShipAtPosition = ShipAttack.damagedShips(state.board).find(_.hitPositions.contains(buttonPosition))
-        val wasMissed = state.board.hits.contains(buttonPosition)
-          && damagedShipAtPosition.isEmpty
-
-        damagedShipAtPosition match
-          case Some(damagedShip) if damagedShip.isSunk =>
-            java.awt.Color.RED
-          case Some(_) =>
+      case GamePhase.Battle | GamePhase.GameOver =>
+        state.attackResult.get(buttonPosition) match
+          case Some(AttackResult.Miss) =>
+            java.awt.Color.LIGHT_GRAY
+          case Some(AttackResult.Hit(_)) =>
             java.awt.Color.ORANGE
-          case None if wasMissed =>
+          case Some(AttackResult.Sunk(_)) =>
+            java.awt.Color.RED
+          case Some(AttackResult.EndOfGame(_)) =>
+            java.awt.Color.RED
+          case Some(AttackResult.AlreadyAttacked) =>
             java.awt.Color.LIGHT_GRAY
           case None =>
             java.awt.Color.CYAN
 
-      case GamePhase.GameOver => java.awt.Color.CYAN
-
-  private def createButton(buttonPosistion: Position, board: PlayerBoard, selectedButton: Option[Ship]): Button =
-    val btn = new Button(getButtonText(buttonPosistion, controller.state)):
+  private def createButton(buttonPosition: Position, board: PlayerBoard, selectedButton: Option[Ship]): Button =
+    val btn = new Button(getButtonText(buttonPosition, controller.state)):
       opaque = true
       border = Swing.LineBorder(java.awt.Color.LIGHT_GRAY)
-      background = getButtonColor(buttonPosistion, controller.state)
+      background = getButtonColor(buttonPosition, controller.state)
     btn
 
-  private def getButtonText(buttonPosistion: Position, state: GameState): String =
+  private def getButtonText(buttonPosition: Position, state: GameState): String =
     state.gamePhase match
-      case GamePhase.Battle =>
-        val wasHit    = ShipAttack.damagedShips(state.board).exists(_.hitPositions.contains(buttonPosistion))
-        val wasMissed = state.board.hits.contains(buttonPosistion) && !wasHit
-
-        if wasHit then "O"
-        else if wasMissed then "X"
-        else ""
+      case GamePhase.Battle | GamePhase.GameOver =>
+        state.attackResult.get(buttonPosition) match
+          case Some(AttackResult.Miss)            => "X"
+          case Some(AttackResult.Hit(_))          => "O"
+          case Some(AttackResult.Sunk(_))         => "O"
+          case Some(AttackResult.EndOfGame(_))    => "O"
+          case Some(AttackResult.AlreadyAttacked) => "X"
+          case None                               => ""
       case _ => ""
 
   def update(board: PlayerBoard, selected: Option[Ship]): Unit =

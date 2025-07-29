@@ -13,7 +13,8 @@ case class GameState(
     board: PlayerBoard,
     enemyBoard: PlayerBoard,
     selectedShip: Option[Ship],
-    gamePhase: GamePhase
+    gamePhase: GamePhase,
+    attackResult: Map[Position, AttackResult] = Map.empty
 ):
   def selectShip(ship: Ship): GameState =
     copy(selectedShip = Some(ship))
@@ -30,8 +31,12 @@ case class GameState(
   def startBattle(newEnemyBoard: PlayerBoard): GameState =
     copy(
       gamePhase = GamePhase.Battle,
-      enemyBoard = newEnemyBoard
+      enemyBoard = newEnemyBoard,
+      attackResult = Map.empty
     )
+
+  def addAttackResult(position: Position, result: AttackResult): GameState =
+    copy(attackResult = attackResult + (position -> result))
 
 class GameController(
     initialBoard: PlayerBoard,
@@ -62,23 +67,32 @@ class GameController(
       updateView()
 
   private def handleBattleClick(pos: Position): Unit =
-    val (newBoard, attackResult) = ShipAttack.attack(state.board, pos)
+    val (newEnemyBoard, attackResult) = ShipAttack.attack(state.enemyBoard, pos)
 
     attackResult match
       case Right(result) =>
-        state = state.copy(board = newBoard)
+        state = state.copy(enemyBoard = newEnemyBoard).addAttackResult(pos, result)
 
         result match
           case AttackResult.Miss =>
             println(s"Miss at $pos!")
+            state = state.addAttackResult(pos, result)
+
           case AttackResult.Hit(ship) =>
             println(s"Hit ${ship} at $pos!")
+            state = state.addAttackResult(pos, result)
+
           case AttackResult.Sunk(ship) =>
             println(s"Sunk ${ship}!")
+            state = updateSunkShipResult(ship, AttackResult.Sunk(ship))
+
           case AttackResult.AlreadyAttacked =>
             println(s"Already attacked position $pos")
-          case AttackResult.EndOfGame(_) =>
+            state = state.addAttackResult(pos, result)
+
+          case AttackResult.EndOfGame(ship) =>
             println("Game over! All enemy ships sunk!")
+            state = updateSunkShipResult(ship, AttackResult.EndOfGame(ship))
             state = state.copy(gamePhase = GamePhase.GameOver)
 
         updateView()
@@ -86,10 +100,16 @@ class GameController(
       case Left(error) =>
         println(s"Attack error: $error")
 
+  private def updateSunkShipResult(ship: Ship, sunkResult: AttackResult): GameState =
+    val updatedAttackResults = ship.positions.foldLeft(state.attackResult) { (results, position) =>
+      results + (position -> sunkResult)
+    }
+    state.copy(attackResult = updatedAttackResults)
+
   private def updateView(): Unit =
     val displayBoard = state.gamePhase match
       case GamePhase.Positioning => state.board
-      case GamePhase.Battle      => PlayerBoard()
+      case GamePhase.Battle      => state.enemyBoard
       case GamePhase.GameOver    => state.enemyBoard
 
     Swing.onEDT(view.update(
