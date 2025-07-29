@@ -1,7 +1,5 @@
 package it.unibo.shipps.model
 
-import it.unibo.shipps.model.AttackResult.EndOfGame
-
 /** Represents the result of an attack on a position. */
 enum AttackResult:
   case Miss
@@ -49,7 +47,7 @@ object ShipAttack:
     else AttackResult.Hit(damagedShip.ship)
 
   private def determineEndOfGame(damagedShip: DamagedShip, board: PlayerBoard): AttackResult =
-    if areAllShipsSunk(board) then EndOfGame(damagedShip.ship)
+    if areAllShipsSunk(board) then AttackResult.EndOfGame(damagedShip.ship)
     else AttackResult.Sunk(damagedShip.ship)
 
   private def areAllShipsSunk(board: PlayerBoard): Boolean =
