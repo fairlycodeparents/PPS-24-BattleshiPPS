@@ -1,0 +1,17 @@
+package it.unibo.shipps.model
+
+/** Factory for creating a [[Player]] */
+object PlayerFactory {
+
+  /** Creates a human player
+    * @param name the name of the player
+    * @return the [[Player]]
+    */
+  def createHumanPlayer(name: String): Player = HumanPlayer(name)
+
+  /** Creates a bot player
+    * @param strategy the strategy used by the bot to attack
+    * @return the [[Player]]
+    */
+  def createBotPlayer(strategy: AttackStrategy = RandomBotAttackStrategy()): Player = BotPlayer(strategy)
+}
