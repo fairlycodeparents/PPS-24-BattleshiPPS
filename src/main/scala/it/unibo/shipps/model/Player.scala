@@ -15,14 +15,14 @@ trait Player {
   def isABot: Boolean
 }
 
-case class HumanPlayer(name: String) extends Player:
+case class HumanPlayer(name: String = "player", strategy: AttackStrategy = HumanAttackStrategy()) extends Player:
   override def makeAttack(
       playerBoard: PlayerBoard,
       position: Option[Position]
   ): (PlayerBoard, Either[String, AttackResult]) = ???
   override def isABot: Boolean = false
 
-case class BotPlayer() extends Player:
+case class BotPlayer(strategy: AttackStrategy) extends Player:
   override def makeAttack(
       playerBoard: PlayerBoard,
       position: Option[Position]
