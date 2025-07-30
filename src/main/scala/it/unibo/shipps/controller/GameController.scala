@@ -67,30 +67,27 @@ class GameController(
 
   var state: GameState = GameState(initialBoard, enemyBoard, None, Positioning)
 
-  private def handleCellAction(pos: Position)(
+  private def handleCellAction(currentState: GameState, pos: Position)(
       shipAction: (PlayerBoard, Ship, Position) => Either[String, PlayerBoard]
-  ): Unit =
+  ): GameState =
     if state.gamePhase == GamePhase.Positioning then
-      state = state.selectedShip match
+      currentState.selectedShip match
         case None =>
-          positioning.getShipAt(state.board, pos) match
-            case Right(ship) => state.selectShip(ship)
-            case Left(_)     => state
+          positioning.getShipAt(currentState.board, pos) match
+            case Right(ship) => currentState.selectShip(ship)
+            case Left(_)     => currentState
         case Some(ship) =>
-          shipAction(state.board, ship, pos) match
+          shipAction(currentState.board, ship, pos) match
             case Right(updatedBoard) =>
               if shipAction == positioning.moveShip then
-                state.moveShipTo(updatedBoard)
+                currentState.moveShipTo(updatedBoard)
               else
-                state.rotateShipTo(updatedBoard)
-            case Left(_) => state
-      updateView()
+                currentState.rotateShipTo(updatedBoard)
+            case Left(_) => currentState
+    else currentState
 
-  private def handleBattleClick(pos: Position): Unit =
-    val (newState, messages) = BattleLogic.processBattleClick(state, pos)
-    state = newState
-    messages.foreach(println)
-    updateView()
+  private def handleBattleClick(currentState: GameState, pos: Position): (GameState, List[String]) =
+    BattleLogic.processBattleClick(currentState, pos)
 
   private def updateView(): Unit =
     val displayBoard = state.gamePhase match
@@ -104,15 +101,25 @@ class GameController(
     ))
 
   def onCellClick(pos: Position): Unit = {
-    state.gamePhase match
-      case GamePhase.Positioning => handleCellAction(pos)(positioning.moveShip)
-      case GamePhase.Battle      => handleBattleClick(pos)
-      case GamePhase.GameOver    => println("Game is over, no actions allowed")
+    val newState = state.gamePhase match
+      case GamePhase.Positioning => handleCellAction(state, pos)(positioning.moveShip)
+      case GamePhase.Battle =>
+        val (updatedState, messages) = handleBattleClick(state, pos)
+        messages.foreach(println)
+        updatedState
+      case GamePhase.GameOver =>
+        println("Game is over, no actions allowed")
+        state
+
+    state = newState
+    updateView()
   }
 
   def onCellDoubleClick(pos: Position): Unit =
     if state.gamePhase == GamePhase.Positioning then
-      handleCellAction(pos) { (board, ship, _) => positioning.rotateShip(board, ship) }
+      val newState = handleCellAction(state, pos) { (board, ship, _) => positioning.rotateShip(board, ship) }
+      state = newState
+      updateView()
 
   def onKeyBoardClick(ships: List[Ship]): Unit =
     if state.gamePhase == GamePhase.Positioning then
@@ -123,14 +130,18 @@ class GameController(
         case Left(error) =>
           println("Error randomizing ships")
 
-  def onStartGame(): Unit =
-    state.gamePhase match
+  def onStartGame(): Unit = {
+    val (newState, message) = state.gamePhase match
       case GamePhase.Positioning =>
-        state = state.startBattle(positioning.randomPositioning(PlayerBoard(), state.board.ships.toList)
-          .getOrElse(PlayerBoard()))
-        println("Battle started! Find and sink all enemy ships!")
-        updateView()
+        val enemyBoard = positioning.randomPositioning(PlayerBoard(), state.board.ships.toList)
+          .getOrElse(PlayerBoard())
+        (state.startBattle(enemyBoard), "Battle started! Find and sink all enemy ships!")
       case GamePhase.Battle =>
-        println("Game already started, cannot start again")
+        (state, println("Game already started, cannot start again"))
       case GamePhase.GameOver =>
-        println("Game over")
+        (state, println("Game over"))
+
+    state = newState
+    println(message)
+    updateView()
+  }
