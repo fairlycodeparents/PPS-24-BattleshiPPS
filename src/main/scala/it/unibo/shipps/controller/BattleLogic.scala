@@ -1,10 +1,16 @@
-package it.unibo.shipps.logic
+package it.unibo.shipps.controller
 
 import it.unibo.shipps.controller.*
 import it.unibo.shipps.model.{AttackResult, Position, Ship, ShipAttack}
 import it.unibo.shipps.view.renderer.ColorScheme
 
+/** BattleLogic handles the logic for processing clicks during the battle phase of the game. */
 object BattleLogic {
+  /** Processes a click during the battle phase.
+    * @param state the current game state
+    * @param pos the position of the click
+    * @return updated game state and a list of messages indicating the result of the click
+    */
   def processBattleClick(
       state: GameState,
       pos: Position
