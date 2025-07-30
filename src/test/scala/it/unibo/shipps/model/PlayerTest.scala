@@ -33,3 +33,11 @@ class PlayerTest extends AnyFlatSpec with should.Matchers:
   "A bot player" should "be created with an attack strategy" in:
     botPlayer.isABot shouldBe true
     botPlayer shouldBe BotPlayer(RandomBotAttackStrategy())
+
+  it should "be able to attack randomly without providing a position" in:
+    val (_, result) = botPlayer.makeAttack(enemyBoard)
+    result.isRight shouldBe true
+
+  it should "not be able to attack a given position" in:
+    val (_, result) = botPlayer.makeAttack(enemyBoard, Option(A(1)))
+    result.isRight shouldBe false
