@@ -1,8 +1,10 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
+import it.unibo.shipps.logic.BattleLogic
 import it.unibo.shipps.model.*
 import it.unibo.shipps.view.SimpleGui
+import it.unibo.shipps.view.renderer.ColorScheme
 
 import scala.swing.Swing
 
@@ -13,7 +15,9 @@ case class GameState(
     board: PlayerBoard,
     enemyBoard: PlayerBoard,
     selectedShip: Option[Ship],
-    gamePhase: GamePhase
+    gamePhase: GamePhase,
+    attackResult: Map[Position, AttackResult] = Map.empty,
+    cellColors: Map[Position, java.awt.Color] = Map.empty
 ):
   def selectShip(ship: Ship): GameState =
     copy(selectedShip = Some(ship))
@@ -30,8 +34,29 @@ case class GameState(
   def startBattle(newEnemyBoard: PlayerBoard): GameState =
     copy(
       gamePhase = GamePhase.Battle,
-      enemyBoard = newEnemyBoard
+      enemyBoard = newEnemyBoard,
+      attackResult = Map.empty
     )
+
+  def addAttackResult(position: Position, result: AttackResult): GameState =
+    result match
+      case AttackResult.AlreadyAttacked =>
+        this
+      case AttackResult.Miss =>
+        copy(
+          attackResult = attackResult + (position -> result),
+          cellColors = cellColors + (position     -> ColorScheme.MISS)
+        )
+      case AttackResult.Hit(_) =>
+        copy(
+          attackResult = attackResult + (position -> result),
+          cellColors = cellColors + (position     -> ColorScheme.HIT)
+        )
+      case AttackResult.Sunk(_) | AttackResult.EndOfGame(_) =>
+        copy(
+          attackResult = attackResult + (position -> result),
+          cellColors = cellColors + (position     -> ColorScheme.SUNK)
+        )
 
 class GameController(
     initialBoard: PlayerBoard,
@@ -62,34 +87,15 @@ class GameController(
       updateView()
 
   private def handleBattleClick(pos: Position): Unit =
-    val (newBoard, attackResult) = ShipAttack.attack(state.board, pos)
-
-    attackResult match
-      case Right(result) =>
-        state = state.copy(board = newBoard)
-
-        result match
-          case AttackResult.Miss =>
-            println(s"Miss at $pos!")
-          case AttackResult.Hit(ship) =>
-            println(s"Hit ${ship} at $pos!")
-          case AttackResult.Sunk(ship) =>
-            println(s"Sunk ${ship}!")
-          case AttackResult.AlreadyAttacked =>
-            println(s"Already attacked position $pos")
-          case AttackResult.EndOfGame(_) =>
-            println("Game over! All enemy ships sunk!")
-            state = state.copy(gamePhase = GamePhase.GameOver)
-
-        updateView()
-
-      case Left(error) =>
-        println(s"Attack error: $error")
+    val (newState, messages) = BattleLogic.processBattleClick(state, pos)
+    state = newState
+    messages.foreach(println)
+    updateView()
 
   private def updateView(): Unit =
     val displayBoard = state.gamePhase match
       case GamePhase.Positioning => state.board
-      case GamePhase.Battle      => PlayerBoard()
+      case GamePhase.Battle      => state.enemyBoard
       case GamePhase.GameOver    => state.enemyBoard
 
     Swing.onEDT(view.update(
