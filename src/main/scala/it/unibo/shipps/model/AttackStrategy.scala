@@ -16,7 +16,10 @@ case class HumanAttackStrategy() extends AttackStrategy {
   override def execute(
       playerBoard: PlayerBoard,
       position: Option[Position]
-  ): (PlayerBoard, Either[String, AttackResult]) = ???
+  ): (PlayerBoard, Either[String, AttackResult]) = position match {
+    case Some(pos) => ShipAttack.attack(playerBoard, pos)
+    case None      => (playerBoard, Left("Position is required for a human attack"))
+  }
 }
 
 /** Represents the [[AttackStrategy]] of a base bot [[Player]] */

@@ -19,7 +19,7 @@ case class HumanPlayer(name: String = "player", strategy: AttackStrategy = Human
   override def makeAttack(
       playerBoard: PlayerBoard,
       position: Option[Position]
-  ): (PlayerBoard, Either[String, AttackResult]) = ???
+  ): (PlayerBoard, Either[String, AttackResult]) = strategy.execute(playerBoard, position)
   override def isABot: Boolean = false
 
 case class BotPlayer(strategy: AttackStrategy) extends Player:
