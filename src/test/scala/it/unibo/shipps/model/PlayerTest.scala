@@ -9,7 +9,7 @@ import scala.language.postfixOps
 
 class PlayerTest extends AnyFlatSpec with should.Matchers:
   val humanPlayer: Player = createHumanPlayer("player1")
-  val botPlayer: Player = createBotPlayer(RandomBotAttackStrategy())
+  val botPlayer: Player   = createBotPlayer(RandomBotAttackStrategy())
   val enemyBoard: PlayerBoard = PlayerBoardBuilder.board(
     place a Frigate at G(1) vertical,
     place a Submarine at A(5) horizontal,
@@ -23,11 +23,11 @@ class PlayerTest extends AnyFlatSpec with should.Matchers:
     humanPlayer shouldBe HumanPlayer("player1", HumanAttackStrategy())
 
   it should "be able to attack" in:
-    val (_,result) = humanPlayer.makeAttack(enemyBoard, Option(G(1)))
+    val (_, result) = humanPlayer.makeAttack(enemyBoard, Option(G(1)))
     result.isRight shouldBe true
 
   it should "not be able to attack without providing a position" in:
-    val (_,result) = humanPlayer.makeAttack(enemyBoard, Option.empty)
+    val (_, result) = humanPlayer.makeAttack(enemyBoard, Option.empty)
     result.isRight shouldBe false
 
   "A bot player" should "be created with an attack strategy" in:
