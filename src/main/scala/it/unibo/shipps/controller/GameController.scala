@@ -8,21 +8,21 @@ import it.unibo.shipps.view.renderer.ColorScheme
 import scala.swing.Swing
 
 /** Represents the different phases of the game.
- * Positioning: Players place their ships on the board.
- * Battle: Players take turns attacking each other's boards.
- * GameOver: The game has ended, either by sinking all enemy ships or losing all own ships.
- */
+  * Positioning: Players place their ships on the board.
+  * Battle: Players take turns attacking each other's boards.
+  * GameOver: The game has ended, either by sinking all enemy ships or losing all own ships.
+  */
 enum GamePhase:
   case Positioning, Battle, GameOver
 
 /** Represents the state of the game
- * @param board the player's board
- * @param enemyBoard the enemy's board
- * @param selectedShip the ship currently selected by the player
- * @param gamePhase the current phase of the game
- * @param attackResult a map of positions to their attack results
- * @param cellColors a map of positions to their display colors
- */
+  * @param board the player's board
+  * @param enemyBoard the enemy's board
+  * @param selectedShip the ship currently selected by the player
+  * @param gamePhase the current phase of the game
+  * @param attackResult a map of positions to their attack results
+  * @param cellColors a map of positions to their display colors
+  */
 case class GameState(
     board: PlayerBoard,
     enemyBoard: PlayerBoard,
@@ -71,11 +71,11 @@ case class GameState(
         )
 
 /** Represents the controller for the game, managing the game state and interactions.
- * @param initialBoard the board of the player
- * @param enemyBoard the board of the enemy
- * @param positioning the ship positioning logic
- * @param view the GUI view for displaying the game state
- */
+  * @param initialBoard the board of the player
+  * @param enemyBoard the board of the enemy
+  * @param positioning the ship positioning logic
+  * @param view the GUI view for displaying the game state
+  */
 class GameController(
     initialBoard: PlayerBoard,
     enemyBoard: PlayerBoard,
@@ -119,8 +119,8 @@ class GameController(
     ))
 
   /** Handles the click on a cell based on the current game phase.
-   * @param pos the position of the cell clicked
-   */
+    * @param pos the position of the cell clicked
+    */
   def onCellClick(pos: Position): Unit = {
     val newState = state.gamePhase match
       case GamePhase.Positioning => handleCellAction(state, pos)(positioning.moveShip)
@@ -137,8 +137,8 @@ class GameController(
   }
 
   /** Handles the double click on a cell to rotate the ship during the positioning phase.
-   * @param pos the position of the cell double-clicked
-   */
+    * @param pos the position of the cell double-clicked
+    */
   def onCellDoubleClick(pos: Position): Unit =
     if state.gamePhase == GamePhase.Positioning then
       val newState = handleCellAction(state, pos) { (board, ship, _) => positioning.rotateShip(board, ship) }
@@ -146,8 +146,8 @@ class GameController(
       updateView()
 
   /** Handles the keyboard click to randomize ship positioning during the positioning phase.
-   * @param ships the list of ships to randomize
-   */
+    * @param ships the list of ships to randomize
+    */
   def onKeyBoardClick(ships: List[Ship]): Unit =
     if state.gamePhase == GamePhase.Positioning then
       positioning.randomPositioning(PlayerBoard(), ships) match

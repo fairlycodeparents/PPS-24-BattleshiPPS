@@ -10,15 +10,15 @@ import scala.swing.event.ButtonClicked
 import scala.swing.{Button, Swing}
 
 /** Manages the grid of buttons representing the game board. Handles button clicks and updates the game state.
- * @param controller the game controller that manages the game logic
- * */
+  * @param controller the game controller that manages the game logic
+  */
 class GridManager(controller: GameController) {
   private var clickState = ClickState(None, 0L)
 
   /** Updates the grid buttons based on the current game state.
-   * @param state the current game state
-   * @return a sequence of buttons representing the game board
-   */
+    * @param state the current game state
+    * @return a sequence of buttons representing the game board
+    */
   def createButtons(state: GameState): IndexedSeq[Button] = {
     for {
       y <- 0 until PlayerBoard.size

@@ -6,10 +6,10 @@ import it.unibo.shipps.model.{AttackResult, PlayerBoard, Position}
 /** Renderer for buttons in the game board. */
 object ButtonRenderer:
   /** Returns the color for a given position based on the game state.
-   * @param pos the position on the board
-   * @param state the current game state
-   * @return the color for the button at the specified position
-   */
+    * @param pos the position on the board
+    * @param state the current game state
+    * @return the color for the button at the specified position
+    */
   def getColor(pos: Position, state: GameState): java.awt.Color = {
     state.gamePhase match
       case GamePhase.Positioning                 => positioningColor(pos, state)
@@ -17,10 +17,10 @@ object ButtonRenderer:
   }
 
   /** Returns the text for a given position based on the game state.
-   * @param pos the position on the board
-   * @param state the current game state
-   * @return the text for the button at the specified position
-   */
+    * @param pos the position on the board
+    * @param state the current game state
+    * @return the text for the button at the specified position
+    */
   def getText(pos: Position, state: GameState): String = {
     state.gamePhase match
       case GamePhase.Battle | GamePhase.GameOver => battleText(pos, state)

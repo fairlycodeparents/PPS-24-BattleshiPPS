@@ -6,21 +6,22 @@ import it.unibo.shipps.model.Position
 /** Represents the type of click event. */
 sealed trait ClickType
 object ClickType {
-  /** Represents a single click event. 
-   * @param pos the position of the click
-   */
+
+  /** Represents a single click event.
+    * @param pos the position of the click
+    */
   case class SingleClick(pos: Position) extends ClickType
 
   /** Represents a double click event.
-   * @param pos the position of the click
-   */
+    * @param pos the position of the click
+    */
   case class DoubleClick(pos: Position) extends ClickType
 }
 
-/** Represents the state of a click event. 
- * @param pos the position of the click
- * @param time the time of the click
- */
+/** Represents the state of a click event.
+  * @param pos the position of the click
+  * @param time the time of the click
+  */
 case class ClickState(pos: Option[Position], time: Long)
 
 /** Handles click events in the game. */

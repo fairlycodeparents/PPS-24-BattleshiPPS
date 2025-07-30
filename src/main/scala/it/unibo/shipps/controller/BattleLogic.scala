@@ -6,6 +6,7 @@ import it.unibo.shipps.view.renderer.ColorScheme
 
 /** BattleLogic handles the logic for processing clicks during the battle phase of the game. */
 object BattleLogic {
+
   /** Processes a click during the battle phase.
     * @param state the current game state
     * @param pos the position of the click
