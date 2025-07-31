@@ -22,8 +22,10 @@ La scadenza dello sprint è il 04/07/2025.
       <th>Nome</th>
       <th>Descrizione</th>
       <th>Sprint Task</th>
-      <th>Stima</th>
       <th>Volontario</th>
+      <th>Stima Sprint 1</th>
+      <th>Stima Sprint 2</th>
+      <th>Stima Sprint 3</th>
     </tr>
   </thead>
   <tbody>
@@ -33,24 +35,20 @@ La scadenza dello sprint è il 04/07/2025.
       <td rowspan="3">Il progetto dovrà essere impostato per adattarsi alla metodologia agile SCRUM. 
             Gestito tramite un approccio Git Flow.</td>
       <td>Git Flow Setup</td>
-      <td></td>
       <td>Mirco</td>
     </tr>
     <tr>
       <td>Studio dell'architettura</td>
-      <td></td>
       <td>Chiara</td>
     </tr>
     <tr>
       <td>Docs Setup</td>
-      <td></td>
       <td>Mirco</td>
     </tr>
     <tr>
       <td></td>
       <td>Mockup</td>
       <td>Come utente, vorrei avere una prima visualizzazione del layout dell’applicazione</td>
-      <td></td>
       <td></td>
       <td>Mirco</td>
     </tr>
@@ -61,29 +59,24 @@ La scadenza dello sprint è il 04/07/2025.
     </tr>
     <tr>
       <td>Creazione delle navi</td>
-      <td></td>
       <td>Chiara</td>
     </tr>
     <tr>
       <td>Realizzazione della GUI</td>
-      <td></td>
       <td>Chiara</td>
     </tr>
     <tr>
       <td>Logica spostamento navi (selezione nave da spostare, 
         muovere la nave nella nuova posizione, 
         ruotare la nave)</td>
-      <td></td>
       <td>Dilaver</td>
     </tr>
     <tr>
       <td>Posizionamento iniziale</td>
-      <td></td>
       <td>Dilaver</td>
     </tr>
     <tr>
       <td>Refactor player board</td>
-      <td></td>
       <td>Mirco</td>
     </tr>
     <tr>
@@ -93,12 +86,10 @@ La scadenza dello sprint è il 04/07/2025.
     </tr>
     <tr>
       <td>Posizionamento iniziale automatico</td>
-      <td></td>
       <td>Dilaver</td>
     </tr>
     <tr>
       <td>Posizionamento randomico ripetuto</td>
-      <td></td>
       <td>Dilaver</td>
     </tr>
     <tr>
@@ -109,12 +100,10 @@ La scadenza dello sprint è il 04/07/2025.
     </tr>
     <tr>
       <td>Creazione DSL</td>
-      <td></td>
       <td>Mirco</td>
     </tr>
     <tr>
       <td>Estensione DSL per l'attacco</td>
-      <td></td>
       <td>Mirco</td>
     </tr>
     <tr>
@@ -124,22 +113,18 @@ La scadenza dello sprint è il 04/07/2025.
     </tr>
     <tr>
       <td>Logica di attacco e fine partita</td>
-      <td></td>
       <td>Chiara</td>
     </tr>
     <tr>
       <td>Feedback all'utente per il risultato dell'attacco</td>
-      <td></td>
       <td>Dilaver</td>
     </tr>
     <tr>
       <td>Estensione della board per supportare la logica di attacco</td>
-      <td></td>
       <td>Mirco</td>
     </tr>
     <tr>
       <td>Refactor del game controller</td>
-      <td></td>
       <td>Dilaver</td>
     </tr>
     <tr>
@@ -150,12 +135,10 @@ La scadenza dello sprint è il 04/07/2025.
     </tr>
     <tr>
       <td>Logica del player umano</td>
-      <td></td>
       <td>Chiara</td>
     </tr>
      <tr>
       <td>Gestione dei turni e del loop di gioco</td>
-      <td></td>
       <td>Dilaver</td>
     </tr>
     <tr>
@@ -165,12 +148,10 @@ La scadenza dello sprint è il 04/07/2025.
     </tr>
     <tr>
       <td>Logica del player bot (random)</td>
-      <td></td>
       <td>Chiara</td>
     </tr>
     <tr>
       <td>Gestione dei turni e del loop di gioco</td>
-      <td></td>
       <td>Dilaver</td>
     </tr>
     <tr>
@@ -179,14 +160,12 @@ La scadenza dello sprint è il 04/07/2025.
       <td>Come utente, vorrei poter scegliere alcune regole di gioco come il numero di barche schierabili 
             e il tipo di partita (multiplayer o bot)</td>
       <td>Logica e GUI delle impostazioni di gioco</td>
-      <td></td>
       <td>Mirco</td>
     </tr>
     <tr>
       <td>10</td>
       <td>Scelta della difficoltà del bot</td>
       <td>Come utente, vorrei avere la possibilità di scegliere la difficoltà di gioco</td>
-      <td></td>
       <td></td>
     </tr>
     <tr>
@@ -195,14 +174,12 @@ La scadenza dello sprint è il 04/07/2025.
       <td>Come utente, vorrei una mappa diversa, 
         con ostacoli che impediscono il posizionamento delle navi</td>
       <td></td>
-      <td></td>
     </tr>
     <tr>
       <td>12</td>
       <td>Colpi speciali</td>
       <td>Come utente vorrei poter utilizzare colpi speciali, 
             come colpi ad area attivabili una volta per partita</td>
-      <td></td>
       <td></td>
     </tr>
   </tbody>
