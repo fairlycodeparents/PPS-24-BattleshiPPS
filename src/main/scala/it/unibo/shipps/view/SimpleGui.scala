@@ -1,7 +1,7 @@
 package it.unibo.shipps.view
 
 import it.unibo.shipps.model.*
-import it.unibo.shipps.controller.{GameController, GamePhase, GameState}
+import it.unibo.shipps.controller.{GameController, GamePhase, GameState, Turn}
 import it.unibo.shipps.view.components.{ButtonFactory, GridManager}
 import it.unibo.shipps.view.handler.{ClickHandler, ClickState}
 
@@ -53,9 +53,12 @@ class SimpleGui(controller: GameController) extends MainFrame:
       }
     }
 
-  def update(board: PlayerBoard, selected: Option[Ship]): Unit =
+  /** Updates the grid panel with the current game state and handles game over conditions.
+    * @param turn the current turn of the game
+    */
+  def update(turn: Turn): Unit =
     val state   = controller.state
-    val buttons = gridManager.createButtons(state)
+    val buttons = gridManager.createButtons(state, turn)
 
     gridPanel.contents.clear()
     gridPanel.contents ++= buttons
@@ -65,6 +68,10 @@ class SimpleGui(controller: GameController) extends MainFrame:
     GameOverHandler.handleGameOver(this, state)
 
 object GameOverHandler:
+  /** Handles the game over condition by displaying a dialog message.
+    * @param parent the parent window for the dialog
+    * @param state the current game state
+    */
   def handleGameOver(parent: Window, state: GameState): Unit =
     if (state.gamePhase == GamePhase.GameOver)
       Dialog.showMessage(

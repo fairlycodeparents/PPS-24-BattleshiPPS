@@ -1,8 +1,8 @@
 package it.unibo.shipps.view.components
 
 import it.unibo.shipps.Main.{listenTo, reactions}
-import it.unibo.shipps.controller.{GameController, GameState}
-import it.unibo.shipps.model.{PlayerBoard, Position}
+import it.unibo.shipps.controller.{GameController, GameState, Turn}
+import it.unibo.shipps.model.{Player, PlayerBoard, Position}
 import it.unibo.shipps.view.handler.{ClickHandler, ClickState}
 import it.unibo.shipps.view.renderer.ButtonRenderer
 
@@ -17,15 +17,16 @@ class GridManager(controller: GameController) {
 
   /** Updates the grid buttons based on the current game state.
     * @param state the current game state
+    * @param turn the current turn of the game
     * @return a sequence of buttons representing the game board
     */
-  def createButtons(state: GameState): IndexedSeq[Button] = {
+  def createButtons(state: GameState, turn: Turn): IndexedSeq[Button] = {
     for {
       y <- 0 until PlayerBoard.size
       x <- 0 until PlayerBoard.size
     } yield {
       val pos = Position(x, y)
-      val btn = ButtonFactory.createGridButton(pos, state)
+      val btn = ButtonFactory.createGridButton(pos, state, turn)
 
       listenTo(btn)
       reactions += {
