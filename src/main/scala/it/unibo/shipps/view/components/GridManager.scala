@@ -1,24 +1,32 @@
 package it.unibo.shipps.view.components
 
 import it.unibo.shipps.Main.{listenTo, reactions}
-import it.unibo.shipps.controller.{GameController, GameState}
-import it.unibo.shipps.model.{PlayerBoard, Position}
+import it.unibo.shipps.controller.{GameController, GameState, Turn}
+import it.unibo.shipps.model.{Player, PlayerBoard, Position}
 import it.unibo.shipps.view.handler.{ClickHandler, ClickState}
 import it.unibo.shipps.view.renderer.ButtonRenderer
 
 import scala.swing.event.ButtonClicked
 import scala.swing.{Button, Swing}
 
+/** Manages the grid of buttons representing the game board. Handles button clicks and updates the game state.
+  * @param controller the game controller that manages the game logic
+  */
 class GridManager(controller: GameController) {
   private var clickState = ClickState(None, 0L)
 
-  def createButtons(state: GameState): IndexedSeq[Button] = {
+  /** Updates the grid buttons based on the current game state.
+    * @param state the current game state
+    * @param turn the current turn of the game
+    * @return a sequence of buttons representing the game board
+    */
+  def createButtons(state: GameState, turn: Turn): IndexedSeq[Button] = {
     for {
       y <- 0 until PlayerBoard.size
       x <- 0 until PlayerBoard.size
     } yield {
       val pos = Position(x, y)
-      val btn = ButtonFactory.createGridButton(pos, state)
+      val btn = ButtonFactory.createGridButton(pos, state, turn)
 
       listenTo(btn)
       reactions += {
@@ -29,23 +37,6 @@ class GridManager(controller: GameController) {
           ClickHandler.handleClick(clickType, controller)
       }
       btn
-    }
-  }
-}
-
-object ButtonFactory {
-  def createGridButton(pos: Position, state: GameState): Button = {
-    new Button(ButtonRenderer.getText(pos, state)) {
-      opaque = true
-      border = Swing.LineBorder(java.awt.Color.LIGHT_GRAY)
-      background = ButtonRenderer.getColor(pos, state)
-    }
-  }
-
-  def createStartGameButton(): Button = {
-    new Button("Start Game") {
-      background = java.awt.Color.GREEN
-      foreground = java.awt.Color.BLACK
     }
   }
 }
