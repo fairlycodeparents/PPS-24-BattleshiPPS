@@ -4,6 +4,7 @@ import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
 import it.unibo.shipps.controller.Turn.FirstPlayer
 import it.unibo.shipps.model.*
 import it.unibo.shipps.view.SimpleGui
+import it.unibo.shipps.view.components.DialogFactory
 import it.unibo.shipps.view.renderer.ColorScheme
 
 import java.awt.BorderLayout
@@ -170,7 +171,7 @@ class GameController(
   var state: GameState = GameState(initialBoard, enemyBoard, None, Positioning)
 
   private var turn: Turn                          = Turn.FirstPlayer
-  private var waitingDialog: Option[JDialog]      = None
+  private var currentDialog: Option[JDialog]      = None
   private var isPositioningPhaseComplete: Boolean = false
 
   private def handleCellAction(currentState: GameState, pos: Position)(
@@ -214,60 +215,6 @@ class GameController(
       BattleLogic.processBattleClick(currentState, firstPlayer, Turn.FirstPlayer, Some(pos))
     else
       BattleLogic.processBattleClick(currentState, secondPlayer, Turn.SecondPlayer, Some(pos))
-  }
-
-  private def showTurnDialog(playerName: String): Unit = {
-    Swing.onEDT {
-      val dialog = new JDialog(view.peer, s"Player Turn", true)
-      dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE)
-      dialog.setSize(350, 200)
-      dialog.setLocationRelativeTo(view.peer)
-      dialog.setResizable(false)
-
-      val label = new JLabel(s"<html><center>It's $playerName's turn<br><br>Click OK when ready</center></html>")
-      label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER)
-
-      val okButton = new javax.swing.JButton("OK")
-      okButton.addActionListener(_ => {
-        dialog.setVisible(false)
-        dialog.dispose()
-      })
-
-      val panel = new javax.swing.JPanel(new BorderLayout())
-      panel.add(label, BorderLayout.CENTER)
-      panel.add(okButton, BorderLayout.SOUTH)
-
-      dialog.add(panel)
-      waitingDialog = Some(dialog)
-      dialog.setVisible(true)
-    }
-  }
-
-  private def showWaitingDialog(): Unit = {
-    Swing.onEDT {
-      val dialog = new JDialog(view.peer, "Bot Turn", true)
-      dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE)
-      dialog.setSize(300, 150)
-      dialog.setLocationRelativeTo(view.peer)
-      dialog.setResizable(false)
-
-      val label = new JLabel("<html><center>Bot is thinking...<br>Please wait</center></html>")
-      label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER)
-
-      dialog.add(label, BorderLayout.CENTER)
-      waitingDialog = Some(dialog)
-      dialog.setVisible(true)
-    }
-  }
-
-  private def hideWaitingDialog(): Unit = {
-    Swing.onEDT {
-      waitingDialog.foreach { dialog =>
-        dialog.setVisible(false)
-        dialog.dispose()
-      }
-      waitingDialog = None
-    }
   }
 
   private def executeBotTurn(): Unit = {
@@ -334,7 +281,7 @@ class GameController(
               executeWithDelay(() => {
                 if secondPlayer.isABot && state.gamePhase == GamePhase.Battle then
                   executeBotTurn()
-                  hideWaitingDialog()
+                  hideCurrentDialog()
               })
             else
               showTurnDialog("Player 2")
@@ -358,6 +305,22 @@ class GameController(
     state = newState
     updateView(turn)
   }
+
+  private def showTurnDialog(playerName: String): Unit =
+    hideCurrentDialog()
+    val dialog = DialogFactory.createTurnDialog(view, playerName)
+    currentDialog = Some(dialog)
+    DialogFactory.showDialog(dialog)
+
+  private def showWaitingDialog(): Unit =
+    hideCurrentDialog()
+    val dialog = DialogFactory.createWaitingDialog(view)
+    currentDialog = Some(dialog)
+    DialogFactory.showDialog(dialog)
+
+  private def hideCurrentDialog(): Unit =
+    DialogFactory.hideDialogOpt(currentDialog)
+    currentDialog = None
 
   /** Handles the double click on a cell to rotate the ship during the positioning phase.
     * @param pos the position of the cell double-clicked

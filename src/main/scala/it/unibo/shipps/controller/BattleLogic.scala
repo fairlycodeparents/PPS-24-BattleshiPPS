@@ -51,7 +51,6 @@ object BattleLogic:
         else
           state.copy(board = updatedBoard)
 
-        // val attackPos = pos.getOrElse(findLastAttackedPosition(targetBoard, updatedBoard))
         val (finalState, message) = processAttackResult(turn, newState, pos.get, result)
         (finalState, List(message))
       case Left(errorMessage) =>
