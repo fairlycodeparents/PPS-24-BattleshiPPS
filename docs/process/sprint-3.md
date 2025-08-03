@@ -7,11 +7,12 @@ parent: Processo di Sviluppo
 # Sprint 2
 
 ## Obiettivo
-L’obiettivo di questo secondo Sprint è quello di realizzare la fase d'attacco del gioco, grazie alla quale l'utente potrà scegliere 
-una casella da bersagliare nella mappa avversaria e ricevere un feedback relativo al colpo effettuato.
+L'obiettivo del terzo sprint è fornire all'utente la possibilità di giocare contro un altro utente sullo stesso dispositivo,
+a turno, o contro un semplice bot che attacca in modo random. Inoltre, dovrà poter visulizzare e scegliere alcune impostazioni di gioco come, 
+appunto, la modalità (multiplayer o vs bot) e il numero di navi da posizionare.
 
 ## Deadline
-La scadenza dello sprint è il 28/07/2025.
+La scadenza dello sprint è il 04/07/2025.
 
 ## Backlog
 <table>
@@ -24,6 +25,7 @@ La scadenza dello sprint è il 28/07/2025.
       <th>Volontario</th>
       <th>Stima Sprint 1</th>
       <th>Stima Sprint 2</th>
+      <th>Stima Sprint 3</th>
     </tr>
   </thead>
   <tbody>
@@ -51,9 +53,9 @@ La scadenza dello sprint è il 28/07/2025.
       <td>Mirco</td>
     </tr>
     <tr>
-      <td rowspan="5">3</td>
-      <td rowspan="5">Posizionamento navi</td>
-      <td rowspan="5">Come utente, vorrei poter posizionare le navi nella mappa</td>
+      <td rowspan="6">3</td>
+      <td rowspan="6">Posizionamento navi</td>
+      <td rowspan="6">Come utente, vorrei poter posizionare le navi nella mappa</td>
     </tr>
     <tr>
       <td>Creazione delle navi</td>
@@ -72,6 +74,10 @@ La scadenza dello sprint è il 28/07/2025.
     <tr>
       <td>Posizionamento iniziale</td>
       <td>Dilaver</td>
+    </tr>
+    <tr>
+      <td>Refactor player board</td>
+      <td>Mirco</td>
     </tr>
     <tr>
       <td rowspan="3">4</td>
@@ -101,9 +107,9 @@ La scadenza dello sprint è il 28/07/2025.
       <td>Mirco</td>
     </tr>
     <tr>
-      <td rowspan="4">6</td>
-      <td rowspan="4">Fase d'attacco</td>
-      <td rowspan="4">Come utente, vorrei poter scegliere una casella dell’avversario da colpire</td>
+      <td rowspan="5">6</td>
+      <td rowspan="5">Fase d'attacco</td>
+      <td rowspan="5">Come utente, vorrei poter scegliere una casella dell’avversario da colpire</td>
     </tr>
     <tr>
       <td>Logica di attacco e fine partita</td>
@@ -118,24 +124,43 @@ La scadenza dello sprint è il 28/07/2025.
       <td>Mirco</td>
     </tr>
     <tr>
-      <td>7</td>
-      <td>Modalità multiplayer</td>
-      <td>Come utente, vorrei poter giocare
-            contro un altro giocatore sul mio dispositivo</td>
-      <td></td>
+      <td>Refactor del game controller</td>
+      <td>Dilaver</td>
     </tr>
     <tr>
-      <td>8</td>
-      <td>Modalità vs bot</td>
-      <td>Come utente, vorrei poter giocare contro un bot nel mio dispositivo</td>
-      <td></td>
+      <td rowspan="3">7</td>
+      <td rowspan="3">Modalità multiplayer</td>
+      <td rowspan="3">Come utente, vorrei poter giocare
+            contro un altro giocatore sul mio dispositivo</td>
+    </tr>
+    <tr>
+      <td>Logica del player umano</td>
+      <td>Chiara</td>
+    </tr>
+     <tr>
+      <td>Gestione dei turni e del loop di gioco</td>
+      <td>Dilaver</td>
+    </tr>
+    <tr>
+      <td rowspan="3">8</td>
+      <td rowspan="3">Modalità vs bot</td>
+      <td rowspan="3">Come utente, vorrei poter giocare contro un bot nel mio dispositivo</td>
+    </tr>
+    <tr>
+      <td>Logica del player bot (random)</td>
+      <td>Chiara</td>
+    </tr>
+    <tr>
+      <td>Gestione dei turni e del loop di gioco</td>
+      <td>Dilaver</td>
     </tr>
     <tr>
       <td>9</td>
       <td>Impostazioni della partita</td>
       <td>Come utente, vorrei poter scegliere alcune regole di gioco come il numero di barche schierabili 
             e il tipo di partita (multiplayer o bot)</td>
-      <td></td>
+      <td>Logica e GUI delle impostazioni di gioco</td>
+      <td>Mirco</td>
     </tr>
     <tr>
       <td>10</td>
@@ -161,13 +186,5 @@ La scadenza dello sprint è il 28/07/2025.
 </table>
 
 ## Sprint Review
-Lo stakeholder è soddisfatto del risultato poichè sono stati raggiunti gli obiettivi prefissati. 
-Nella demo è possibile attaccare su una mappa creata ad-hoc e visualizzare il risultato del proprio attacco fino al termine della simulazione, 
-che avviene quando tutte le navi della mappa sono state affondate.
-
 
 ## Sprint Retrospective
-La suddivisione dei task è risultata abbastanza bilanciata, evitando un carico eccessivo è stato possibile concentrarsi anche su uno studio più approfondito della programmazione funzionale.
-
-Rispetto allo sprint precedente è stato notato un miglioramento dal punto di vista delle dipendenze tra task di ciascun membro del team,
-ma è stato necessario aggiornare l'assegnamento di un task minore poichè è risultato più in linea con il lavoro di un componente del gruppo rispetto a quello del componente cui era stato originariamente assegnato.
