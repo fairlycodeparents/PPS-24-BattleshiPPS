@@ -1,7 +1,6 @@
 package it.unibo.shipps.controller
 
-import it.unibo.shipps.model._
-import it.unibo.shipps.model.Orientation as ShipOrientation
+import it.unibo.shipps.model.*
 import it.unibo.shipps.view.{SetupView, SimpleGui}
 
 import javax.swing.event.ChangeEvent
