@@ -9,7 +9,7 @@ import it.unibo.shipps.model.ShipType.*
 import scala.language.postfixOps
 
 /** Test suite for the [[ConfigurationValidator]]. */
-class GameConfigurationTest extends AnyFlatSpec with should.Matchers:
+class ConfigurationValidatorTest extends AnyFlatSpec with should.Matchers:
 
   private val validator = new MaxOccupancyValidator(maxOccupancy = 0.5)
 
@@ -28,19 +28,19 @@ class GameConfigurationTest extends AnyFlatSpec with should.Matchers:
   )
 
   "The validator" should "return the same configuration if it is valid" in:
-    val config = GameConfiguration(validShipAmounts)
+    val config = GameConfig(validShipAmounts)
     validator.validate(config).ships shouldEqual config.ships
 
   it should "return an empty configuration if the initial configuration is empty" in:
-    val emptyConfig = GameConfiguration(Map.empty)
+    val emptyConfig = GameConfig(Map.empty)
     validator.validate(emptyConfig).ships shouldEqual emptyConfig.ships
 
   it should "not return the original configuration if it exceeds the maximum ship count" in:
-    val config = GameConfiguration(invalidShipAmounts)
+    val config = GameConfig(invalidShipAmounts)
     validator.validate(config).ships should not equal config.ships
 
   it should "correct the configuration to fit within the maximum ship count" in:
-    val config          = GameConfiguration(invalidShipAmounts)
+    val config          = GameConfig(invalidShipAmounts)
     val correctedConfig = validator.validate(config)
 
     val totalShipCells  = correctedConfig.ships.map((ship, count) => ship.length * count).sum

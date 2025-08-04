@@ -9,8 +9,8 @@ import scala.swing.*
 import scala.swing.event.ButtonClicked
 
 class GameSetup(val viewFrame: MainFrame):
-  private var currentConfig: GameConfiguration = GameConfiguration(ShipType.values.map(_ -> 0).toMap)
-  private val validators                       = Seq(new MaxOccupancyValidator(maxOccupancy = 0.5))
+  private var currentConfig: GameConfig = GameConfig(ShipType.values.map(_ -> 0).toMap)
+  private val validators                = Seq(new MaxOccupancyValidator(maxOccupancy = 0.5))
 
   viewFrame.title = "BattleshiPPS: Homepage"
   viewFrame.contents = SetupView.mainPanel
@@ -19,7 +19,7 @@ class GameSetup(val viewFrame: MainFrame):
   for ((ship, spinner) <- SetupView.spinners) do
     spinner.addChangeListener((e: ChangeEvent) =>
       val updatedShips = currentConfig.ships.updated(ship, spinner.getValue.asInstanceOf[Int])
-      currentConfig = GameConfiguration(updatedShips)
+      currentConfig = GameConfig(updatedShips)
       val corrected = ConfigurationManager.applyValidators(currentConfig, validators)
       currentConfig = corrected
       SetupView.applyConfig(corrected.ships)
