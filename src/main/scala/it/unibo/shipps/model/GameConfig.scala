@@ -56,7 +56,9 @@ object BoardFactory:
     */
   def createRandomBoard(config: GameConfig): PlayerBoard =
     val defaultPosition = Position(0, 0)
-    val shipsToPlace = config.ships.flatMap((shipType, count) => List.fill(count)(shipType.at(defaultPosition))).toList
+    val shipsToPlace = config.ships.flatMap((shipType, count) =>
+      List.fill(count)(shipType.at(defaultPosition, Orientation.Horizontal))
+    ).toList
 
     ShipPositioningImpl.randomPositioning(PlayerBoardBuilder.board(), shipsToPlace) match
       case Right(board) => board
