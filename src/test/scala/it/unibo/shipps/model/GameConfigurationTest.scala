@@ -2,14 +2,16 @@ package it.unibo.shipps.model
 
 import org.scalatest.*
 import flatspec.*
+import matchers.*
 
 import it.unibo.shipps.model.ShipType.*
 
-import matchers.*
 import scala.language.postfixOps
 
-/** Test suite for the [[GameConfiguration]]. */
+/** Test suite for the [[ConfigurationValidator]]. */
 class GameConfigurationTest extends AnyFlatSpec with should.Matchers:
+
+  private val validator = new MaxOccupancyValidator(maxOccupancy = 0.5)
 
   val validShipAmounts: Map[ShipType, Int] = Map(
     Frigate   -> 1,
@@ -25,21 +27,22 @@ class GameConfigurationTest extends AnyFlatSpec with should.Matchers:
     Carrier   -> 5
   )
 
-  "The game setup" should "allow a valid configuration with ships" in:
-    val config = DefaultConfiguration(validShipAmounts)
-    config.update shouldEqual config.ships
+  "The validator" should "return the same configuration if it is valid" in:
+    val config = GameConfiguration(validShipAmounts)
+    validator.validate(config).ships shouldEqual config.ships
 
-  it should "allow an empty configuration" in:
-    val config = DefaultConfiguration(Map.empty)
-    config.update shouldEqual config.ships
+  it should "return an empty configuration if the initial configuration is empty" in:
+    val emptyConfig = GameConfiguration(Map.empty)
+    validator.validate(emptyConfig).ships shouldEqual emptyConfig.ships
 
-  it should "not allow a configuration exceeding the maximum ship count (half of the board cells)" in:
-    val config = DefaultConfiguration(invalidShipAmounts)
-    config.update should not equal config.ships
+  it should "not return the original configuration if it exceeds the maximum ship count" in:
+    val config = GameConfiguration(invalidShipAmounts)
+    validator.validate(config).ships should not equal config.ships
 
-  it should "adjust the configuration to fit within the maximum ship count" in:
-    val config = DefaultConfiguration(invalidShipAmounts)
+  it should "correct the configuration to fit within the maximum ship count" in:
+    val config          = GameConfiguration(invalidShipAmounts)
+    val correctedConfig = validator.validate(config)
 
-    val totalShipCells  = config.update.map((ship, count) => ship.length * count).sum
+    val totalShipCells  = correctedConfig.ships.map((ship, count) => ship.length * count).sum
     val totalBoardCells = PlayerBoard.size * PlayerBoard.size
     totalShipCells should be <= (totalBoardCells / 2)
