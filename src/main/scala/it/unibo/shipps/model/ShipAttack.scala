@@ -1,5 +1,7 @@
 package it.unibo.shipps.model
 
+import it.unibo.shipps.model.board.{PlayerBoard, Position}
+
 /** Represents the result of an attack on a position. */
 enum AttackResult:
   case Miss

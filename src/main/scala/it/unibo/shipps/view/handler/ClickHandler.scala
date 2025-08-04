@@ -1,7 +1,7 @@
 package it.unibo.shipps.view.handler
 
 import it.unibo.shipps.controller.GameController
-import it.unibo.shipps.model.Position
+import it.unibo.shipps.model.board.Position
 
 /** Represents the type of click event. */
 sealed trait ClickType

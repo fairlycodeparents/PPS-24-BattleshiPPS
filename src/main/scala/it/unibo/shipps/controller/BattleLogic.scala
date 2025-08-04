@@ -1,14 +1,13 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.controller.*
+import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.{
   AttackResult,
   BotPlayer,
   HumanAttackStrategy,
   HumanPlayer,
   Player,
-  PlayerBoard,
-  Position,
   RandomBotAttackStrategy,
   Ship,
   ShipAttack

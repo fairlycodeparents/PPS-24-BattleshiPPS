@@ -1,7 +1,8 @@
 package it.unibo.shipps.view.components
 
 import it.unibo.shipps.controller.{GameState, Turn}
-import it.unibo.shipps.model.{Player, Position}
+import it.unibo.shipps.model.Player
+import it.unibo.shipps.model.board.Position
 import it.unibo.shipps.view.renderer.ButtonRenderer
 
 import scala.swing.{Button, Swing}

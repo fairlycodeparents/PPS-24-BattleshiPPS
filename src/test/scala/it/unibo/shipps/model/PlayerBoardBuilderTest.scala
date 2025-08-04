@@ -2,11 +2,11 @@ package it.unibo.shipps.model
 
 import org.scalatest.*
 import flatspec.*
-
-import it.unibo.shipps.model.PlayerBoardBuilder.*
+import it.unibo.shipps.model.board.PlayerBoardBuilder.*
 import it.unibo.shipps.model.ShipType.*
-
+import it.unibo.shipps.model.board.{PlayerBoardBuilder, Position}
 import matchers.*
+
 import scala.language.postfixOps
 
 /** Test suite for the [[PlayerBoardBuilder]]. */

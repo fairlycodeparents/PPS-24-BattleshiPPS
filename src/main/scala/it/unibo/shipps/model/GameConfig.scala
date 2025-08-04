@@ -1,6 +1,9 @@
 package it.unibo.shipps.model
 
+import it.unibo.shipps.model.board.{PlayerBoard, PlayerBoardBuilder, Position}
+
 /** Represents the configuration of a game, including the ships available and their counts.
+  *
   * @param ships A map where keys are ship types and values are their counts.
   */
 case class GameConfig(ships: Map[ShipType, Int])

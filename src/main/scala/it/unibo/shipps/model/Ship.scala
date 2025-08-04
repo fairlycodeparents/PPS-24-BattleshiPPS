@@ -1,5 +1,7 @@
 package it.unibo.shipps.model
 
+import it.unibo.shipps.model.board.Position
+
 /** Represents a ship in the game. */
 sealed trait Ship:
   /** Moves the ship to a new position.

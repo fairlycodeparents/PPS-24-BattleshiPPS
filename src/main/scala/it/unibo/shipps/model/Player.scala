@@ -1,5 +1,7 @@
 package it.unibo.shipps.model
 
+import it.unibo.shipps.model.board.{PlayerBoard, Position}
+
 /** Represents a player in the game */
 trait Player {
 
