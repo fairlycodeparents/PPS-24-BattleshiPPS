@@ -1,9 +1,12 @@
 package it.unibo.shipps
 
-import it.unibo.shipps.view.*
+import it.unibo.shipps.controller.GameSetup
 
-import scala.swing.{Frame, SimpleSwingApplication}
+import scala.swing.{Frame, MainFrame, SimpleSwingApplication}
 
 object Main extends SimpleSwingApplication:
 
-  override def top: Frame = GameSetupFrame.top
+  override def top: Frame =
+    val frame = new MainFrame()
+    new GameSetup(frame)
+    frame
