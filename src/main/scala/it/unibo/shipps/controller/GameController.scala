@@ -1,6 +1,7 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
+import it.unibo.shipps.controller.GameStateManager.DialogAction
 import it.unibo.shipps.controller.Turn.FirstPlayer
 import it.unibo.shipps.model.*
 import it.unibo.shipps.view.SimpleGui
@@ -52,41 +53,6 @@ case class GameState(
     */
   def selectShip(ship: Ship): GameState =
     copy(selectedShip = Some(ship))
-
-  /** Randomizes the player's board based on the turn.
-    * @param newBoard the new board to set
-    * @param turn the current turn of the game
-    * @return updated GameState with the new board and no selected ship
-    */
-  def randomizeBoard(newBoard: PlayerBoard, turn: Turn): GameState =
-    if turn == Turn.FirstPlayer then
-      copy(board = newBoard, selectedShip = None)
-    else
-      copy(enemyBoard = newBoard, selectedShip = None)
-
-  /** Moves the selected ship to a new position on the board.
-    * @param newBoard the new board with the ship moved
-    * @param turn the current turn of the game
-    * @return updated GameState with the ship moved and no selected ship
-    */
-  def moveShipTo(newBoard: PlayerBoard, turn: Turn): GameState = {
-    if turn == Turn.FirstPlayer then
-      copy(board = newBoard, selectedShip = None)
-    else
-      copy(enemyBoard = newBoard, selectedShip = None)
-  }
-
-  /** Rotates the selected ship on the board.
-    * @param newBoard the new board with the ship rotated
-    * @param turn the current turn of the game
-    * @return updated GameState with the ship rotated and no selected ship
-    */
-  def rotateShipTo(newBoard: PlayerBoard, turn: Turn): GameState = {
-    if turn == Turn.FirstPlayer then
-      copy(board = newBoard, selectedShip = None)
-    else
-      copy(enemyBoard = newBoard, selectedShip = None)
-  }
 
   /** Starts the battle phase of the game with a new enemy board.
     * @param newEnemyBoard the board of the enemy player
@@ -155,217 +121,138 @@ case class GameState(
   * @param enemyBoard the board of the second player
   * @param firstPlayer the first player in the game
   * @param secondPlayer the second player in the game
-  * @param positioning the ship positioning logic
-  * @param view the GUI view for displaying the game state
   */
 class GameController(
     initialBoard: PlayerBoard,
     enemyBoard: PlayerBoard,
     firstPlayer: Player,
-    secondPlayer: Player,
-    val positioning: ShipPositioning,
-    var view: SimpleGui
+    secondPlayer: Player
 ):
 
-  /** The initial game state, containing the boards and the current phase of the game. */
-  var state: GameState = GameState(initialBoard, enemyBoard, None, Positioning)
+  var state: GameState        = GameState(initialBoard, enemyBoard, None, Positioning)
+  var view: Option[SimpleGui] = None
 
   private var turn: Turn                          = Turn.FirstPlayer
   private var currentDialog: Option[JDialog]      = None
   private var isPositioningPhaseComplete: Boolean = false
+  private val positioning: ShipPositioning        = ShipPositioningImpl
 
-  private def handleCellAction(currentState: GameState, pos: Position)(
-      shipAction: (PlayerBoard, Ship, Position) => Either[String, PlayerBoard]
-  ): GameState =
-    if state.gamePhase == GamePhase.Positioning then {
-      currentState.selectedShip match
-        case None =>
-          val boardToCheck = getCurrentPlayerBoard(currentState)
-          positioning.getShipAt(boardToCheck, pos) match
-            case Right(ship) => currentState.selectShip(ship)
-            case Left(_)     => currentState
-        case Some(ship) =>
-          val boardToUpdate = getCurrentPlayerBoard(currentState)
-          shipAction(boardToUpdate, ship, pos) match
-            case Right(updatedBoard) =>
-              val newState = updateCurrentPlayerBoard(currentState, updatedBoard)
-              if shipAction == positioning.moveShip then
-                newState.moveShipTo(updatedBoard, turn)
-              else
-                newState.rotateShipTo(updatedBoard, turn)
-            case Left(_) => currentState
-    } else currentState
-
-  private def getCurrentPlayerBoard(state: GameState): PlayerBoard = {
-    turn match {
-      case Turn.FirstPlayer  => state.board
-      case Turn.SecondPlayer => state.enemyBoard
-    }
-  }
-
-  private def updateCurrentPlayerBoard(state: GameState, newBoard: PlayerBoard): GameState = {
-    turn match {
-      case Turn.FirstPlayer  => state.copy(board = newBoard)
-      case Turn.SecondPlayer => state.copy(enemyBoard = newBoard)
-    }
-  }
-
-  private def handleBattleClick(currentState: GameState, pos: Position): (GameState, List[String]) = {
-    if turn == Turn.FirstPlayer then
-      BattleLogic.processBattleClick(currentState, firstPlayer, Turn.FirstPlayer, Some(pos))
-    else
-      BattleLogic.processBattleClick(currentState, secondPlayer, Turn.SecondPlayer, Some(pos))
-  }
-
+  /** Handle the bot turn. */
   private def executeBotTurn(): Unit = {
-    if turn == Turn.SecondPlayer && state.gamePhase == GamePhase.Battle then
-      val (newState, messages) = handleBattleClick(state, null)
-      messages.foreach(println)
-
-      if newState.gamePhase != GamePhase.GameOver then
-        turn = Turn.FirstPlayer
-
-      state = newState
-      updateView(turn)
+    val result = GameStateManager.handleBotTurn(state, turn, firstPlayer, secondPlayer)
+    applyGameActionResult(result)
   }
 
+  /** Set a delay before executing an action.
+    * @param action the action to execute after the delay
+    * @param delayMs the delay in milliseconds before executing the action
+    */
   private def executeWithDelay(action: () => Unit, delayMs: Int = 2000): Unit = {
-    val timer = new Timer(
-      delayMs,
-      _ => {
-        action()
-      }
-    )
+    val timer = new Timer(delayMs, _ => action())
     timer.setRepeats(false)
     timer.start()
   }
 
+  /** Initializes the game controller with the view.
+    * @param turn the turn of the game
+    */
   private def updateView(turn: Turn): Unit =
-    val (displayBoard, displayEnemyBoard) = state.gamePhase match {
-      case GamePhase.Positioning =>
-        turn match {
-          case Turn.FirstPlayer  => (state.board, state.enemyBoard)
-          case Turn.SecondPlayer => (state.board, state.enemyBoard)
-        }
-      case GamePhase.Battle | GamePhase.GameOver =>
-        turn match {
-          case Turn.FirstPlayer =>
-            (state.board, state.enemyBoard)
-          case Turn.SecondPlayer =>
-            (state.board, state.enemyBoard)
-        }
-    }
+    Swing.onEDT(view.get.update(turn))
 
-    state = state.copy(board = displayBoard, enemyBoard = displayEnemyBoard)
+  /** Show the dialog indicating whose turn it is.
+    * @param playerName the name of the player whose turn it is
+    */
+  private def showTurnDialog(playerName: String): Unit =
+    hideCurrentDialog()
+    val dialog = DialogFactory.createTurnDialog(view.get, playerName)
+    currentDialog = Some(dialog)
+    DialogFactory.showDialog(dialog)
 
-    Swing.onEDT(view.update(turn))
+  /** Shows a waiting dialog while the bot is taking its turn. */
+  private def showWaitingDialog(): Unit =
+    hideCurrentDialog()
+    val dialog = DialogFactory.createWaitingDialog(view.get)
+    currentDialog = Some(dialog)
+    DialogFactory.showDialog(dialog)
+
+  /** Hides the current dialog. */
+  private def hideCurrentDialog(): Unit =
+    DialogFactory.hideDialogOpt(currentDialog)
+    currentDialog = None
+
+  /** Sets the view for the game controller.
+    * @param result the view to set
+    */
+  private def applyGameActionResult(result: GameStateManager.GameActionResult): Unit =
+    state = result.newState
+    turn = result.newTurn
+
+    result.messages.foreach(println)
+
+    result.showDialog.foreach(handleDialogAction)
+
+    if BattleController.isBotTurn(turn, firstPlayer, secondPlayer) &&
+      state.gamePhase == GamePhase.Battle
+    then
+      executeWithDelay(() => executeBotTurn())
+
+    updateView(turn)
+
+  /** Handles the dialog actions based on the current game state.
+    * @param action the dialog action to handle
+    */
+  private def handleDialogAction(action: DialogAction): Unit =
+    action match
+      case DialogAction.ShowTurnDialog(playerName) =>
+        showTurnDialog(playerName)
+      case DialogAction.ShowWaitingDialog =>
+        showWaitingDialog()
+      case DialogAction.HideDialog =>
+        hideCurrentDialog()
 
   /** Handles the click on a cell based on the current game phase.
     * @param pos the position of the cell clicked
     */
-  def onCellClick(pos: Position): Unit = {
-    val newState = state.gamePhase match
+  def onCellClick(pos: Position): Unit =
+    val result = state.gamePhase match
       case GamePhase.Positioning =>
-        val result = handleCellAction(state, pos)(positioning.moveShip)
-        result
+        GameStateManager.handlePositioningClick(state, pos, turn, positioning)
       case GamePhase.Battle =>
-        if turn == Turn.FirstPlayer then
-          val (updatedState, messages) = handleBattleClick(state, pos)
-          messages.foreach(println)
-          if updatedState.gamePhase == GamePhase.GameOver then
-            updatedState
-          else
-            turn = Turn.SecondPlayer
-            if secondPlayer.isABot then
-              showWaitingDialog()
-              executeWithDelay(() => {
-                if secondPlayer.isABot && state.gamePhase == GamePhase.Battle then
-                  executeBotTurn()
-                  hideCurrentDialog()
-              })
-            else
-              showTurnDialog("Player 2")
-            updatedState
-        else if !secondPlayer.isABot then
-          val (updatedState, messages) = handleBattleClick(state, pos)
-          messages.foreach(println)
-          if updatedState.gamePhase == GamePhase.GameOver then
-            updatedState
-          else
-            turn = Turn.FirstPlayer
-            showTurnDialog("Player 1")
-            updatedState
-        else
-          println("It's not your turn, wait for the bot to play")
-          state
+        GameStateManager.handleBattleClick(state, pos, turn, firstPlayer, secondPlayer)
       case GamePhase.GameOver =>
-        println("Game is over, no actions allowed")
-        state
+        GameStateManager.GameActionResult(state, turn, List("Game is over, no actions allowed"))
 
-    state = newState
-    updateView(turn)
-  }
-
-  private def showTurnDialog(playerName: String): Unit =
-    hideCurrentDialog()
-    val dialog = DialogFactory.createTurnDialog(view, playerName)
-    currentDialog = Some(dialog)
-    DialogFactory.showDialog(dialog)
-
-  private def showWaitingDialog(): Unit =
-    hideCurrentDialog()
-    val dialog = DialogFactory.createWaitingDialog(view)
-    currentDialog = Some(dialog)
-    DialogFactory.showDialog(dialog)
-
-  private def hideCurrentDialog(): Unit =
-    DialogFactory.hideDialogOpt(currentDialog)
-    currentDialog = None
+    applyGameActionResult(result)
 
   /** Handles the double click on a cell to rotate the ship during the positioning phase.
     * @param pos the position of the cell double-clicked
     */
   def onCellDoubleClick(pos: Position): Unit =
     if state.gamePhase == GamePhase.Positioning then
-      val newState = handleCellAction(state, pos) { (board, ship, _) => positioning.rotateShip(board, ship) }
-      state = newState
-      updateView(turn)
+      val result = GameStateManager.handlePositioningDoubleClick(state, pos, turn, positioning)
+      applyGameActionResult(result)
 
   /** Handles the keyboard click to randomize ship positioning during the positioning phase.
     * @param ships the list of ships to randomize
     */
   def onKeyBoardClick(ships: List[Ship]): Unit =
     if state.gamePhase == GamePhase.Positioning then
-      positioning.randomPositioning(PlayerBoard(), ships) match
-        case Right(newBoard) =>
-          state = updateCurrentPlayerBoard(state, newBoard).randomizeBoard(newBoard, turn)
-          updateView(turn)
-        case Left(error) =>
-          println("Error randomizing ships")
+      val result = GameStateManager.handleRandomizePositions(state, ships, turn, positioning)
+      applyGameActionResult(result)
 
   /** Handles the action when the game starts. */
   def onStartGame(): Unit = {
-    val (newState, message) = state.gamePhase match
-      case GamePhase.Positioning =>
-        if secondPlayer.isABot then
-          val enemyBoard = positioning.randomPositioning(PlayerBoard(), state.board.ships.toList)
-            .getOrElse(PlayerBoard())
-          val updatedState = state.copy(enemyBoard = enemyBoard)
-          (updatedState.startBattle(enemyBoard), "Battle started! Find and sink all enemy ships!")
-        else if !isPositioningPhaseComplete then
-          turn = Turn.SecondPlayer
-          isPositioningPhaseComplete = true
-          showTurnDialog("Player 2 - Position your ships")
-          (state, "Player 2: Position your ships and press Start Game again")
-        else
-          turn = Turn.FirstPlayer
-          showTurnDialog("Player 1 - Battle begins!")
-          (state.startBattle(state.enemyBoard), "Battle started! Player 1 attacks first!")
-      case GamePhase.Battle =>
-        (state, println("Game already started, cannot start again"))
-      case GamePhase.GameOver =>
-        (state, println("Game over"))
+    val result = GameStateManager.handleStartGame(
+      state,
+      turn,
+      firstPlayer,
+      secondPlayer,
+      positioning,
+      isPositioningPhaseComplete
+    )
 
-    state = newState
-    updateView(turn)
+    if !isPositioningPhaseComplete && turn == Turn.FirstPlayer && !secondPlayer.isABot then
+      isPositioningPhaseComplete = true
+
+    applyGameActionResult(result)
   }

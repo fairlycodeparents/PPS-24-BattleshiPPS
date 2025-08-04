@@ -15,7 +15,9 @@ import it.unibo.shipps.model.{
 }
 import it.unibo.shipps.view.renderer.ColorScheme
 
-/** BattleLogic handles the logic for processing clicks during the battle phase of the game. */
+/** BattleLogic handles the logic for processing battle actions during the game.
+  * It updates the game state and manages attack results.
+  */
 object BattleLogic:
 
   /** Processes a click during the battle phase.
@@ -51,12 +53,19 @@ object BattleLogic:
         else
           state.copy(board = updatedBoard)
 
-        val (finalState, message) = processAttackResult(turn, newState, pos.get, result)
+        val (finalState, message) = processAttackResult(turn, newState, pos.orNull, result)
         (finalState, List(message))
       case Left(errorMessage) =>
         (state, List(errorMessage))
   }
 
+  /** Processes the result of an attack and updates the game state.
+    * @param turn the current turn
+    * @param state the current game state
+    * @param pos the position attacked
+    * @param result the result of the attack
+    * @return updated game state and a message indicating the result of the attack
+    */
   private def processAttackResult(
       turn: Turn,
       state: GameState,
@@ -85,6 +94,13 @@ object BattleLogic:
     (updatedState, message)
   }
 
+  /** Updates the game state when a ship is sunk.
+    * @param turn the current turn
+    * @param state the current game state
+    * @param ship the sunk ship
+    * @param sunkResult the result of the attack that sunk the ship
+    * @return updated game state with sunk ship results
+    */
   private def updateSunkShipResult(turn: Turn, state: GameState, ship: Ship, sunkResult: AttackResult): GameState =
     turn match {
       case Turn.FirstPlayer =>
