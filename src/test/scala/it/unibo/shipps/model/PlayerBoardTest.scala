@@ -2,7 +2,8 @@ package it.unibo.shipps.model
 
 import org.scalatest.*
 import flatspec.*
-import it.unibo.shipps.exceptions.{PositionOccupiedException, UnexistingShipException}
+import it.unibo.shipps.model.board.exceptions.{PositionOccupiedException, UnexistingShipException}
+import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import matchers.*
 
 /** Test suite for the PlayerBoard class. */

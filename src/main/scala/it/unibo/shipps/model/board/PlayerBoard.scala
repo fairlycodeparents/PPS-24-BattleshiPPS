@@ -1,6 +1,7 @@
-package it.unibo.shipps.model
+package it.unibo.shipps.model.board
 
-import it.unibo.shipps.exceptions.{PositionOccupiedException, UnexistingShipException}
+import it.unibo.shipps.model.Ship
+import it.unibo.shipps.model.board.exceptions.{PositionOccupiedException, UnexistingShipException}
 
 /** Represents the player board in the game. */
 trait PlayerBoard:

@@ -1,6 +1,6 @@
 package it.unibo.shipps.model
 
-import it.unibo.shipps.model.AttackResult.EndOfGame
+import it.unibo.shipps.model.board.{PlayerBoard, Position}
 
 /** Represents the result of an attack on a position. */
 enum AttackResult:
@@ -11,7 +11,11 @@ enum AttackResult:
   case AlreadyAttacked
 
 object ShipAttack:
-  /** Performs an attack on the given [[PlayerBoard]] at the given [[Position]]. */
+  /** Performs an attack on the given [[PlayerBoard]] at the given [[Position]]
+    * @param board the enemy board to attack
+    * @param position the [[Position]] to attack
+    * @return updated [[PlayerBoard]] and either error message or [[AttackResult]]
+    */
   def attack(board: PlayerBoard, position: Position): (PlayerBoard, Either[String, AttackResult]) =
     validateAttack(board, position)
       .map(_ => processValidAttack(board, position))
@@ -49,13 +53,16 @@ object ShipAttack:
     else AttackResult.Hit(damagedShip.ship)
 
   private def determineEndOfGame(damagedShip: DamagedShip, board: PlayerBoard): AttackResult =
-    if areAllShipsSunk(board) then EndOfGame(damagedShip.ship)
+    if areAllShipsSunk(board) then AttackResult.EndOfGame(damagedShip.ship)
     else AttackResult.Sunk(damagedShip.ship)
 
   private def areAllShipsSunk(board: PlayerBoard): Boolean =
     damagedShips(board).count(damagedShip => damagedShip.isSunk) == board.ships.size
 
-  /** Returns all damaged ships on the board. */
+  /** Returns all the ships that have been hit at least once
+    * @param board the [[PlayerBoard]] containing ships
+    * @return a set of [[DamagedShip]], each representing a ship and its hit positions
+    */
   def damagedShips(board: PlayerBoard): Set[DamagedShip] =
     board.ships.view
       .map(ship => ship -> board.hits.intersect(ship.positions))
@@ -71,10 +78,13 @@ case class DamagedShip(
     ship: Ship,
     hitPositions: Set[Position]
 ):
-  /** @return true if the [[Ship]] is completely sunk. */
+  /** @return true if the [[Ship]] is completely sunk */
   def isSunk: Boolean = hitPositions == ship.positions
 
-  /** Adds a hit to the ship if the position belongs to it. */
+  /** Adds a hit to the [[Ship]] if the position belongs to it
+    * @param position the [[Position]] to hit
+    * @return updated [[DamagedShip]] if the position is part of the ship; None otherwise
+    */
   def hit(position: Position): Option[DamagedShip] =
     Option.when(ship.positions.contains(position))(
       copy(hitPositions = hitPositions + position)

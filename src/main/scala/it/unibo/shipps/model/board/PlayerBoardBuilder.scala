@@ -1,6 +1,7 @@
-package it.unibo.shipps.model
+package it.unibo.shipps.model.board
 
 import it.unibo.shipps.model.ShipType.*
+import it.unibo.shipps.model.{Orientation, ShipPositioningImpl, ShipType}
 
 import scala.language.postfixOps
 
