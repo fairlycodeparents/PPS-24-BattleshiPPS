@@ -1,10 +1,10 @@
 ---
-title: Sprint 2
-nav_order: 2
+title: Sprint 3
+nav_order: 3
 parent: Processo di Sviluppo
 ---
 
-# Sprint 2
+# Sprint 3
 
 ## Obiettivo
 L'obiettivo del terzo sprint è fornire all'utente la possibilità di giocare contro un altro utente sullo stesso dispositivo,
@@ -186,5 +186,16 @@ La scadenza dello sprint è il 04/07/2025.
 </table>
 
 ## Sprint Review
+Lo stakeholder è complessivamente soddisfatto del risultato ottenuto 
+poiché ha potuto visualizzare una demo completa di tutte le funzionalità principali
+dell'applicazione richiesta. Viene richiesto a livello visivo un maggiore delay tra un turno e un altro
+per poter meglio visualizzare il risultato del proprio attacco.
 
 ## Sprint Retrospective
+
+La suddivisione dei task all'interno dello sprint si è rivelata efficace,
+consentendo ai membri del team di lavorare in modo autonomo. 
+
+Gli obiettivi prefissati sono stati raggiunti; 
+tuttavia, è stata rilevata la possibilità di apportare alcune rifattorizzazioni 
+su porzioni di codice che, nel frattempo, hanno acquisito una certa complessità.
