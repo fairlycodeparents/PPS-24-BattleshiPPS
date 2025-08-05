@@ -2,6 +2,7 @@ package it.unibo.shipps.view
 
 import it.unibo.shipps.model.*
 import it.unibo.shipps.controller.{GameController, GamePhase, GameState, Turn}
+import it.unibo.shipps.model.board.PlayerBoard
 import it.unibo.shipps.view.components.{ButtonFactory, GridManager}
 import it.unibo.shipps.view.handler.{ClickHandler, ClickState}
 

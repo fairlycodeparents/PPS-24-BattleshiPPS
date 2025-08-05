@@ -1,18 +1,17 @@
 ---
-title: Sprint 3
-nav_order: 3
+title: Sprint 4
+nav_order: 4
 parent: Processo di Sviluppo
 ---
 
-# Sprint 3
+# Sprint 4
 
 ## Obiettivo
-L'obiettivo del terzo sprint è fornire all'utente la possibilità di giocare contro un altro utente sullo stesso dispositivo,
-a turno, o contro un semplice bot che attacca in modo random. Inoltre, dovrà poter visulizzare e scegliere alcune impostazioni di gioco come, 
-appunto, la modalità (multiplayer o vs bot) e il numero di navi da posizionare.
+L'obiettivo del quarto sprint è quello di sistemare complessivamente il gioco 
+e introdurre funzionalità aggiuntive quali l'intelligenza del bot ed eventualmente la presenza di ostacoli nella mappa.
 
 ## Deadline
-La scadenza dello sprint è il 04/07/2025.
+La scadenza dello sprint è il 18/08/2025.
 
 ## Backlog
 <table>
@@ -128,17 +127,21 @@ La scadenza dello sprint è il 04/07/2025.
       <td>Dilaver</td>
     </tr>
     <tr>
-      <td rowspan="3">7</td>
-      <td rowspan="3">Modalità multiplayer</td>
-      <td rowspan="3">Come utente, vorrei poter giocare
+      <td rowspan="4">7</td>
+      <td rowspan="4">Modalità multiplayer</td>
+      <td rowspan="4">Come utente, vorrei poter giocare
             contro un altro giocatore sul mio dispositivo</td>
     </tr>
     <tr>
       <td>Logica del player umano</td>
       <td>Chiara</td>
     </tr>
-     <tr>
+    <tr>
       <td>Gestione dei turni e del loop di gioco</td>
+      <td>Dilaver</td>
+    </tr>
+    <tr>
+      <td>Refactor del Game Controller</td>
       <td>Dilaver</td>
     </tr>
     <tr>
@@ -163,17 +166,35 @@ La scadenza dello sprint è il 04/07/2025.
       <td>Mirco</td>
     </tr>
     <tr>
-      <td>10</td>
-      <td>Scelta della difficoltà del bot</td>
-      <td>Come utente, vorrei avere la possibilità di scegliere la difficoltà di gioco</td>
-      <td></td>
+      <td rowspan="3">10</td>
+      <td rowspan="3">Scelta della difficoltà del bot</td>
+      <td rowspan="3">Come utente, vorrei avere la possibilità di scegliere la difficoltà di gioco</td>
     </tr>
     <tr>
-      <td>11</td>
-      <td>Ostacoli</td>
-      <td>Come utente, vorrei una mappa diversa, 
+      <td>Intelligenza del bot media</td>
+      <td>Chiara</td>
+    </tr>
+    <tr>
+      <td>Intelligenza del bot avanzata</td>
+      <td>Mirco</td>
+    </tr>
+    <tr>
+      <td rowspan="4">11</td>
+      <td rowspan="4">Ostacoli</td>
+      <td rowspan="4">Come utente, vorrei una mappa diversa, 
         con ostacoli che impediscono il posizionamento delle navi</td>
-      <td></td>
+    </tr>
+    <tr>
+      <td>Creazione ostacoli (interfaccia)</td>
+      <td>Chiara</td>
+    </tr>
+    <tr>
+      <td>Posizionamento ostacoli</td>
+      <td>Dilaver</td>
+    </tr>
+    <tr>
+      <td>Aggiunta ostacoli nella configurazione (settings)</td>
+      <td>Mirco</td>
     </tr>
     <tr>
       <td>12</td>
@@ -186,16 +207,5 @@ La scadenza dello sprint è il 04/07/2025.
 </table>
 
 ## Sprint Review
-Lo stakeholder è complessivamente soddisfatto del risultato ottenuto 
-poiché ha potuto visualizzare una demo completa di tutte le funzionalità principali
-dell'applicazione richiesta. Viene richiesto a livello visivo un maggiore delay tra un turno e un altro
-per poter meglio visualizzare il risultato del proprio attacco.
-
 ## Sprint Retrospective
 
-La suddivisione dei task all'interno dello sprint si è rivelata efficace,
-consentendo ai membri del team di lavorare in modo autonomo. 
-
-Gli obiettivi prefissati sono stati raggiunti; 
-tuttavia, è stata rilevata la possibilità di apportare alcune rifattorizzazioni 
-su porzioni di codice che, nel frattempo, hanno acquisito una certa complessità.

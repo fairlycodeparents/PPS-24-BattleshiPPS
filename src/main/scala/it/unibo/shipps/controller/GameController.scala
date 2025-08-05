@@ -4,6 +4,7 @@ import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
 import it.unibo.shipps.controller.GameStateManager.DialogAction
 import it.unibo.shipps.controller.Turn.FirstPlayer
 import it.unibo.shipps.model.*
+import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.view.SimpleGui
 import it.unibo.shipps.view.components.DialogFactory
 import it.unibo.shipps.view.renderer.ColorScheme

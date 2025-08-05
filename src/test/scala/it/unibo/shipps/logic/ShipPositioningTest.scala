@@ -4,10 +4,11 @@ import it.unibo.shipps.model
 import it.unibo.shipps.model.Orientation.{Horizontal, Vertical}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import it.unibo.shipps.model.{PlayerBoard, Position, Ship, ShipImpl, ShipPositioning, ShipPositioningImpl, ShipType}
-import it.unibo.shipps.model.PlayerBoardBuilder.*
-import it.unibo.shipps.model.PlayerBoardBuilder.place.a
+import it.unibo.shipps.model.{Ship, ShipImpl, ShipPositioning, ShipPositioningImpl, ShipType}
+import it.unibo.shipps.model.board.PlayerBoardBuilder.*
+import it.unibo.shipps.model.board.PlayerBoardBuilder.place.a
 import it.unibo.shipps.model.ShipType.{Carrier, Frigate, Submarine}
+import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import org.scalatest.EitherValues.convertEitherToValuable
 import org.scalatest.EitherValues.convertLeftProjectionToValuable
 
