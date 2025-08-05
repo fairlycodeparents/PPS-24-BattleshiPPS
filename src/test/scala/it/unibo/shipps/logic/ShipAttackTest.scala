@@ -7,6 +7,7 @@ import it.unibo.shipps.model.AttackResult.*
 import it.unibo.shipps.model.ShipType.*
 import it.unibo.shipps.model.board.PlayerBoardBuilder.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import it.unibo.shipps.model.board.BoardCoordinates._
 import matchers.*
 
 class ShipAttackTest extends AnyFlatSpec with should.Matchers:
