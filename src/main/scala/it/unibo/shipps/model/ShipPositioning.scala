@@ -91,7 +91,7 @@ object ShipPositioningImpl extends ShipPositioning:
       shift: Ship => Ship
   ): Either[String, PlayerBoard] =
     for
-      boardWithoutShip <- Right(board.removeShip(ship))
+      boardWithoutShip <- board.removeShip(ship)
       shiftedShip      <- Right(shift(ship))
       updatedBoard     <- placeShip(boardWithoutShip, shiftedShip)
     yield updatedBoard
@@ -108,7 +108,7 @@ object ShipPositioningImpl extends ShipPositioning:
     yield ()
 
   override def placeShip(board: PlayerBoard, ship: Ship): Either[String, PlayerBoard] =
-    validateShipPlacement(board, ship).map(_ => board.addShip(ship))
+    validateShipPlacement(board, ship).flatMap(_ => board.addShip(ship))
 
   override def getShipAt(board: PlayerBoard, selectedShip: Position): Either[String, Ship] =
     board.shipAtPosition(selectedShip).toRight("No ship found at the selected position.")
@@ -133,6 +133,8 @@ object ShipPositioningImpl extends ShipPositioning:
         if isShipOutOfBounds(movedShip) || playerBoard.isAnyPositionOccupied(movedShip.positions) then
           tryPlaceShips(playerBoard, remaining, attempts + 1)
         else
-          tryPlaceShips(playerBoard.addShip(movedShip), remaining.tail, 0)
+          playerBoard.addShip(movedShip) match
+            case Right(updatedBoard) => tryPlaceShips(updatedBoard, remaining.tail, 0)
+            case Left(error)         => tryPlaceShips(playerBoard, remaining, attempts + 1)
     }
     tryPlaceShips(board, ships, 0)
