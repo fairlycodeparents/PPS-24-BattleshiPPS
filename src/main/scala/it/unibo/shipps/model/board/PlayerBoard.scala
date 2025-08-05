@@ -85,9 +85,21 @@ object PlayerBoard:
     override def shipAtPosition(position: Position): Option[Ship] =
       ships.find(_.positions.contains(position))
 
+    /** @inheritdoc
+      * @note The format is as follows:
+      *       - "X" for a hit on a ship,
+      *       - "S" for a ship that has not been hit,
+      *       - "+" for a hit on an empty spot,
+      *       - "O" for an empty spot that has not been hit.
+      */
     override def toString: String =
       (0 until size).map(row =>
         (0 until size).map(col =>
-          if (isAnyPositionOccupied(Set(Position(col, row)))) "X" else "O"
-        ).mkString(" | ") + " |"
+          val pos = Position(col, row)
+          (shipAtPosition(pos), hits.contains(pos)) match
+            case (Some(_), true)  => "X"
+            case (Some(_), false) => "S"
+            case (None, true)     => "+"
+            case (None, false)    => "O"
+        ).mkString(" | ")
       ).mkString("\n", "\n", "\n")

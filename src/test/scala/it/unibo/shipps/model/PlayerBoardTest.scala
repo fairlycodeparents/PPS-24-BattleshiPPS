@@ -51,18 +51,19 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     PlayerBoard().shipAtPosition(position) shouldEqual None
 
   it should "print a nice and clear string representation" in:
-    PlayerBoard(Set(ship)).toString shouldEqual (
+    val board = PlayerBoard().addShip(ship).getOrElse(fail())
+    board.toString shouldEqual (
       "\n" +
-        "O | O | O | O | O | O | O | O | O | O |\n" +
-        "O | O | O | O | O | O | O | O | O | O |\n" +
-        "O | O | O | O | O | O | O | O | O | O |\n" +
-        "O | O | X | X | O | O | O | O | O | O |\n" +
-        "O | O | O | O | O | O | O | O | O | O |\n" +
-        "O | O | O | O | O | O | O | O | O | O |\n" +
-        "O | O | O | O | O | O | O | O | O | O |\n" +
-        "O | O | O | O | O | O | O | O | O | O |\n" +
-        "O | O | O | O | O | O | O | O | O | O |\n" +
-        "O | O | O | O | O | O | O | O | O | O |\n"
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | S | S | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n"
     )
 
   it should "return a new board with the updated hits after a hit" in:
@@ -70,8 +71,36 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     val newBoard      = boardWithShip.hit(position)
     newBoard.hits should contain(position)
 
-  it should "return a set of damaged ships" in:
-    PlayerBoard()
-      .addShip(ship)
-      .hit(position)
-      .hits shouldEqual Set(position)
+  it should "update the string representation correctly after a hit on a ship" in:
+    val board    = PlayerBoard().addShip(ship).getOrElse(fail())
+    val newBoard = board.hit(position)
+    newBoard.toString shouldEqual (
+      "\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | X | S | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n"
+    )
+
+  it should "update the string representation correctly after a hit on an empty spot" in:
+    val board    = PlayerBoard().addShip(ship).getOrElse(fail())
+    val newBoard = board.hit(Position(0, 0))
+    newBoard.toString shouldEqual (
+      "\n" +
+        "+ | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | S | S | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n"
+    )
