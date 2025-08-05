@@ -47,8 +47,8 @@ final private case class ShipImpl(
 ) extends Ship:
   override def anchor: Position = position
   override lazy val positions: Set[Position] = orientation match
-    case Orientation.Horizontal => (0 until shipType.length).map(i => Position(anchor.x + i, anchor.y)).toSet
-    case Orientation.Vertical   => (0 until shipType.length).map(i => Position(anchor.x, anchor.y + i)).toSet
+    case Orientation.Horizontal => (0 until shipType.length).map(i => Position(anchor.col + i, anchor.row)).toSet
+    case Orientation.Vertical   => (0 until shipType.length).map(i => Position(anchor.col, anchor.row + i)).toSet
   override lazy val shape: ShipShape     = ShipShapeImpl(orientation, shipType.length)
   override def move(pos: Position): Ship = copy(position = pos)
   override def rotate: Ship              = copy(orientation = orientation.rotate)

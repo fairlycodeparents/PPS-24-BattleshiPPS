@@ -98,7 +98,7 @@ object ShipPositioningImpl extends ShipPositioning:
 
   override def isShipOutOfBounds(ship: Ship): Boolean =
     ship.positions.exists(pos =>
-      pos.x < 0 || pos.x >= PlayerBoard.size || pos.y < 0 || pos.y >= PlayerBoard.size
+      pos.col < 0 || pos.col >= PlayerBoard.size || pos.row < 0 || pos.row >= PlayerBoard.size
     )
 
   override def validateShipPlacement(board: PlayerBoard, ship: Ship): Either[String, Unit] =

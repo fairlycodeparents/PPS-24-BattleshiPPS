@@ -70,8 +70,8 @@ object ShipAttack:
       .toSet
 
   private def isValidPosition(position: Position): Boolean =
-    position.x >= 0 && position.x < PlayerBoard.size &&
-      position.y >= 0 && position.y < PlayerBoard.size
+    position.col >= 0 && position.col < PlayerBoard.size &&
+      position.row >= 0 && position.row < PlayerBoard.size
 
 /** Represents a ship with its damage state. */
 case class DamagedShip(
