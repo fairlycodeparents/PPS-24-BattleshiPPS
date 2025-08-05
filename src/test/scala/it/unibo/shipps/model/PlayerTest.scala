@@ -10,8 +10,8 @@ import org.scalatest.matchers.should
 import scala.language.postfixOps
 
 class PlayerTest extends AnyFlatSpec with should.Matchers:
-  val humanPlayer: Player = createHumanPlayer("player1")
-  val botPlayer: Player   = createBotPlayer(RandomBotAttackStrategy())
+  val humanPlayer: Player     = createHumanPlayer("player1")
+  val randomBotPlayer: Player = createBotPlayer(RandomBotAttackStrategy())
   val enemyBoard: PlayerBoard = PlayerBoardBuilder.board(
     place a Frigate at G(1) vertical,
     place a Submarine at A(5) horizontal,
@@ -33,13 +33,24 @@ class PlayerTest extends AnyFlatSpec with should.Matchers:
     result.isRight shouldBe false
 
   "A bot player" should "be created with an attack strategy" in:
-    botPlayer.isABot shouldBe true
-    botPlayer shouldBe BotPlayer(RandomBotAttackStrategy())
+    randomBotPlayer.isABot shouldBe true
+    randomBotPlayer shouldBe BotPlayer(RandomBotAttackStrategy())
+    val averageBotPlayer = createBotPlayer(AverageBotAttackStrategy())
+    averageBotPlayer.isABot shouldBe true
+    averageBotPlayer shouldBe BotPlayer(AverageBotAttackStrategy())
 
   it should "be able to attack randomly without providing a position" in:
-    val (_, result) = botPlayer.makeAttack(enemyBoard)
+    val (_, result) = randomBotPlayer.makeAttack(enemyBoard)
     result.isRight shouldBe true
 
   it should "not be able to attack a given position" in:
-    val (_, result) = botPlayer.makeAttack(enemyBoard, Option(A(1)))
+    val (_, result) = randomBotPlayer.makeAttack(enemyBoard, Option(A(1)))
     result.isRight shouldBe false
+
+  "There" should "be possible to calculate adjacent positions" in:
+    object TestCalculator extends AdjacentPositionsCalculator
+    val expected = List(
+      B(1),
+      A(2)
+    )
+    TestCalculator.getAdjacentPositions(A(1)) shouldBe expected
