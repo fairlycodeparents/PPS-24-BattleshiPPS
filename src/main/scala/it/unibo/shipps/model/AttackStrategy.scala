@@ -15,6 +15,16 @@ trait AttackStrategy {
   def execute(playerBoard: PlayerBoard, position: Option[Position]): (PlayerBoard, Either[String, AttackResult])
 }
 
+/**
+ * A mixin for the generation of a random position
+ */
+trait RandomPositionGenerator {
+  protected def generateRandomPosition: Position =
+    val xValue = Random.nextInt(10)
+    val yValue = Random.nextInt(10)
+    Position(xValue, yValue)
+}
+
 /** Represents the [[AttackStrategy]] of a human [[Player]] */
 case class HumanAttackStrategy() extends AttackStrategy {
   override def execute(
@@ -26,16 +36,11 @@ case class HumanAttackStrategy() extends AttackStrategy {
 }
 
 /** Represents the [[AttackStrategy]] of a basic bot [[Player]] */
-case class RandomBotAttackStrategy() extends AttackStrategy {
+case class RandomBotAttackStrategy() extends AttackStrategy with RandomPositionGenerator {
   override def execute(
-      playerBoard: PlayerBoard,
-      position: Option[Position]
-  ): (PlayerBoard, Either[String, AttackResult]) = position match
+                        playerBoard: PlayerBoard,
+                        position: Option[Position]
+                      ): (PlayerBoard, Either[String, AttackResult]) = position match
     case Some(pos) => (playerBoard, Left("Position should not be required for a bot attack"))
-    case None      => ShipAttack.attack(playerBoard, generateRandomValidPosition())
-
-  private def generateRandomValidPosition(): Position =
-    val xValue = Random.nextInt(10)
-    val yValue = Random.nextInt(10)
-    Position(xValue, yValue)
+    case None => ShipAttack.attack(playerBoard, generateRandomPosition)
 }
