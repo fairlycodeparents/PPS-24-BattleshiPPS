@@ -1,6 +1,7 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.model.*
+import it.unibo.shipps.model.board.{PlayerBoard, Position}
 
 /** Manages game state transitions and game flow logic */
 object GameStateManager:

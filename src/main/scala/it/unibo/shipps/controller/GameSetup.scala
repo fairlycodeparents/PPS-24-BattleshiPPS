@@ -37,12 +37,10 @@ class GameSetup(val viewFrame: MainFrame):
       BoardFactory.createRandomBoard(currentConfig),
       BoardFactory.createRandomBoard(currentConfig),
       HumanPlayer(),
-      secondPlayer,
-      ShipPositioningImpl,
-      null
+      secondPlayer
     )
     val view = new SimpleGui(controller)
-    controller.view = view
+    controller.view = Some(view)
     view.update(Turn.FirstPlayer)
     view.visible = true
     viewFrame.close()
