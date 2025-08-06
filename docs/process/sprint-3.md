@@ -12,7 +12,7 @@ a turno, o contro un semplice bot che attacca in modo random. Inoltre, dovrà po
 appunto, la modalità (multiplayer o vs bot) e il numero di navi da posizionare.
 
 ## Deadline
-La scadenza dello sprint è il 04/07/2025.
+La scadenza dello sprint è il 04/08/2025.
 
 ## Backlog
 <table>
