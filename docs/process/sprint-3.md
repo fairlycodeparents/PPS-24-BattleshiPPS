@@ -187,9 +187,11 @@ La scadenza dello sprint è il 04/07/2025.
 
 ## Sprint Review
 Lo stakeholder è complessivamente soddisfatto del risultato ottenuto 
-poiché ha potuto visualizzare una demo completa di tutte le funzionalità principali
-dell'applicazione richiesta. Viene richiesto a livello visivo un maggiore delay tra un turno e un altro
-per poter meglio visualizzare il risultato del proprio attacco.
+poiché ha potuto visualizzare una demo completa di tutte le funzionalità principali dell'applicazione richiesta. 
+Tuttavia, sono stati portati alla luce alcuni possibili miglioramenti riguardanti la _usability_ del prodotto:
+un maggiore delay tra un turno e un altro, per poter meglio visualizzare il risultato del proprio attacco, 
+una visualizzazione più precisa del risultato del colpo effettuato dal bot (nella versione vs bot) e una
+spiegazione chiara per il posizionamento delle navi del primo player, così come avviene quando è il turno del secondo.
 
 ## Sprint Retrospective
 

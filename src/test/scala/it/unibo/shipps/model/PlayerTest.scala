@@ -1,8 +1,9 @@
 package it.unibo.shipps.model
 
-import it.unibo.shipps.model.board.PlayerBoardBuilder.*
 import it.unibo.shipps.model.PlayerFactory.*
 import it.unibo.shipps.model.ShipType.*
+import it.unibo.shipps.model.board.ShipPlacementDSL.place
+import it.unibo.shipps.model.board.BoardCoordinates._
 import it.unibo.shipps.model.board.{PlayerBoard, PlayerBoardBuilder}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
