@@ -3,6 +3,7 @@ package it.unibo.shipps.controller
 import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
 import it.unibo.shipps.controller.GameStateManager.DialogAction
 import it.unibo.shipps.controller.Turn.FirstPlayer
+import it.unibo.shipps.controller.utils.DelayedExecutor
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.view.SimpleGui
@@ -97,7 +98,7 @@ case class GameState(
     * @param result the result of the attack of the second player on the first player's board
     * @return updated GameState with the enemy attack result added
     */
-  def addEnemyAttackResult(position: Position, result: AttackResult): GameState = {
+  def addEnemyAttackResult(position: Position, result: AttackResult): GameState =
     result match
       case AttackResult.AlreadyAttacked =>
         this
@@ -116,7 +117,6 @@ case class GameState(
           enemyAttackResult = enemyAttackResult + (position -> result),
           enemyCellColors = enemyCellColors + (position     -> ColorScheme.SUNK)
         )
-  }
 
 /** Represents the controller for the game, managing the game state and interactions.
   * @param initialBoard the board of the first player
@@ -138,22 +138,7 @@ class GameController(
   private var turn: Turn                          = Turn.FirstPlayer
   private var isPositioningPhaseComplete: Boolean = false
   private val positioning: ShipPositioning        = ShipPositioningImpl
-
-  /** Handle the bot turn. */
-  private def executeBotTurn(): Unit = {
-    val result = GameStateManager.handleBotTurn(state, turn, firstPlayer, secondPlayer)
-    applyGameActionResult(result)
-  }
-
-  /** Set a delay before executing an action.
-    * @param action the action to execute after the delay
-    * @param delayMs the delay in milliseconds before executing the action
-    */
-  private def executeWithDelay(action: () => Unit, delayMs: Int = 1000): Unit = {
-    val timer = new Timer(delayMs, _ => action())
-    timer.setRepeats(false)
-    timer.start()
-  }
+  private val botHandler: BotTurnHandler          = BotTurnHandler(this)
 
   /** Initializes the game controller with the view.
     * @param turn the turn of the game
@@ -164,7 +149,7 @@ class GameController(
   /** Sets the view for the game controller.
     * @param result the view to set
     */
-  private def applyGameActionResult(result: GameStateManager.GameActionResult): Unit =
+  def applyGameActionResult(result: GameStateManager.GameActionResult): Unit =
     val oldTurn = turn
     state = result.newState
 
@@ -191,19 +176,15 @@ class GameController(
   private def handleHumanAttackResult(result: GameStateManager.GameActionResult, oldTurn: Turn): Unit =
     updateView(oldTurn)
 
-    executeWithDelay(
-      () => {
-        turn = result.newTurn
-        updateView(turn)
+    DelayedExecutor.runLater(500) {
+      turn = result.newTurn
+      updateView(turn)
 
-        result.showDialog.foreach(handleDialogAction)
+      result.showDialog.foreach(handleDialogAction)
 
-        if BattleController.isBotTurn(turn, firstPlayer, secondPlayer) then
-          executeWithDelay(() => executeBotTurn())
-
-      },
-      500
-    )
+      if BattleController.isBotTurn(turn, firstPlayer, secondPlayer) then
+        botHandler.scheduleBotMove(state, turn, firstPlayer, secondPlayer)
+    }
 
   /** Handles the result of a game action and updates the game state and view.
     * @param result the result of the game action
@@ -216,7 +197,7 @@ class GameController(
     if BattleController.isBotTurn(turn, firstPlayer, secondPlayer) &&
       state.gamePhase == GamePhase.Battle
     then
-      executeWithDelay(() => executeBotTurn())
+      botHandler.scheduleBotMove(state, turn, firstPlayer, secondPlayer)
 
     updateView(turn)
 
@@ -263,7 +244,7 @@ class GameController(
       applyGameActionResult(result)
 
   /** Handles the action when the game starts. */
-  def onStartGame(): Unit = {
+  def onStartGame(): Unit =
     val result = GameStateManager.handleStartGame(
       state,
       turn,
@@ -277,4 +258,3 @@ class GameController(
       isPositioningPhaseComplete = true
 
     applyGameActionResult(result)
-  }
