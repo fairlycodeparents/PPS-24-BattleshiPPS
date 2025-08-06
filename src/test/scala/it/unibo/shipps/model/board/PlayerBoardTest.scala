@@ -1,56 +1,107 @@
 package it.unibo.shipps.model.board
 
-import it.unibo.shipps.model.ShipType.*
-import it.unibo.shipps.model.board.BoardCoordinates.*
-import it.unibo.shipps.model.board.PlayerBoardBuilder.*
-import it.unibo.shipps.model.board.ShipPlacementDSL.place
 import org.scalatest.*
-import org.scalatest.flatspec.*
-import org.scalatest.matchers.*
+import flatspec.*
+import it.unibo.shipps.model.{Ship, ShipType}
+import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import matchers.*
 
-import scala.language.postfixOps
+/** Test suite for the PlayerBoard class. */
+class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
+  val position: Position = Position(2, 3)
+  val ship: Ship         = ShipType.Frigate.horizontalAt(position)
 
-object TestHelpers:
-  /** Extension method to extract all positions occupied by ships on a player board. */
-  extension (b: PlayerBoard) def positions: Set[Position] = b.ships.flatMap(_.positions)
+  "An empty player board" should "be initialised with no ships" in:
+    PlayerBoard().ships shouldBe empty
 
-/** Test suite for the [[PlayerBoardBuilder]]. */
-class PlayerBoardBuilderTest extends AnyFlatSpec with should.Matchers:
-  import TestHelpers.*
+  it should "return an error message when a ship is removed" in:
+    PlayerBoard().removeShip(ship).isLeft shouldBe true
 
-  "The DSL of PlayerBoardBuilder" should "support placement of a single horizontal ship" in:
-    board(place a Carrier at A(1) horizontal).positions shouldEqual Position(0 to 4, 0)
+  it should "allow adding a ship" in:
+    PlayerBoard().addShip(ship).getOrElse(fail()).ships should contain(ship)
 
-  it should "support placement of a vertical ship" in:
-    board(place a Destroyer at B(2) vertical).positions shouldEqual Position(1, 1 to 4)
+  it should "consider any position as not occupied" in:
+    val boardPositions: Set[Position] =
+      (0 until PlayerBoard.size).flatMap(x =>
+        (0 until PlayerBoard.size).map(y => Position(x, y))
+      ).toSet
+    PlayerBoard().isAnyPositionOccupied(boardPositions) shouldBe false
 
-  it should "allow placing multiple non-overlapping ships" in:
-    val multiShipBoard = board(
-      place a Carrier at A(1) horizontal,
-      place a Submarine at A(2) horizontal,
-      place a Frigate at J(4) vertical
+  it should "return an empty set of hit positions" in:
+    PlayerBoard().hits shouldBe empty
+
+  "A player board" should "allow removing a ship that does exist" in:
+    val boardWithShip    = PlayerBoard().addShip(ship).getOrElse(fail())
+    val boardWithoutShip = boardWithShip.removeShip(ship)
+    boardWithoutShip.getOrElse(fail()).ships shouldBe empty
+
+  it should "update occupied positions correctly, after a ship is added" in:
+    val boardWithShip = PlayerBoard().addShip(ship).getOrElse(fail())
+    boardWithShip.isAnyPositionOccupied(Set(position)) shouldBe true
+
+  it should "return a Left with an error message if a ship is added to an occupied position" in:
+    val board  = PlayerBoard().addShip(ship).getOrElse(fail())
+    val result = board.addShip(ship)
+    result.isLeft shouldBe true
+
+  it should "return the ship at a specific position" in:
+    val board = PlayerBoard().addShip(ship).getOrElse(fail())
+    board.shipAtPosition(position) shouldEqual Some(ship)
+
+  it should "return an empty optional if no ship is at the specified position" in:
+    PlayerBoard().shipAtPosition(position) shouldEqual None
+
+  it should "print a nice and clear string representation" in:
+    val board = PlayerBoard().addShip(ship).getOrElse(fail())
+    board.toString shouldEqual (
+      "\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | S | S | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n"
     )
-    multiShipBoard.ships.size shouldEqual 3
 
-  "Placing ships" should "handle a placement at the board's edge (top-left)" in:
-    val boardWithFrigate = board(place a Frigate at A(1) horizontal)
-    boardWithFrigate.ships.head.positions shouldEqual Position(0 to 1, 0)
+  it should "return a new board with the updated hits after a hit" in:
+    val boardWithShip = PlayerBoard().addShip(ship).getOrElse(fail())
+    val newBoard      = boardWithShip.hit(position)
+    newBoard.hits should contain(position)
 
-  it should "handle a placement at the board's edge (bottom-right)" in:
-    board(place a Destroyer at J(7) vertical).positions shouldEqual Position(9, 6 to 9)
-
-  it should "throw RuntimeException if ships overlap" in:
-    a[RuntimeException] should be thrownBy board(
-      place a Carrier at A(1) horizontal,
-      place a Submarine at A(1) horizontal
+  it should "update the string representation correctly after a hit on a ship" in:
+    val board    = PlayerBoard().addShip(ship).getOrElse(fail())
+    val newBoard = board.hit(position)
+    newBoard.toString shouldEqual (
+      "\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | X | S | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n"
     )
 
-  it should "throw RuntimeException if a ship goes out of bounds" in:
-    a[RuntimeException] should be thrownBy board(
-      place a Carrier at J(1) horizontal
-    )
-
-  it should "throw RuntimeException with an invalid coordinate" in:
-    a[RuntimeException] should be thrownBy board(
-      place a Carrier at A(11) horizontal
+  it should "update the string representation correctly after a hit on an empty spot" in:
+    val board    = PlayerBoard().addShip(ship).getOrElse(fail())
+    val newBoard = board.hit(Position(0, 0))
+    newBoard.toString shouldEqual (
+      "\n" +
+        "+ | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | S | S | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n" +
+        "O | O | O | O | O | O | O | O | O | O\n"
     )
