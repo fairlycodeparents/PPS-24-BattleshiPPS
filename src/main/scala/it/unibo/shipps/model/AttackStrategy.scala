@@ -29,7 +29,7 @@ trait AdjacentPositionsCalculator {
     val Position(x, y) = pos
     List((-1, 0), (1, 0), (0, -1), (0, 1))
       .map((dx, dy) => Position(x + dx, y + dy))
-      .filter(p => p.x >= 0 && p.y >= 0)
+      .filter(p => p.row >= 0 && p.col >= 0)
 }
 
 /** Represents the [[AttackStrategy]] of a human [[Player]] */
