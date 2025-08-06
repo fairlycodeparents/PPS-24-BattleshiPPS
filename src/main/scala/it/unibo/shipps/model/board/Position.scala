@@ -3,7 +3,7 @@ package it.unibo.shipps.model.board
 /** A type alias to represent a coordinate dimension, which can be a single Int
   * or a Range of Ints.
   */
-type CoordinateDim = Int | Range
+type CoordinateDimension = Int | Range
 
 /** Represents a position on a 2D grid, defined by its column and row coordinates.
   * @param col the column coordinate
@@ -11,20 +11,21 @@ type CoordinateDim = Int | Range
   */
 case class Position(col: Int, row: Int)
 
+/** Companion object for the Position class, providing flexible factory methods. */
 object Position:
   /** Creates a Set of Position objects from the defined column and row dimensions.
-    * @param colDim The column dimension, as a single Int or a Range.
-    * @param rowDim The row dimension, as a single Int or a Range.
-    * @return A Set containing all the positions within the range.
+    * @param colDimension The columns dimension, as a single [[Int]] value or a [[Range]].
+    * @param rowDimension The rows dimension, as a single [[Int]] value or a [[Range]].
+    * @return A [[Set]] containing all the [[Position]] within the specified range.
     */
-  def apply(colDim: CoordinateDim, rowDim: CoordinateDim): Set[Position] =
-    val (cols, rows) = (colDim, rowDim) match
-      case (r1: Range, r2: Range) => (r1, r2)
-      case (r1: Range, i2: Int)   => (r1, i2 to i2)
-      case (i1: Int, r2: Range)   => (i1 to i1, r2)
-      case (i1: Int, i2: Int)     => (i1 to i1, i2 to i2)
+  def apply(colDimension: CoordinateDimension, rowDimension: CoordinateDimension): Set[Position] =
+    val (colRange, rowRange) = (colDimension, rowDimension) match
+      case (range1: Range, range2: Range) => (range1, range2)
+      case (range1: Range, value2: Int)   => (range1, value2 to value2)
+      case (value1: Int, range2: Range)   => (value1 to value1, range2)
+      case (value1: Int, value2: Int)     => (value1 to value1, value2 to value2)
 
     (for
-      col <- cols
-      row <- rows
+      col <- colRange
+      row <- rowRange
     yield Position(col, row)).toSet
