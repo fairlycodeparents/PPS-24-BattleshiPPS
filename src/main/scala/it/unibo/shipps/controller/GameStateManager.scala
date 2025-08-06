@@ -3,8 +3,16 @@ package it.unibo.shipps.controller
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 
+import scala.util.Try
+
 /** Manages game state transitions and game flow logic */
 object GameStateManager:
+
+  /** Represents different dialog actions */
+  enum DialogAction:
+    case ShowTurnDialog(playerName: String)
+    case ShowWaitingDialog
+    case HideDialog
 
   /** Result of a game action */
   case class GameActionResult(
@@ -12,13 +20,13 @@ object GameStateManager:
       newTurn: Turn,
       messages: List[String],
       showDialog: Option[DialogAction] = None
-  )
-
-  /** Represents different dialog actions */
-  enum DialogAction:
-    case ShowTurnDialog(playerName: String)
-    case ShowWaitingDialog
-    case HideDialog
+  ):
+    /** Adds a message to the action result
+      * @param dialog dialog action to show
+      * @return new GameActionResult with updated dialog
+      */
+    def withDialog(dialog: DialogAction): GameActionResult =
+      copy(showDialog = Some(dialog))
 
   /** Handles start game logic
     * @param gameState current game state
@@ -144,16 +152,15 @@ object GameStateManager:
     val battleResult  = BattleController.processBotAttack(gameState, currentPlayer, turn)
 
     if battleResult.gameOver then
-      GameActionResult(battleResult.newState, turn, battleResult.messages, Some(DialogAction.HideDialog))
+      GameActionResult(battleResult.newState, turn, battleResult.messages)
+        .withDialog(DialogAction.HideDialog)
     else
-      val newTurn    = BattleController.switchTurn(turn)
-      val playerName = if newTurn == Turn.FirstPlayer then "Player 1" else "Player 2"
-      GameActionResult(
-        battleResult.newState,
-        newTurn,
-        battleResult.messages,
-        Some(DialogAction.ShowTurnDialog(playerName))
-      )
+      val newTurn = BattleController.switchTurn(turn)
+      val playerName = newTurn match
+        case Turn.FirstPlayer  => "Player 1"
+        case Turn.SecondPlayer => "Player 2"
+      GameActionResult(battleResult.newState, newTurn, battleResult.messages)
+        .withDialog(DialogAction.ShowTurnDialog(playerName))
 
   /** Handles bot game start
     * @param gameState current game state
@@ -176,9 +183,8 @@ object GameStateManager:
     GameActionResult(
       gameState,
       Turn.SecondPlayer,
-      List("Player 2: Position your ships and press Start Game again"),
-      Some(DialogAction.ShowTurnDialog("Player 2 - Position your ships"))
-    )
+      List("Player 2: Position your ships and press Start Game again")
+    ).withDialog(DialogAction.ShowTurnDialog("Player 2 - Position your ships"))
 
   /** Handles two-player battle start
     * @param gameState current game state
@@ -189,9 +195,8 @@ object GameStateManager:
     GameActionResult(
       newState,
       Turn.FirstPlayer,
-      List("Battle started! Player 1 attacks first!"),
-      Some(DialogAction.ShowTurnDialog("Player 1 - Battle begins!"))
-    )
+      List("Battle started! Player 1 attacks first!")
+    ).withDialog(DialogAction.ShowTurnDialog("Player 1 - Battle begins!"))
 
   /** Determines the dialog action based on the current turn and players
     * @param turn current turn
@@ -203,5 +208,7 @@ object GameStateManager:
     if BattleController.isBotTurn(turn, firstPlayer, secondPlayer) then
       DialogAction.ShowWaitingDialog
     else
-      val playerName = if turn == Turn.FirstPlayer then "Player 1" else "Player 2"
+      val playerName = turn match
+        case Turn.FirstPlayer  => "Player 1"
+        case Turn.SecondPlayer => "Player 2"
       DialogAction.ShowTurnDialog(playerName)

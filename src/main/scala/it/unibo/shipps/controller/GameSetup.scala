@@ -1,6 +1,7 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.model.*
+import it.unibo.shipps.view.handler.TurnDialogHandler
 import it.unibo.shipps.view.{SetupView, SimpleGui}
 
 import javax.swing.event.ChangeEvent
@@ -39,8 +40,10 @@ class GameSetup(val viewFrame: MainFrame):
       HumanPlayer(),
       secondPlayer
     )
-    val view = new SimpleGui(controller)
+    val view          = new SimpleGui(controller)
+    val dialogHandler = new TurnDialogHandler(view)
     controller.view = Some(view)
+    controller.dialogHandler = Some(dialogHandler)
     view.update(Turn.FirstPlayer)
     view.visible = true
     viewFrame.close()

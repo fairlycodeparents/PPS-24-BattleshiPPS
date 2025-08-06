@@ -7,6 +7,7 @@ import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.view.SimpleGui
 import it.unibo.shipps.view.components.DialogFactory
+import it.unibo.shipps.view.handler.TurnDialogHandler
 import it.unibo.shipps.view.renderer.ColorScheme
 
 import java.awt.BorderLayout
@@ -130,11 +131,11 @@ class GameController(
     secondPlayer: Player
 ):
 
-  var state: GameState        = GameState(initialBoard, enemyBoard, None, Positioning)
-  var view: Option[SimpleGui] = None
+  var state: GameState                         = GameState(initialBoard, enemyBoard, None, Positioning)
+  var view: Option[SimpleGui]                  = None
+  var dialogHandler: Option[TurnDialogHandler] = None
 
   private var turn: Turn                          = Turn.FirstPlayer
-  private var currentDialog: Option[JDialog]      = None
   private var isPositioningPhaseComplete: Boolean = false
   private val positioning: ShipPositioning        = ShipPositioningImpl
 
@@ -148,7 +149,7 @@ class GameController(
     * @param action the action to execute after the delay
     * @param delayMs the delay in milliseconds before executing the action
     */
-  private def executeWithDelay(action: () => Unit, delayMs: Int = 2000): Unit = {
+  private def executeWithDelay(action: () => Unit, delayMs: Int = 1000): Unit = {
     val timer = new Timer(delayMs, _ => action())
     timer.setRepeats(false)
     timer.start()
@@ -160,35 +161,55 @@ class GameController(
   private def updateView(turn: Turn): Unit =
     Swing.onEDT(view.get.update(turn))
 
-  /** Show the dialog indicating whose turn it is.
-    * @param playerName the name of the player whose turn it is
-    */
-  private def showTurnDialog(playerName: String): Unit =
-    hideCurrentDialog()
-    val dialog = DialogFactory.createTurnDialog(view.get, playerName)
-    currentDialog = Some(dialog)
-    DialogFactory.showDialog(dialog)
-
-  /** Shows a waiting dialog while the bot is taking its turn. */
-  private def showWaitingDialog(): Unit =
-    hideCurrentDialog()
-    val dialog = DialogFactory.createWaitingDialog(view.get)
-    currentDialog = Some(dialog)
-    DialogFactory.showDialog(dialog)
-
-  /** Hides the current dialog. */
-  private def hideCurrentDialog(): Unit =
-    DialogFactory.hideDialogOpt(currentDialog)
-    currentDialog = None
-
   /** Sets the view for the game controller.
     * @param result the view to set
     */
   private def applyGameActionResult(result: GameStateManager.GameActionResult): Unit =
+    val oldTurn = turn
     state = result.newState
-    turn = result.newTurn
 
     result.messages.foreach(println)
+
+    if isHumanBattleAttack(result, oldTurn) then
+      handleHumanAttackResult(result, oldTurn)
+    else
+      handleGameAction(result)
+
+  /** Checks if the result of the game action is a human battle attack.
+    * @param result the game action result
+    * @param oldTurn the previous turn before the action
+    * @return true if it is a human battle attack, false otherwise
+    */
+  private def isHumanBattleAttack(result: GameStateManager.GameActionResult, oldTurn: Turn): Boolean =
+    state.gamePhase == GamePhase.Battle && result.newTurn != oldTurn &&
+      !BattleController.isBotTurn(oldTurn, firstPlayer, secondPlayer)
+
+  /** Handles the result of a human attack during the battle phase.
+    * @param result the result of the game action
+    * @param oldTurn the previous turn before the action
+    */
+  private def handleHumanAttackResult(result: GameStateManager.GameActionResult, oldTurn: Turn): Unit =
+    updateView(oldTurn)
+
+    executeWithDelay(
+      () => {
+        turn = result.newTurn
+        updateView(turn)
+
+        result.showDialog.foreach(handleDialogAction)
+
+        if BattleController.isBotTurn(turn, firstPlayer, secondPlayer) then
+          executeWithDelay(() => executeBotTurn())
+
+      },
+      500
+    )
+
+  /** Handles the result of a game action and updates the game state and view.
+    * @param result the result of the game action
+    */
+  private def handleGameAction(result: GameStateManager.GameActionResult): Unit =
+    turn = result.newTurn
 
     result.showDialog.foreach(handleDialogAction)
 
@@ -205,11 +226,11 @@ class GameController(
   private def handleDialogAction(action: DialogAction): Unit =
     action match
       case DialogAction.ShowTurnDialog(playerName) =>
-        showTurnDialog(playerName)
+        dialogHandler.get.showTurnDialog(playerName)
       case DialogAction.ShowWaitingDialog =>
-        showWaitingDialog()
+        dialogHandler.get.showWaitingDialog()
       case DialogAction.HideDialog =>
-        hideCurrentDialog()
+        dialogHandler.get.hideCurrentDialog()
 
   /** Handles the click on a cell based on the current game phase.
     * @param pos the position of the cell clicked
