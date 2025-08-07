@@ -6,7 +6,7 @@ import it.unibo.shipps.model.board.PlayerBoard
 import it.unibo.shipps.view.components.{ButtonFactory, GridManager}
 import it.unibo.shipps.view.handler.{ClickHandler, ClickState}
 
-import java.awt
+import java.awt.Color
 import java.awt.event.KeyListener
 import scala.swing.*
 import scala.swing.MenuBar.NoMenuBar.{focusable, keys}
@@ -18,12 +18,14 @@ class SimpleGui(controller: GameController) extends MainFrame:
   title = "BattleshiPPS"
   preferredSize = new Dimension(SIZE, SIZE)
 
-  private val gridManager  = new GridManager(controller)
-  private val controlPanel = createControlPanel()
-  private val gridPanel    = createGridPanel()
+  private val gridManager         = new GridManager(controller)
+  private val controlPanel        = createControlPanel()
+  private val gridPanel           = createGridPanel()
+  private val infoPanel           = createInfoPanel()
   private var startButton: Button = _
 
   contents = new BorderPanel {
+    layout(infoPanel) = BorderPanel.Position.North
     layout(gridPanel) = BorderPanel.Position.Center
     layout(controlPanel) = BorderPanel.Position.South
   }
@@ -57,13 +59,61 @@ class SimpleGui(controller: GameController) extends MainFrame:
       }
     }
 
+  private def createInfoPanel(): BoxPanel = {
+    new BoxPanel(Orientation.Vertical) {
+      opaque = true
+      val posInstruction: Label =
+        new Label("<html>• Click to select/move ships<br>• Double-click to rotate<br>• Press R to randomize</html>")
+      contents += Swing.VStrut(5)
+      contents += posInstruction
+      contents += Swing.VGlue
+      revalidate()
+      repaint()
+    }
+  }
+
+  private def createBattleLegendPanel(): BoxPanel = {
+    def colorBox(bg: Color, overlay: Option[Color] = None): Panel = new Panel {
+      preferredSize = new Dimension(20, 20)
+      maximumSize = preferredSize
+      minimumSize = preferredSize
+
+      override def paintComponent(g: Graphics2D): Unit = {
+        super.paintComponent(g)
+        g.setColor(bg)
+        g.fillRect(0, 0, size.width, size.height)
+        overlay.foreach { color =>
+          g.setColor(color)
+          g.fillOval(4, 4, 12, 12)
+        }
+      }
+    }
+
+    new BoxPanel(Orientation.Vertical) {
+      contents += new Label("Click a position to attack")
+      contents += new Label("Shot legend:")
+      contents += new FlowPanel(FlowPanel.Alignment.Left)(
+        colorBox(Color.YELLOW),
+        new Label(" + O = Ship hit")
+      )
+      contents += new FlowPanel(FlowPanel.Alignment.Left)(
+        colorBox(Color.CYAN),
+        new Label(" + X = Miss")
+      )
+      contents += new FlowPanel(FlowPanel.Alignment.Left)(
+        colorBox(Color.RED),
+        new Label("+ O = Ship sunk")
+      )
+      border = Swing.EmptyBorder(10, 0, 0, 0)
+    }
+  }
+
   /** Updates the grid panel with the current game state and handles game over conditions.
     * @param turn the current turn of the game
     */
   def update(turn: Turn): Unit =
     val state   = controller.state
     val buttons = gridManager.createButtons(state, turn)
-
     gridPanel.contents.clear()
     gridPanel.contents ++= buttons
     gridPanel.revalidate()
@@ -73,6 +123,11 @@ class SimpleGui(controller: GameController) extends MainFrame:
       controlPanel.contents -= startButton
       controlPanel.revalidate()
       controlPanel.repaint()
+
+      infoPanel.contents.clear()
+      infoPanel.contents += createBattleLegendPanel()
+      infoPanel.revalidate()
+      infoPanel.repaint()
     }
 
     GameOverHandler.handleGameOver(this, state)
