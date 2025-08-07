@@ -18,8 +18,8 @@ trait AttackStrategy {
 /** A mixin for the generation of a random position */
 trait RandomPositionGenerator {
   protected def generateRandomPosition: Position =
-    val xValue = Random.nextInt(10)
-    val yValue = Random.nextInt(10)
+    val xValue = Random.nextInt(PlayerBoard.size)
+    val yValue = Random.nextInt(PlayerBoard.size)
     Position(xValue, yValue)
 }
 
@@ -29,7 +29,7 @@ trait AdjacentPositionsUtilities {
     val Position(x, y) = pos
     List((-1, 0), (1, 0), (0, -1), (0, 1))
       .map((dx, dy) => Position(x + dx, y + dy))
-      .filter(p => p.row >= 0 && p.col >= 0)
+      .filter(p => p.row >= 0 && p.col >= 0 && p.row < PlayerBoard.size && p.col < PlayerBoard.size)
 
   def getAdjacentToAttack(board: PlayerBoard): Option[Position] =
     val hitsNotSunk = board.hits.filter(pos => board.shipAtPosition(pos).isDefined)
