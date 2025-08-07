@@ -1,7 +1,8 @@
 package it.unibo.shipps.model.board
 
-import it.unibo.shipps.model.{Orientation, ShipPositioningImpl, ShipType}
-import it.unibo.shipps.model.ShipType.*
+import it.unibo.shipps.model.ShipPositioningImpl
+import it.unibo.shipps.model.ship.ShipType.*
+import it.unibo.shipps.model.ship.{Orientation, ShipType}
 import scala.language.postfixOps
 
 object PlayerBoardBuilder:

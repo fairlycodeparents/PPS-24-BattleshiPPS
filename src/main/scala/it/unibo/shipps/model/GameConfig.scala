@@ -1,6 +1,7 @@
 package it.unibo.shipps.model
 
 import it.unibo.shipps.model.board.{PlayerBoard, PlayerBoardBuilder, Position}
+import it.unibo.shipps.model.ship.{Orientation, ShipType}
 
 /** Represents the configuration of a game, including the ships available and their counts.
   *

@@ -2,8 +2,8 @@ package it.unibo.shipps.model.board
 
 import org.scalatest.*
 import flatspec.*
-import it.unibo.shipps.model.{Ship, ShipType}
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import it.unibo.shipps.model.ship.{Ship, ShipType}
 import matchers.*
 
 /** Test suite for the PlayerBoard class. */

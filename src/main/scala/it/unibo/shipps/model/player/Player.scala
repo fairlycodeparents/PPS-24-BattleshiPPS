@@ -1,6 +1,7 @@
-package it.unibo.shipps.model
+package it.unibo.shipps.model.player
 
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import it.unibo.shipps.model.{AttackResult, AttackStrategy, HumanAttackStrategy}
 
 /** Represents a player in the game */
 trait Player {

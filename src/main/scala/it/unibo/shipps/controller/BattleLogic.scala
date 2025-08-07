@@ -2,16 +2,9 @@ package it.unibo.shipps.controller
 
 import it.unibo.shipps.controller.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
-import it.unibo.shipps.model.{
-  AttackResult,
-  BotPlayer,
-  HumanAttackStrategy,
-  HumanPlayer,
-  Player,
-  RandomBotAttackStrategy,
-  Ship,
-  ShipAttack
-}
+import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
+import it.unibo.shipps.model.ship.Ship
+import it.unibo.shipps.model.{AttackResult, HumanAttackStrategy, RandomBotAttackStrategy, ShipAttack}
 import it.unibo.shipps.view.renderer.ColorScheme
 
 /** BattleLogic handles the logic for processing clicks during the battle phase of the game. */

@@ -1,7 +1,8 @@
 package it.unibo.shipps.model
 
-import it.unibo.shipps.model.ShipType.*
+import it.unibo.shipps.model.ship.ShipType.*
 import it.unibo.shipps.model.board.Position
+import it.unibo.shipps.model.ship.{Orientation, Ship, ShipShapeImpl, ShipType}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers.*
 

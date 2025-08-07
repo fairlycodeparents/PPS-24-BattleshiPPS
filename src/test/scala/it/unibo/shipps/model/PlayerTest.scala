@@ -1,14 +1,17 @@
 package it.unibo.shipps.model
 
-import it.unibo.shipps.model.PlayerFactory.*
-import it.unibo.shipps.model.ShipType.*
+import it.unibo.shipps.model.player.PlayerFactory.*
+import it.unibo.shipps.model.ship.ShipType.*
 import it.unibo.shipps.model.AttackResult.*
 import it.unibo.shipps.model.board.ShipPlacementDSL.place
 import it.unibo.shipps.model.board.BoardCoordinates.*
 import it.unibo.shipps.model.board.{PlayerBoard, PlayerBoardBuilder}
+import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
+import it.unibo.shipps.model.ship.Ship
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers.defined
 import org.scalatest.matchers.should
+
 import scala.language.postfixOps
 
 class PlayerTest extends AnyFlatSpec with should.Matchers:

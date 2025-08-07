@@ -3,8 +3,9 @@ package it.unibo.shipps.model
 import org.scalatest.*
 import flatspec.*
 import matchers.*
-import it.unibo.shipps.model.ShipType.*
+import it.unibo.shipps.model.ship.ShipType.*
 import it.unibo.shipps.model.board.PlayerBoard
+import it.unibo.shipps.model.ship.ShipType
 
 import scala.language.postfixOps
 
