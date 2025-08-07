@@ -30,6 +30,5 @@ class PositionTest extends AnyFlatSpec with should.Matchers:
       Position(2, 4)
     )
 
-  it should "handle an empty range gracefully" in {
+  it should "handle an empty range gracefully" in:
     Position(5 to 2, 1) shouldEqual Set.empty
-  }
