@@ -219,7 +219,7 @@ class GameController(
       BattleLogic.processBattleClick(currentState, secondPlayer, Turn.SecondPlayer, Some(pos))
   }
 
-  private def showTurnDialog(playerName: String): Unit = {
+  def showTurnDialog(playerName: String): Unit = {
     Swing.onEDT {
       val dialog = new JDialog(view.peer, s"Player Turn", true)
       dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE)
@@ -395,11 +395,11 @@ class GameController(
         else if !isPositioningPhaseComplete then
           turn = Turn.SecondPlayer
           isPositioningPhaseComplete = true
-          showTurnDialog("Player 2 - Position your ships")
+          showTurnDialog("Player 2 - position your ships")
           (state, "Player 2: Position your ships and press Start Game again")
         else
           turn = Turn.FirstPlayer
-          showTurnDialog("Player 1 - Battle begins!")
+          showTurnDialog("Player 1")
           (state.startBattle(state.enemyBoard), "Battle started! Player 1 attacks first!")
       case GamePhase.Battle =>
         (state, println("Game already started, cannot start again"))

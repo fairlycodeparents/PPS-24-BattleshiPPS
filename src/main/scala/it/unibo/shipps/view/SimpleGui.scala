@@ -21,11 +21,13 @@ class SimpleGui(controller: GameController) extends MainFrame:
   private val gridManager  = new GridManager(controller)
   private val controlPanel = createControlPanel()
   private val gridPanel    = createGridPanel()
+  private var startButton: Button = _
 
   contents = new BorderPanel {
     layout(gridPanel) = BorderPanel.Position.Center
     layout(controlPanel) = BorderPanel.Position.South
   }
+  controller.showTurnDialog("Player 1 - position your ships")
 
   private def createControlPanel(): FlowPanel = {
     new FlowPanel {
@@ -33,11 +35,12 @@ class SimpleGui(controller: GameController) extends MainFrame:
       vGap = 5
       border = Swing.EmptyBorder(2, 0, 2, 0)
 
-      val startButton: Button = ButtonFactory.createStartGameButton()
+      startButton = ButtonFactory.createStartGameButton()
       startButton.reactions += {
         case ButtonClicked(_) => controller.onStartGame()
       }
       contents += startButton
+
     }
   }
 
@@ -65,6 +68,12 @@ class SimpleGui(controller: GameController) extends MainFrame:
     gridPanel.contents ++= buttons
     gridPanel.revalidate()
     gridPanel.repaint()
+
+    if (state.gamePhase == GamePhase.Battle || state.gamePhase == GamePhase.GameOver) {
+      controlPanel.contents -= startButton
+      controlPanel.revalidate()
+      controlPanel.repaint()
+    }
 
     GameOverHandler.handleGameOver(this, state)
 
