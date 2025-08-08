@@ -21,19 +21,25 @@ import scala.annotation.tailrec
   */
 object BattleLogic:
 
+  case class BattleClickResult(
+      newState: GameState,
+      messages: List[String],
+      shouldChangeTurn: Boolean
+  )
+
   /** Processes a click during the battle phase.
     * @param state the current game state
     * @param player the player who attack
     * @param turn the turn of the player
     * @param pos the position of the click
-    * @return updated game state and a list of messages indicating the result of the click
+    * @return BattleClickResult containing the updated state, messages, and whether the turn should change
     */
   def processBattleClick(
       state: GameState,
       player: Player,
       turn: Turn,
       pos: Option[Position]
-  ): (GameState, List[String]) = {
+  ): BattleClickResult = {
     val (targetBoard, isAttackingEnemyBoard) = turn match {
       case Turn.FirstPlayer  => (state.enemyBoard, true)
       case Turn.SecondPlayer => (state.board, false)
@@ -43,7 +49,7 @@ object BattleLogic:
       performBotAttack(player, targetBoard)
     else
       pos match {
-        case Some(position) => player.makeAttack(targetBoard, Some(position))
+        case Some(position) => performHumanAttack(player, targetBoard, position)
         case None           => (targetBoard, Left("Position required for human player"))
       }
 
@@ -53,11 +59,31 @@ object BattleLogic:
           state.copy(enemyBoard = updatedBoard)
         else
           state.copy(board = updatedBoard)
-
         val (finalState, message) = processAttackResult(turn, newState, pos.orNull, result)
-        (finalState, List(message))
+        BattleClickResult(finalState, List(message), shouldChangeTurn = true)
       case Left(errorMessage) =>
-        (state, List(errorMessage))
+        BattleClickResult(state, List(errorMessage), shouldChangeTurn = false)
+  }
+
+  /** Performs a human attack, handling AlreadyAttacked cases by ignoring the attack.
+    * @param player   the human player
+    * @param board    the board to attack
+    * @param position the position to attack
+    * @return original board (unchanged) and attack result for AlreadyAttacked, or updated board and valid result
+    */
+  private def performHumanAttack(
+      player: Player,
+      board: PlayerBoard,
+      position: Position
+  ): (PlayerBoard, Either[String, AttackResult]) = {
+    val (updatedBoard, result) = player.makeAttack(board, Some(position))
+
+    result match {
+      case Right(AttackResult.AlreadyAttacked) =>
+        (board, Left(s"Position $position already attacked. Please choose another position."))
+      case _ =>
+        (updatedBoard, result)
+    }
   }
 
   /** Performs a bot attack with retry logic for AlreadyAttacked cases.

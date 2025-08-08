@@ -12,6 +12,7 @@ object GameStateManager:
   enum DialogAction:
     case ShowTurnDialog(playerName: String)
     case ShowWaitingDialog
+    case RetryAttack
     case HideDialog
 
   /** Result of a game action */
@@ -122,18 +123,18 @@ object GameStateManager:
       secondPlayer: Player
   ): GameActionResult =
     val currentPlayer = BattleController.getCurrentPlayer(turn, firstPlayer, secondPlayer)
+    val battleResult  = BattleController.processHumanAttack(gameState, currentPlayer, turn, position)
 
-    if !BattleController.canHumanPlay(turn, firstPlayer, secondPlayer) then
-      GameActionResult(gameState, turn, List("It's not your turn"))
+    if battleResult.gameOver then
+      GameActionResult(battleResult.newState, turn, battleResult.messages)
     else
-      val battleResult = BattleController.processHumanAttack(gameState, currentPlayer, turn, position)
-
-      if battleResult.gameOver then
-        GameActionResult(battleResult.newState, turn, battleResult.messages)
-      else
+      val clickResult = BattleLogic.processBattleClick(gameState, currentPlayer, turn, Some(position))
+      if clickResult.shouldChangeTurn then
         val newTurn      = BattleController.switchTurn(turn)
         val dialogAction = determineDialogAction(newTurn, firstPlayer, secondPlayer)
         GameActionResult(battleResult.newState, newTurn, battleResult.messages, Some(dialogAction))
+      else
+        GameActionResult(battleResult.newState, turn, battleResult.messages, Some(DialogAction.RetryAttack))
 
   /** Handles bot turn execution
     * @param gameState current game state

@@ -215,6 +215,8 @@ class GameController(
         dialogHandler.get.showWaitingDialog()
       case DialogAction.HideDialog =>
         dialogHandler.get.hideCurrentDialog()
+      case DialogAction.RetryAttack =>
+        dialogHandler.get.retryAttack()
 
   /** Handles the click on a cell based on the current game phase.
     * @param pos the position of the cell clicked

@@ -22,12 +22,9 @@ object BattleController:
       turn: Turn,
       position: Position
   ): BattleResult =
-    if gameState.gamePhase != GamePhase.Battle then
-      BattleResult(gameState, List("Battle phase not active"), gameOver = false)
-    else
-      val (newState, messages) = BattleLogic.processBattleClick(gameState, player, turn, Some(position))
-      val isGameOver           = newState.gamePhase == GamePhase.GameOver
-      BattleResult(newState, messages, isGameOver)
+    val clickResult = BattleLogic.processBattleClick(gameState, player, turn, Some(position))
+    val gameOver    = clickResult.newState.gamePhase == GamePhase.GameOver
+    BattleResult(clickResult.newState, clickResult.messages, gameOver)
 
   /** Processes a bot player's battle turn
     * @param gameState current game state
@@ -36,25 +33,9 @@ object BattleController:
     * @return battle result with updated state
     */
   def processBotAttack(gameState: GameState, botPlayer: Player, turn: Turn): BattleResult =
-    if gameState.gamePhase != GamePhase.Battle then
-      BattleResult(gameState, List("Battle phase not active"), gameOver = false)
-    else if !botPlayer.isABot then
-      BattleResult(gameState, List("Player is not a bot"), gameOver = false)
-    else
-      val (newState, messages) = BattleLogic.processBattleClick(gameState, botPlayer, turn, None)
-      val isGameOver           = newState.gamePhase == GamePhase.GameOver
-      BattleResult(newState, messages, isGameOver)
-
-  /** Determines if it's a valid human turn
-    * @param turn current turn
-    * @param firstPlayer first player
-    * @param secondPlayer second player
-    * @return true if human can play
-    */
-  def canHumanPlay(turn: Turn, firstPlayer: Player, secondPlayer: Player): Boolean =
-    turn match
-      case Turn.FirstPlayer  => !firstPlayer.isABot
-      case Turn.SecondPlayer => !secondPlayer.isABot
+    val clickResult = BattleLogic.processBattleClick(gameState, botPlayer, turn, None)
+    val gameOver    = clickResult.newState.gamePhase == GamePhase.GameOver
+    BattleResult(clickResult.newState, clickResult.messages, gameOver)
 
   /** Determines if it's a bot turn
     * @param turn current turn
@@ -63,9 +44,7 @@ object BattleController:
     * @return true if it's bot's turn
     */
   def isBotTurn(turn: Turn, firstPlayer: Player, secondPlayer: Player): Boolean =
-    turn match
-      case Turn.FirstPlayer  => firstPlayer.isABot
-      case Turn.SecondPlayer => secondPlayer.isABot
+    getCurrentPlayer(turn, firstPlayer, secondPlayer).isABot
 
   /** Gets the current player based on turn
     * @param turn current turn
