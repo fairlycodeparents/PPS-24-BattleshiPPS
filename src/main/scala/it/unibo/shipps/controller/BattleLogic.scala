@@ -14,6 +14,8 @@ import it.unibo.shipps.model.{
 }
 import it.unibo.shipps.view.renderer.ColorScheme
 
+import scala.annotation.tailrec
+
 /** BattleLogic handles the logic for processing battle actions during the game.
   * It updates the game state and manages attack results.
   */
@@ -38,7 +40,7 @@ object BattleLogic:
     }
 
     val (updatedBoard, attackResult) = if player.isABot then
-      player.makeAttack(targetBoard, None)
+      performBotAttack(player, targetBoard)
     else
       pos match {
         case Some(position) => player.makeAttack(targetBoard, Some(position))
@@ -56,6 +58,37 @@ object BattleLogic:
         (finalState, List(message))
       case Left(errorMessage) =>
         (state, List(errorMessage))
+  }
+
+  /** Performs a bot attack with retry logic for AlreadyAttacked cases.
+    * @param player     the bot player
+    * @param board      the board to attack
+    * @param maxRetries maximum number of retry attempts
+    * @return updated board and attack result
+    */
+  private def performBotAttack(
+      player: Player,
+      board: PlayerBoard,
+      maxRetries: Int = 100
+  ): (PlayerBoard, Either[String, AttackResult]) = {
+
+    @tailrec
+    def attemptAttack(currentBoard: PlayerBoard, retriesLeft: Int): (PlayerBoard, Either[String, AttackResult]) = {
+      if (retriesLeft <= 0) {
+        return (currentBoard, Left("Bot failed to find valid attack position after maximum retries"))
+      }
+
+      val (updatedBoard, result) = player.makeAttack(currentBoard, None)
+
+      result match {
+        case Right(AttackResult.AlreadyAttacked) =>
+          attemptAttack(currentBoard, retriesLeft - 1)
+        case _ =>
+          (updatedBoard, result)
+      }
+    }
+
+    attemptAttack(board, maxRetries)
   }
 
   /** Processes the result of an attack and updates the game state.
