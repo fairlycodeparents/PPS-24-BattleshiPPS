@@ -19,7 +19,8 @@ class SimpleGui(controller: GameController) extends MainFrame:
   preferredSize = new Dimension(SIZE, SIZE)
 
   private val gridManager  = new GridManager(controller)
-  private val controlPanel = createControlPanel()
+  private val startButton  = ButtonFactory.createStartGameButton()
+  private val controlPanel = createControlPanel(startButton)
   private val gridPanel    = createGridPanel()
 
   contents = new BorderPanel {
@@ -27,19 +28,22 @@ class SimpleGui(controller: GameController) extends MainFrame:
     layout(controlPanel) = BorderPanel.Position.South
   }
 
-  private def createControlPanel(): FlowPanel = {
+  private def createControlPanel(startGameButton: Button): FlowPanel = {
     new FlowPanel {
       hGap = 5
       vGap = 5
       border = Swing.EmptyBorder(2, 0, 2, 0)
 
-      val startButton: Button = ButtonFactory.createStartGameButton()
-      startButton.reactions += {
+      listenTo(startGameButton)
+      startGameButton.reactions += {
         case ButtonClicked(_) => controller.onStartGame()
       }
-      contents += startButton
+      contents += startGameButton
     }
   }
+
+  def hideStartButton(): Unit =
+    startButton.visible = false
 
   private def createGridPanel(): GridPanel =
     new GridPanel(PlayerBoard.size, PlayerBoard.size) {

@@ -155,6 +155,9 @@ class GameController(
 
     result.messages.foreach(println)
 
+    if state.gamePhase == GamePhase.Battle then
+      view.foreach(_.hideStartButton())
+
     if isHumanBattleAttack(result, oldTurn) then
       handleHumanAttackResult(result, oldTurn)
     else
