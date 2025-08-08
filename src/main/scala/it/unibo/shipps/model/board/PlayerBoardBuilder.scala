@@ -4,6 +4,7 @@ import it.unibo.shipps.model.{Orientation, ShipPositioningImpl, ShipType}
 import it.unibo.shipps.model.ShipType.*
 import scala.language.postfixOps
 
+/** Builder for creating a [[PlayerBoard]] with specified ship placements. */
 object PlayerBoardBuilder:
 
   import ShipPlacementDSL.Placement
@@ -22,6 +23,9 @@ object PlayerBoardBuilder:
         case Left(error)         => throw new RuntimeException(s"Error placing ship: $error")
         case Right(updatedBoard) => updatedBoard
 
+/** A DSL (Domain Specific Language) for defining ship placements on a board.
+  * This DSL allows for a more readable and structured way to specify ship placements
+  */
 object ShipPlacementDSL:
 
   /** Represents a ship placement on the board.
@@ -60,6 +64,7 @@ object ShipPlacementDSL:
       */
     def vertical: Placement = Placement(shipType, pos, Orientation.Vertical)
 
+/** A utility object for converting board coordinates from letters to [[Position]]. */
 object BoardCoordinates:
 
   /** A mapping of letters 'A' through 'J' to columns 0 through 9. */
@@ -86,7 +91,7 @@ object BoardCoordinates:
   private def createColumnObject(char: Char): ColumnObject =
     (row: Int) => column(char)(row)
 
-  /** Helpers per definire coordinate leggibili, ad esempio C(5). */
+  // Helpers to define readable coordinates (e.g., C(5))
   val A: Int => Position = createColumnObject('A')
   val B: Int => Position = createColumnObject('B')
   val C: Int => Position = createColumnObject('C')

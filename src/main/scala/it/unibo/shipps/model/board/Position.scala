@@ -1,8 +1,6 @@
 package it.unibo.shipps.model.board
 
-/** A type alias to represent a coordinate dimension, which can be a single Int
-  * or a Range of Ints.
-  */
+/** A type alias to represent a coordinate dimension, which can be a single Int or a Range of Int. */
 type CoordinateDimension = Int | Range
 
 /** Represents a position on a 2D grid, defined by its column and row coordinates.
@@ -13,6 +11,7 @@ case class Position(col: Int, row: Int)
 
 /** Companion object for the Position class, providing flexible factory methods. */
 object Position:
+
   /** Creates a Set of Position objects from the defined column and row dimensions.
     * @param colDimension The columns dimension, as a single [[Int]] value or a [[Range]].
     * @param rowDimension The rows dimension, as a single [[Int]] value or a [[Range]].
