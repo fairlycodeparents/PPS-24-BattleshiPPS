@@ -86,3 +86,42 @@ class RandomBotAttackStrategy extends AttackStrategy with RandomPositionGenerato
 }
 
 class AverageBotAttackStrategy extends RandomBotAttackStrategy with TargetAlreadyHitStrategy
+
+/** Represents an attack strategy that uniformly distributes attacks across the board. Based on the distance to already
+  * hit positions.
+  */
+class UniformDistributionStrategy extends AttackStrategy:
+
+  private def maxMinPositionWeighting(pos: Position, hits: Set[Position], boardSize: Int): Int =
+    if hits.isEmpty then
+      Int.MaxValue
+    else
+      hits.map(pos.distanceTo).min
+
+  /** @inheritdoc */
+  override def execute(
+      playerBoard: PlayerBoard,
+      position: Option[Position]
+  ): (PlayerBoard, Either[String, AttackResult]) =
+    position match
+      case Some(pos) => (playerBoard, Left("Position should not be required for a bot attack"))
+      case None =>
+        val allPositions =
+          for
+            x <- 0 until PlayerBoard.size
+            y <- 0 until PlayerBoard.size
+          yield Position(x, y)
+        val unhitPositions = allPositions.filterNot(playerBoard.hits.contains)
+
+        if unhitPositions.isEmpty then (playerBoard, Left("No positions left to attack"))
+        else
+          val weights   = unhitPositions.map(pos => maxMinPositionWeighting(pos, playerBoard.hits, PlayerBoard.size))
+          val maxWeight = weights.max
+          val bestPositions  = unhitPositions.zip(weights).filter(_._2 == maxWeight).map(_._1)
+          val chosenPosition = bestPositions(Random.nextInt(bestPositions.length))
+          ShipAttack.attack(playerBoard, chosenPosition)
+
+/** An advanced bot attack strategy that combines uniform distribution with targeting already hit positions. */
+class AdvancedBotAttackStrategy
+    extends UniformDistributionStrategy
+    with TargetAlreadyHitStrategy
