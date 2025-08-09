@@ -1,6 +1,6 @@
 package it.unibo.shipps.controller
 
-import it.unibo.shipps.model.Player
+import it.unibo.shipps.model.player.Player
 import it.unibo.shipps.model.board.Position
 import it.unibo.shipps.controller.GameStateManager.GameActionResult
 import it.unibo.shipps.controller.utils.DelayedExecutor

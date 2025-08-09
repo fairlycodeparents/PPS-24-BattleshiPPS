@@ -2,6 +2,7 @@ package it.unibo.shipps.controller
 
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import it.unibo.shipps.model.ship.Ship
 
 /** Handles ship positioning logic and user interactions during positioning phase */
 object PositioningController:

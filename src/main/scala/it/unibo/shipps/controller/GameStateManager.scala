@@ -1,7 +1,9 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.model.*
+import it.unibo.shipps.model.player.Player
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import it.unibo.shipps.model.ship.Ship
 
 import scala.util.Try
 
