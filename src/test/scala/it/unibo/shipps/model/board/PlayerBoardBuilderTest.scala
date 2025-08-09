@@ -1,6 +1,6 @@
 package it.unibo.shipps.model.board
 
-import it.unibo.shipps.model.ShipType.*
+import it.unibo.shipps.model.ship.ShipType.*
 import it.unibo.shipps.model.board.BoardCoordinates.*
 import it.unibo.shipps.model.board.PlayerBoardBuilder.*
 import it.unibo.shipps.model.board.ShipPlacementDSL.place

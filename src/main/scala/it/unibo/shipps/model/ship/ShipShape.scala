@@ -1,4 +1,4 @@
-package it.unibo.shipps.model
+package it.unibo.shipps.model.ship
 
 /** Defines the shape of a [[Ship]]. */
 trait ShipShape:

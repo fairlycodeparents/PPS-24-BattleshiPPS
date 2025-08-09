@@ -6,6 +6,8 @@ import it.unibo.shipps.controller.Turn.FirstPlayer
 import it.unibo.shipps.controller.utils.DelayedExecutor
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import it.unibo.shipps.model.player.Player
+import it.unibo.shipps.model.ship.Ship
 import it.unibo.shipps.view.SimpleGui
 import it.unibo.shipps.view.components.DialogFactory
 import it.unibo.shipps.view.handler.TurnDialogHandler

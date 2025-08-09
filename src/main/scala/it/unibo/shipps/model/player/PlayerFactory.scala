@@ -1,4 +1,6 @@
-package it.unibo.shipps.model
+package it.unibo.shipps.model.player
+
+import it.unibo.shipps.model.{AttackStrategy, RandomBotAttackStrategy}
 
 /** Factory for creating a [[Player]] */
 object PlayerFactory {
