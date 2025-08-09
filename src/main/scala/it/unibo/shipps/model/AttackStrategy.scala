@@ -24,14 +24,14 @@ trait RandomPositionGenerator {
 }
 
 /** An attack strategy that first tries to attack adjacent positions to already hit positions.
- * If no such positions are available, it falls back to the other attack strategies.
- */
+  * If no such positions are available, it falls back to the other attack strategies.
+  */
 trait TargetAlreadyHitStrategy extends AttackStrategy:
 
   /** Gets the adjacent positions to a given one.
-   * @param pos the [[Position]] to get adjacent positions for
-   * @return a [[List]] of adjacent [[Position]]
-   */
+    * @param pos the [[Position]] to get adjacent positions for
+    * @return a [[List]] of adjacent [[Position]]
+    */
   private def getAdjacentPositions(pos: Position): List[Position] =
     val Position(x, y) = pos
     List((-1, 0), (1, 0), (0, -1), (0, 1))
@@ -44,9 +44,9 @@ trait TargetAlreadyHitStrategy extends AttackStrategy:
       )
 
   /** Gets the first adjacent position to attack that is not already hit.
-   * @param board the [[PlayerBoard]] to check for hits
-   * @return an [[Option]] containing the first adjacent [[Position]] to attack, or [[None]] if no such position exists
-   */
+    * @param board the [[PlayerBoard]] to check for hits
+    * @return an [[Option]] containing the first adjacent [[Position]] to attack, or [[None]] if no such position exists
+    */
   private def getAdjacentToAttack(board: PlayerBoard): Option[Position] = board.hits
     .filter(pos => board.shipAtPosition(pos).isDefined)
     .filterNot(pos => board.shipAtPosition(pos).exists(ship => ship.positions.subsetOf(board.hits)))
@@ -54,9 +54,9 @@ trait TargetAlreadyHitStrategy extends AttackStrategy:
 
   /** @inheritdoc */
   abstract override def execute(
-                                 playerBoard: PlayerBoard,
-                                 position: Option[Position]
-                               ): (PlayerBoard, Either[String, AttackResult]) = position match
+      playerBoard: PlayerBoard,
+      position: Option[Position]
+  ): (PlayerBoard, Either[String, AttackResult]) = position match
     case Some(pos) => (playerBoard, Left("Position should not be required for a bot attack"))
     case None =>
       getAdjacentToAttack(playerBoard) match
