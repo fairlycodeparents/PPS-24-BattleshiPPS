@@ -212,11 +212,11 @@ class GameController(
     }
   }
 
-  private def handleBattleClick(currentState: GameState, pos: Position): (GameState, List[String]) = {
+  private def handleBattleClick(currentState: GameState, pos: Option[Position]): (GameState, List[String]) = {
     if turn == Turn.FirstPlayer then
-      BattleLogic.processBattleClick(currentState, firstPlayer, Turn.FirstPlayer, Some(pos))
+      BattleLogic.processBattleClick(currentState, firstPlayer, Turn.FirstPlayer, pos)
     else
-      BattleLogic.processBattleClick(currentState, secondPlayer, Turn.SecondPlayer, Some(pos))
+      BattleLogic.processBattleClick(currentState, secondPlayer, Turn.SecondPlayer, pos)
   }
 
   def showTurnDialog(playerName: String): Unit = {
@@ -275,7 +275,7 @@ class GameController(
 
   private def executeBotTurn(): Unit = {
     if turn == Turn.SecondPlayer && state.gamePhase == GamePhase.Battle then
-      val (newState, messages) = handleBattleClick(state, null)
+      val (newState, messages) = handleBattleClick(state, None)
       messages.foreach(println)
 
       if newState.gamePhase != GamePhase.GameOver then
@@ -326,7 +326,7 @@ class GameController(
         result
       case GamePhase.Battle =>
         if turn == Turn.FirstPlayer then
-          val (updatedState, messages) = handleBattleClick(state, pos)
+          val (updatedState, messages) = handleBattleClick(state, Some(pos))
           messages.foreach(println)
           if updatedState.gamePhase == GamePhase.GameOver then
             updatedState
@@ -343,7 +343,7 @@ class GameController(
               showTurnDialog("Player 2")
             updatedState
         else if !secondPlayer.isABot then
-          val (updatedState, messages) = handleBattleClick(state, pos)
+          val (updatedState, messages) = handleBattleClick(state, Some(pos))
           messages.foreach(println)
           if updatedState.gamePhase == GamePhase.GameOver then
             updatedState

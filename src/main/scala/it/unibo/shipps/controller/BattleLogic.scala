@@ -43,8 +43,16 @@ object BattleLogic:
         else
           state.copy(board = updatedBoard)
 
-        // val attackPos = pos.getOrElse(findLastAttackedPosition(targetBoard, updatedBoard))
-        val (finalState, message) = processAttackResult(turn, newState, pos.get, result)
+        val attackPosition = pos.getOrElse {
+          findAttackedPosition(targetBoard, updatedBoard) match {
+            case Some(position) => position
+            case _ =>
+              updatedBoard.hits.headOption.getOrElse {
+                throw new IllegalStateException("No attacked position found and no fallback available")
+              }
+          }
+        }
+        val (finalState, message) = processAttackResult(turn, newState, attackPosition, result)
         (finalState, List(message))
       case Left(errorMessage) =>
         (state, List(errorMessage))
@@ -77,6 +85,10 @@ object BattleLogic:
 
     (updatedState, message)
   }
+
+  private def findAttackedPosition(originalBoard: PlayerBoard, updatedBoard: PlayerBoard): Option[Position] =
+    val newHits = updatedBoard.hits -- originalBoard.hits
+    newHits.headOption
 
   private def updateSunkShipResult(turn: Turn, state: GameState, ship: Ship, sunkResult: AttackResult): GameState =
     turn match {
