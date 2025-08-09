@@ -23,24 +23,47 @@ trait RandomPositionGenerator {
     Position(xValue, yValue)
 }
 
-/** A mixin for calculating adjacent positions */
-trait AdjacentPositionsUtilities {
+/** An attack strategy that first tries to attack adjacent positions to already hit positions.
+ * If no such positions are available, it falls back to the other attack strategies.
+ */
+trait TargetAlreadyHitStrategy extends AttackStrategy:
+
+  /** Gets the adjacent positions to a given one.
+   * @param pos the [[Position]] to get adjacent positions for
+   * @return a [[List]] of adjacent [[Position]]
+   */
   private def getAdjacentPositions(pos: Position): List[Position] =
     val Position(x, y) = pos
     List((-1, 0), (1, 0), (0, -1), (0, 1))
-      .map((dx, dy) => Position(x + dx, y + dy))
-      .filter(p => p.row >= 0 && p.col >= 0 && p.row < PlayerBoard.size && p.col < PlayerBoard.size)
-
-  def getAdjacentToAttack(board: PlayerBoard): Option[Position] =
-    val hitsNotSunk = board.hits.filter(pos => board.shipAtPosition(pos).isDefined)
-      .filterNot(pos => board.shipAtPosition(pos).exists(ship => ship.positions.subsetOf(board.hits)))
-    val targetPos = hitsNotSunk.headOption
-      .flatMap(hit =>
-        val adjacentPositions = getAdjacentPositions(hit).filterNot(board.hits.contains)
-        adjacentPositions.headOption
+      .map { case (dx, dy) => Position(x + dx, y + dy) }
+      .filter(p =>
+        p.row >= 0
+          && p.col >= 0
+          && p.row < PlayerBoard.size
+          && p.col < PlayerBoard.size
       )
-    targetPos
-}
+
+  /** Gets the first adjacent position to attack that is not already hit.
+   * @param board the [[PlayerBoard]] to check for hits
+   * @return an [[Option]] containing the first adjacent [[Position]] to attack, or [[None]] if no such position exists
+   */
+  private def getAdjacentToAttack(board: PlayerBoard): Option[Position] = board.hits
+    .filter(pos => board.shipAtPosition(pos).isDefined)
+    .filterNot(pos => board.shipAtPosition(pos).exists(ship => ship.positions.subsetOf(board.hits)))
+    .headOption.flatMap(hit => getAdjacentPositions(hit).filterNot(board.hits.contains).headOption)
+
+  /** @inheritdoc */
+  abstract override def execute(
+                                 playerBoard: PlayerBoard,
+                                 position: Option[Position]
+                               ): (PlayerBoard, Either[String, AttackResult]) = position match
+    case Some(pos) => (playerBoard, Left("Position should not be required for a bot attack"))
+    case None =>
+      getAdjacentToAttack(playerBoard) match
+        case Some(value) =>
+          ShipAttack.attack(playerBoard, value)
+        case None =>
+          super.execute(playerBoard, position)
 
 /** Represents the [[AttackStrategy]] of a human [[Player]] */
 case class HumanAttackStrategy() extends AttackStrategy {
@@ -53,7 +76,7 @@ case class HumanAttackStrategy() extends AttackStrategy {
 }
 
 /** Represents the [[AttackStrategy]] of a basic bot [[Player]] */
-case class RandomBotAttackStrategy() extends AttackStrategy with RandomPositionGenerator {
+class RandomBotAttackStrategy extends AttackStrategy with RandomPositionGenerator {
   override def execute(
       playerBoard: PlayerBoard,
       position: Option[Position]
@@ -62,13 +85,4 @@ case class RandomBotAttackStrategy() extends AttackStrategy with RandomPositionG
     case None      => ShipAttack.attack(playerBoard, generateRandomPosition)
 }
 
-case class AverageBotAttackStrategy() extends AttackStrategy
-    with RandomPositionGenerator
-    with AdjacentPositionsUtilities {
-  override def execute(
-      playerBoard: PlayerBoard,
-      position: Option[Position]
-  ): (PlayerBoard, Either[String, AttackResult]) =
-    val targetPos = getAdjacentToAttack(playerBoard).getOrElse(generateRandomPosition)
-    ShipAttack.attack(playerBoard, targetPos)
-}
+class AverageBotAttackStrategy extends RandomBotAttackStrategy with TargetAlreadyHitStrategy
