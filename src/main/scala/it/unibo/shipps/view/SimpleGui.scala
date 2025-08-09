@@ -18,6 +18,12 @@ class SimpleGui(controller: GameController) extends MainFrame:
   title = "BattleshiPPS"
   preferredSize = new Dimension(SIZE, SIZE)
 
+  private val turnLabel = new Label("Player 1 Turn") {
+    font = new Font("SansSerif", java.awt.Font.BOLD, 16)
+    foreground = new Color(0, 100, 0)
+    horizontalAlignment = Alignment.Center
+  }
+
   private val gridManager         = new GridManager(controller)
   private val controlPanel        = createControlPanel()
   private val gridPanel           = createGridPanel()
@@ -60,11 +66,14 @@ class SimpleGui(controller: GameController) extends MainFrame:
     }
 
   private def createInfoPanel(): BoxPanel = {
-    new BoxPanel(Orientation.Vertical) {
+    new BoxPanel(Orientation.Horizontal) {
       opaque = true
+      contents += Swing.VStrut(5)
+      contents += turnLabel
+      contents += Swing.VStrut(5)
       val posInstruction: Label =
         new Label("<html>• Click to select/move ships<br>• Double-click to rotate<br>• Press R to randomize</html>")
-      contents += Swing.VStrut(5)
+      // contents += Swing.VStrut(5)
       contents += posInstruction
       contents += Swing.VGlue
       revalidate()
@@ -90,6 +99,8 @@ class SimpleGui(controller: GameController) extends MainFrame:
     }
 
     new BoxPanel(Orientation.Vertical) {
+      contents += turnLabel
+      contents += Swing.VStrut(10)
       contents += new Label("Click a position to attack")
       contents += new Label("Shot legend:")
       contents += new FlowPanel(FlowPanel.Alignment.Left)(
@@ -97,22 +108,36 @@ class SimpleGui(controller: GameController) extends MainFrame:
         new Label(" + O = Ship hit")
       )
       contents += new FlowPanel(FlowPanel.Alignment.Left)(
-        colorBox(Color.CYAN),
+        colorBox(Color.LIGHT_GRAY),
         new Label(" + X = Miss")
       )
       contents += new FlowPanel(FlowPanel.Alignment.Left)(
         colorBox(Color.RED),
-        new Label("+ O = Ship sunk")
+        new Label(" + O = Ship sunk")
       )
       border = Swing.EmptyBorder(10, 0, 0, 0)
     }
+  }
+
+  private def updateTurnLabel(turn: Turn, gamePhase: GamePhase): Unit = {
+    val (playerName, color) = (turn, gamePhase) match {
+      case (Turn.FirstPlayer, GamePhase.Positioning)  => ("Player 1 - Position Ships", new Color(0, 200, 0))
+      case (Turn.SecondPlayer, GamePhase.Positioning) => ("Player 2 - Position Ships", new Color(0, 0, 200))
+      case (Turn.FirstPlayer, GamePhase.Battle)       => ("Player 1's Turn", new Color(0, 200, 0))
+      case (Turn.SecondPlayer, GamePhase.Battle)      => ("Player 2's Turn", new Color(0, 0, 200))
+      case (_, GamePhase.GameOver)                    => ((s"Game Over! $turn won"), new Color(150, 0, 0))
+    }
+
+    turnLabel.text = playerName
+    turnLabel.foreground = color
   }
 
   /** Updates the grid panel with the current game state and handles game over conditions.
     * @param turn the current turn of the game
     */
   def update(turn: Turn): Unit =
-    val state   = controller.state
+    val state = controller.state
+    updateTurnLabel(turn, state.gamePhase)
     val buttons = gridManager.createButtons(state, turn)
     gridPanel.contents.clear()
     gridPanel.contents ++= buttons
