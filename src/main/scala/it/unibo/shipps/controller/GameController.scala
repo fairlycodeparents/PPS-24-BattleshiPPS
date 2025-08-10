@@ -290,7 +290,18 @@ class GameController(
         }
       })
 
-      dialog.add(label, BorderLayout.CENTER)
+      val okButton = new javax.swing.JButton("OK")
+      okButton.addActionListener(_ => {
+        endBotTurn()
+        dialog.setVisible(false)
+        dialog.dispose()
+      })
+
+      val panel = new javax.swing.JPanel(new BorderLayout())
+      panel.add(label, BorderLayout.CENTER)
+      panel.add(okButton, BorderLayout.SOUTH)
+
+      dialog.add(panel)
       waitingDialog = Some(dialog)
       dialog.setVisible(true)
     }
