@@ -87,16 +87,33 @@ class RandomBotAttackStrategy extends AttackStrategy with RandomPositionGenerato
 
 class AverageBotAttackStrategy extends RandomBotAttackStrategy with TargetAlreadyHitStrategy
 
-/** Represents an attack strategy that uniformly distributes attacks across the board. Based on the distance to already
-  * hit positions.
-  */
-class UniformDistributionStrategy extends AttackStrategy:
+/** A trait for calculating the weight of a position based on existing hits. */
+trait PositionWeighting:
 
-  private def maxMinPositionWeighting(pos: Position, hits: Set[Position], boardSize: Int): Int =
+  /** Calculates a score (or weight) for a given position based on existing hits.
+    * A higher score indicates a more desirable position to target.
+    * @param pos The position to evaluate.
+    * @param hits The set of positions already hit.
+    * @param boardSize The size of the game board.
+    * @return The calculated weight as an Int.
+    */
+  def calculateWeight(pos: Position, hits: Set[Position], boardSize: Int): Int
+
+/** A position weighting strategy that calculates the weight based on the minimum distance to existing hits. */
+class MaxMinPositionWeighting extends PositionWeighting:
+
+  /** @inheritdoc */
+  override def calculateWeight(pos: Position, hits: Set[Position], boardSize: Int): Int =
     if hits.isEmpty then
       Int.MaxValue
     else
       hits.map(pos.distanceTo).min
+
+/** Represents an attack strategy that uniformly distributes attacks across the board. Based on the distance to already
+  * hit positions.
+  * @param positionWeighting The strategy to calculate the weight of positions based on existing hits.
+  */
+class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
 
   /** @inheritdoc */
   override def execute(
@@ -115,13 +132,15 @@ class UniformDistributionStrategy extends AttackStrategy:
 
         if unhitPositions.isEmpty then (playerBoard, Left("No positions left to attack"))
         else
-          val weights   = unhitPositions.map(pos => maxMinPositionWeighting(pos, playerBoard.hits, PlayerBoard.size))
-          val maxWeight = weights.max
+          val weights = unhitPositions.map(pos =>
+            MaxMinPositionWeighting().calculateWeight(pos, playerBoard.hits, PlayerBoard.size)
+          )
+          val maxWeight      = weights.max
           val bestPositions  = unhitPositions.zip(weights).filter(_._2 == maxWeight).map(_._1)
           val chosenPosition = bestPositions(Random.nextInt(bestPositions.length))
           ShipAttack.attack(playerBoard, chosenPosition)
 
 /** An advanced bot attack strategy that combines uniform distribution with targeting already hit positions. */
 class AdvancedBotAttackStrategy
-    extends UniformDistributionStrategy
+    extends UniformDistributionStrategy(MaxMinPositionWeighting())
     with TargetAlreadyHitStrategy
