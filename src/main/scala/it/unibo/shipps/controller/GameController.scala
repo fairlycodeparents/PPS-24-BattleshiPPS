@@ -2,12 +2,13 @@ package it.unibo.shipps.controller
 
 import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
 import it.unibo.shipps.controller.GameStateManager.DialogAction
-import it.unibo.shipps.controller.Turn.FirstPlayer
+import it.unibo.shipps.controller.battle.BattleController
 import it.unibo.shipps.controller.utils.DelayedExecutor
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.player.Player
 import it.unibo.shipps.model.ship.Ship
+import it.unibo.shipps.model.{Turn, TurnLogic}
 import it.unibo.shipps.view.SimpleGui
 import it.unibo.shipps.view.components.DialogFactory
 import it.unibo.shipps.view.handler.TurnDialogHandler
@@ -24,13 +25,6 @@ import scala.swing.{Font, Swing}
   */
 enum GamePhase:
   case Positioning, Battle, GameOver
-
-/** Represents the turn of the player in the game.
-  * FirstPlayer: The first player is taking their turn.
-  * SecondPlayer: The second player is taking their turn.
-  */
-enum Turn:
-  case FirstPlayer, SecondPlayer
 
 /** Represents the state of the game
   * @param board the first player's board
@@ -148,23 +142,6 @@ class GameController(
   private def updateView(turn: Turn): Unit =
     Swing.onEDT(view.get.update(turn))
 
-  /** Sets the view for the game controller.
-    * @param result the view to set
-    */
-  def applyGameActionResult(result: GameStateManager.GameActionResult): Unit =
-    val oldTurn = turn
-    state = result.newState
-
-    result.messages.foreach(println)
-
-    if state.gamePhase == GamePhase.Battle then
-      view.foreach(_.hideStartButton())
-
-    if isHumanBattleAttack(result, oldTurn) then
-      handleHumanAttackResult(result, oldTurn)
-    else
-      handleGameAction(result)
-
   /** Checks if the result of the game action is a human battle attack.
     * @param result the game action result
     * @param oldTurn the previous turn before the action
@@ -172,7 +149,7 @@ class GameController(
     */
   private def isHumanBattleAttack(result: GameStateManager.GameActionResult, oldTurn: Turn): Boolean =
     state.gamePhase == GamePhase.Battle && result.newTurn != oldTurn &&
-      !BattleController.isBotTurn(oldTurn, firstPlayer, secondPlayer)
+      !TurnLogic.isBotTurn(oldTurn, firstPlayer, secondPlayer)
 
   /** Handles the result of a human attack during the battle phase.
     * @param result the result of the game action
@@ -187,7 +164,7 @@ class GameController(
 
       result.showDialog.foreach(handleDialogAction)
 
-      if BattleController.isBotTurn(turn, firstPlayer, secondPlayer) then
+      if TurnLogic.isBotTurn(turn, firstPlayer, secondPlayer) then
         botHandler.scheduleBotMove(state, turn, firstPlayer, secondPlayer)
     }
 
@@ -199,7 +176,7 @@ class GameController(
 
     result.showDialog.foreach(handleDialogAction)
 
-    if BattleController.isBotTurn(turn, firstPlayer, secondPlayer) &&
+    if TurnLogic.isBotTurn(turn, firstPlayer, secondPlayer) &&
       state.gamePhase == GamePhase.Battle
     then
       botHandler.scheduleBotMove(state, turn, firstPlayer, secondPlayer)
@@ -219,6 +196,23 @@ class GameController(
         dialogHandler.get.hideCurrentDialog()
       case DialogAction.RetryAttack =>
         dialogHandler.get.retryAttack()
+
+  /** Sets the view for the game controller.
+    * @param result the view to set
+    */
+  def applyGameActionResult(result: GameStateManager.GameActionResult): Unit =
+    val oldTurn = turn
+    state = result.newState
+
+    result.messages.foreach(println)
+
+    if state.gamePhase == GamePhase.Battle then
+      view.foreach(_.hideStartButton())
+
+    if isHumanBattleAttack(result, oldTurn) then
+      handleHumanAttackResult(result, oldTurn)
+    else
+      handleGameAction(result)
 
   /** Handles the click on a cell based on the current game phase.
     * @param pos the position of the cell clicked

@@ -1,9 +1,12 @@
 package it.unibo.shipps.controller
 
+import it.unibo.shipps.controller.battle.BattleController
+import it.unibo.shipps.controller.positioning.PositioningController
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.player.Player
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.ship.Ship
+import it.unibo.shipps.model.TurnLogic
 
 import scala.util.Try
 
@@ -30,6 +33,57 @@ object GameStateManager:
       */
     def withDialog(dialog: DialogAction): GameActionResult =
       copy(showDialog = Some(dialog))
+
+  /** Handles bot game start
+    * @param gameState   current game state
+    * @param positioning ship positioning logic
+    * @return game action result
+    */
+  private def handleBotGameStart(gameState: GameState, positioning: ShipPositioning): GameActionResult =
+    positioning.randomPositioning(PlayerBoard(), gameState.board.ships.toList) match
+      case Right(enemyBoard) =>
+        val newState = gameState.copy(enemyBoard = enemyBoard).startBattle(enemyBoard)
+        GameActionResult(newState, Turn.FirstPlayer, List("Battle started! Find and sink all enemy ships!"))
+      case Left(error) =>
+        GameActionResult(gameState, Turn.FirstPlayer, List(s"Error positioning bot ships: $error"))
+
+  /** Handles two-player positioning
+    * @param gameState current game state
+    * @return game action result
+    */
+  private def handleTwoPlayerPositioningStart(gameState: GameState): GameActionResult =
+    GameActionResult(
+      gameState,
+      Turn.SecondPlayer,
+      List("Player 2: Position your ships and press Start Game again")
+    ).withDialog(DialogAction.ShowTurnDialog("Player 2 - Position your ships"))
+
+  /** Handles two-player battle start
+    * @param gameState current game state
+    * @return game action result
+    */
+  private def handleTwoPlayerBattleStart(gameState: GameState): GameActionResult =
+    val newState = gameState.startBattle(gameState.enemyBoard)
+    GameActionResult(
+      newState,
+      Turn.FirstPlayer,
+      List("Battle started! Player 1 attacks first!")
+    ).withDialog(DialogAction.ShowTurnDialog("Player 1 - Battle begins!"))
+
+  /** Determines the dialog action based on the current turn and players
+    * @param turn         current turn
+    * @param firstPlayer  first player
+    * @param secondPlayer second player
+    * @return dialog action to show
+    */
+  private def determineDialogAction(turn: Turn, firstPlayer: Player, secondPlayer: Player): DialogAction =
+    if TurnLogic.isBotTurn(turn, firstPlayer, secondPlayer) then
+      DialogAction.ShowWaitingDialog
+    else
+      val playerName = turn match
+        case Turn.FirstPlayer  => "Player 1"
+        case Turn.SecondPlayer => "Player 2"
+      DialogAction.ShowTurnDialog(playerName)
 
   /** Handles start game logic
     * @param gameState current game state
@@ -124,7 +178,7 @@ object GameStateManager:
       firstPlayer: Player,
       secondPlayer: Player
   ): GameActionResult =
-    val currentPlayer = BattleController.getCurrentPlayer(turn, firstPlayer, secondPlayer)
+    val currentPlayer = TurnLogic.getCurrentPlayer(turn, firstPlayer, secondPlayer)
     val battleResult  = BattleController.processHumanAttack(gameState, currentPlayer, turn, position)
 
     if battleResult.gameOver then
@@ -132,7 +186,7 @@ object GameStateManager:
     else
       val clickResult = BattleLogic.processBattleClick(gameState, currentPlayer, turn, Some(position))
       if clickResult.shouldChangeTurn then
-        val newTurn      = BattleController.switchTurn(turn)
+        val newTurn      = TurnLogic.switchTurn(turn)
         val dialogAction = determineDialogAction(newTurn, firstPlayer, secondPlayer)
         GameActionResult(battleResult.newState, newTurn, battleResult.messages, Some(dialogAction))
       else
@@ -140,7 +194,7 @@ object GameStateManager:
 
   /** Handles bot turn execution
     * @param gameState current game state
-    * @param turn current turn (should be bot's turn)
+    * @param turn current turn
     * @param firstPlayer first player
     * @param secondPlayer second player
     * @return game action result
@@ -151,67 +205,16 @@ object GameStateManager:
       firstPlayer: Player,
       secondPlayer: Player
   ): GameActionResult =
-    val currentPlayer = BattleController.getCurrentPlayer(turn, firstPlayer, secondPlayer)
+    val currentPlayer = TurnLogic.getCurrentPlayer(turn, firstPlayer, secondPlayer)
     val battleResult  = BattleController.processBotAttack(gameState, currentPlayer, turn)
 
     if battleResult.gameOver then
       GameActionResult(battleResult.newState, turn, battleResult.messages)
         .withDialog(DialogAction.HideDialog)
     else
-      val newTurn = BattleController.switchTurn(turn)
+      val newTurn = TurnLogic.switchTurn(turn)
       val playerName = newTurn match
         case Turn.FirstPlayer  => "Player 1"
         case Turn.SecondPlayer => "Player 2"
       GameActionResult(battleResult.newState, newTurn, battleResult.messages)
         .withDialog(DialogAction.ShowTurnDialog(playerName))
-
-  /** Handles bot game start
-    * @param gameState current game state
-    * @param positioning ship positioning logic
-    * @return game action result
-    */
-  private def handleBotGameStart(gameState: GameState, positioning: ShipPositioning): GameActionResult =
-    positioning.randomPositioning(PlayerBoard(), gameState.board.ships.toList) match
-      case Right(enemyBoard) =>
-        val newState = gameState.copy(enemyBoard = enemyBoard).startBattle(enemyBoard)
-        GameActionResult(newState, Turn.FirstPlayer, List("Battle started! Find and sink all enemy ships!"))
-      case Left(error) =>
-        GameActionResult(gameState, Turn.FirstPlayer, List(s"Error positioning bot ships: $error"))
-
-  /** Handles two-player positioning
-    * @param gameState current game state
-    * @return game action result
-    */
-  private def handleTwoPlayerPositioningStart(gameState: GameState): GameActionResult =
-    GameActionResult(
-      gameState,
-      Turn.SecondPlayer,
-      List("Player 2: Position your ships and press Start Game again")
-    ).withDialog(DialogAction.ShowTurnDialog("Player 2 - Position your ships"))
-
-  /** Handles two-player battle start
-    * @param gameState current game state
-    * @return game action result
-    */
-  private def handleTwoPlayerBattleStart(gameState: GameState): GameActionResult =
-    val newState = gameState.startBattle(gameState.enemyBoard)
-    GameActionResult(
-      newState,
-      Turn.FirstPlayer,
-      List("Battle started! Player 1 attacks first!")
-    ).withDialog(DialogAction.ShowTurnDialog("Player 1 - Battle begins!"))
-
-  /** Determines the dialog action based on the current turn and players
-    * @param turn current turn
-    * @param firstPlayer first player
-    * @param secondPlayer second player
-    * @return dialog action to show
-    */
-  private def determineDialogAction(turn: Turn, firstPlayer: Player, secondPlayer: Player): DialogAction =
-    if BattleController.isBotTurn(turn, firstPlayer, secondPlayer) then
-      DialogAction.ShowWaitingDialog
-    else
-      val playerName = turn match
-        case Turn.FirstPlayer  => "Player 1"
-        case Turn.SecondPlayer => "Player 2"
-      DialogAction.ShowTurnDialog(playerName)

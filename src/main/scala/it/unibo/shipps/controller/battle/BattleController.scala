@@ -1,7 +1,9 @@
-package it.unibo.shipps.controller
+package it.unibo.shipps.controller.battle
 
-import it.unibo.shipps.model.player.Player
+import it.unibo.shipps.controller.{GamePhase, GameState}
+import it.unibo.shipps.model.{BattleLogic, Turn}
 import it.unibo.shipps.model.board.Position
+import it.unibo.shipps.model.player.Player
 
 /** BattleController handles the battle phase of the game, processing player actions. */
 object BattleController:
@@ -36,32 +38,3 @@ object BattleController:
     val clickResult = BattleLogic.processBattleClick(gameState, botPlayer, turn, None)
     val gameOver    = clickResult.newState.gamePhase == GamePhase.GameOver
     BattleResult(clickResult.newState, clickResult.messages, gameOver)
-
-  /** Determines if it's a bot turn
-    * @param turn current turn
-    * @param firstPlayer first player
-    * @param secondPlayer second player
-    * @return true if it's bot's turn
-    */
-  def isBotTurn(turn: Turn, firstPlayer: Player, secondPlayer: Player): Boolean =
-    getCurrentPlayer(turn, firstPlayer, secondPlayer).isABot
-
-  /** Gets the current player based on turn
-    * @param turn current turn
-    * @param firstPlayer first player
-    * @param secondPlayer second player
-    * @return current player
-    */
-  def getCurrentPlayer(turn: Turn, firstPlayer: Player, secondPlayer: Player): Player =
-    turn match
-      case Turn.FirstPlayer  => firstPlayer
-      case Turn.SecondPlayer => secondPlayer
-
-  /** Switches to the next turn
-    * @param currentTurn current turn
-    * @return next turn
-    */
-  def switchTurn(currentTurn: Turn): Turn =
-    currentTurn match
-      case Turn.FirstPlayer  => Turn.SecondPlayer
-      case Turn.SecondPlayer => Turn.FirstPlayer

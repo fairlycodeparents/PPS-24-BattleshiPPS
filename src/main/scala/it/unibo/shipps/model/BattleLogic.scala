@@ -1,10 +1,10 @@
-package it.unibo.shipps.controller
+package it.unibo.shipps.model
 
 import it.unibo.shipps.controller.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
 import it.unibo.shipps.model.ship.Ship
-import it.unibo.shipps.model.{AttackResult, HumanAttackStrategy, RandomBotAttackStrategy, ShipAttack}
+import it.unibo.shipps.model.{AttackResult, HumanAttackStrategy, RandomBotAttackStrategy, ShipAttack, Turn}
 import it.unibo.shipps.view.renderer.ColorScheme
 
 import scala.annotation.tailrec
@@ -19,44 +19,6 @@ object BattleLogic:
       messages: List[String],
       shouldChangeTurn: Boolean
   )
-
-  /** Processes a click during the battle phase.
-    * @param state the current game state
-    * @param player the player who attack
-    * @param turn the turn of the player
-    * @param pos the position of the click
-    * @return BattleClickResult containing the updated state, messages, and whether the turn should change
-    */
-  def processBattleClick(
-      state: GameState,
-      player: Player,
-      turn: Turn,
-      pos: Option[Position]
-  ): BattleClickResult = {
-    val (targetBoard, isAttackingEnemyBoard) = turn match {
-      case Turn.FirstPlayer  => (state.enemyBoard, true)
-      case Turn.SecondPlayer => (state.board, false)
-    }
-
-    val (updatedBoard, attackResult) = if player.isABot then
-      performBotAttack(player, targetBoard)
-    else
-      pos match {
-        case Some(position) => performHumanAttack(player, targetBoard, position)
-        case None           => (targetBoard, Left("Position required for human player"))
-      }
-
-    attackResult match
-      case Right(result) =>
-        val newState = if isAttackingEnemyBoard then
-          state.copy(enemyBoard = updatedBoard)
-        else
-          state.copy(board = updatedBoard)
-        val (finalState, message) = processAttackResult(turn, newState, pos.orNull, result)
-        BattleClickResult(finalState, List(message), shouldChangeTurn = true)
-      case Left(errorMessage) =>
-        BattleClickResult(state, List(errorMessage), shouldChangeTurn = false)
-  }
 
   /** Performs a human attack, handling AlreadyAttacked cases by ignoring the attack.
     * @param player   the human player
@@ -178,3 +140,39 @@ object BattleLogic:
           enemyCellColors = updatedCellColors
         )
     }
+
+  /** Processes a click during the battle phase.
+    *
+    * @param state  the current game state
+    * @param player the player who attack
+    * @param turn   the turn of the player
+    * @param pos    the position of the click
+    * @return BattleClickResult containing the updated state, messages, and whether the turn should change
+    */
+  def processBattleClick(
+      state: GameState,
+      player: Player,
+      turn: Turn,
+      pos: Option[Position]
+  ): BattleClickResult =
+    val (targetBoard, isAttackingEnemyBoard) = turn match
+      case Turn.FirstPlayer  => (state.enemyBoard, true)
+      case Turn.SecondPlayer => (state.board, false)
+
+    val (updatedBoard, attackResult) = if player.isABot then
+      performBotAttack(player, targetBoard)
+    else
+      pos match
+        case Some(position) => performHumanAttack(player, targetBoard, position)
+        case None           => (targetBoard, Left("Position required for human player"))
+
+    attackResult match
+      case Right(result) =>
+        val newState = if isAttackingEnemyBoard then
+          state.copy(enemyBoard = updatedBoard)
+        else
+          state.copy(board = updatedBoard)
+        val (finalState, message) = processAttackResult(turn, newState, pos.orNull, result)
+        BattleClickResult(finalState, List(message), shouldChangeTurn = true)
+      case Left(errorMessage) =>
+        BattleClickResult(state, List(errorMessage), shouldChangeTurn = false)

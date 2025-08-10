@@ -1,8 +1,8 @@
 package it.unibo.shipps.view.renderer
 
-import it.unibo.shipps.controller.{GamePhase, GameState, Turn}
+import it.unibo.shipps.controller.{GamePhase, GameState}
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
-import it.unibo.shipps.model.AttackResult
+import it.unibo.shipps.model.{AttackResult, Turn, TurnLogic}
 
 /** Renderer for buttons in the game board. */
 object ButtonRenderer:
