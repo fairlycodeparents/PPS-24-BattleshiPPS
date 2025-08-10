@@ -292,9 +292,9 @@ class GameController(
 
       val okButton = new javax.swing.JButton("OK")
       okButton.addActionListener(_ => {
-        endBotTurn()
         dialog.setVisible(false)
         dialog.dispose()
+        endBotTurn()
       })
 
       val panel = new javax.swing.JPanel(new BorderLayout())
