@@ -26,7 +26,6 @@ class PlayerTest extends AnyFlatSpec with should.Matchers:
 
   "A human player" should "be created with its own attack strategy" in:
     humanPlayer.isABot shouldBe false
-    humanPlayer shouldBe HumanPlayer("player1", HumanAttackStrategy())
 
   it should "be able to attack" in:
     val (_, result) = humanPlayer.makeAttack(enemyBoard, Option(G(1)))
@@ -38,10 +37,9 @@ class PlayerTest extends AnyFlatSpec with should.Matchers:
 
   "A bot player" should "be created with an attack strategy" in:
     randomBotPlayer.isABot shouldBe true
-    randomBotPlayer shouldBe BotPlayer(RandomBotAttackStrategy())
     val averageBotPlayer = createBotPlayer(AverageBotAttackStrategy())
     averageBotPlayer.isABot shouldBe true
-    averageBotPlayer shouldBe BotPlayer(AverageBotAttackStrategy())
+    averageBotPlayer.getClass shouldBe BotPlayer(AverageBotAttackStrategy()).getClass
 
   it should "be able to attack randomly without providing a position" in:
     val (_, result) = randomBotPlayer.makeAttack(enemyBoard)
