@@ -15,14 +15,6 @@ trait AttackStrategy {
   def execute(playerBoard: PlayerBoard, position: Option[Position]): (PlayerBoard, Either[String, AttackResult])
 }
 
-/** A mixin for the generation of a random position */
-trait RandomPositionGenerator {
-  protected def generateRandomPosition: Position =
-    val xValue = Random.nextInt(PlayerBoard.size)
-    val yValue = Random.nextInt(PlayerBoard.size)
-    Position(xValue, yValue)
-}
-
 /** An attack strategy that first tries to attack adjacent positions to already hit positions.
   * If no such positions are available, it falls back to the other attack strategies.
   */
@@ -47,10 +39,10 @@ trait TargetAlreadyHitStrategy extends AttackStrategy:
     * @param board the [[PlayerBoard]] to check for hits
     * @return an [[Option]] containing the first adjacent [[Position]] to attack, or [[None]] if no such position exists
     */
-  private def getAdjacentToAttack(board: PlayerBoard): Option[Position] = board.hits
+  private def getAdjacentToAttack(board: PlayerBoard): Option[Position] = Random.shuffle(board.hits
     .filter(pos => board.shipAtPosition(pos).isDefined)
     .filterNot(pos => board.shipAtPosition(pos).exists(ship => ship.positions.subsetOf(board.hits)))
-    .headOption.flatMap(hit => getAdjacentPositions(hit).filterNot(board.hits.contains).headOption)
+    .flatMap(hit => getAdjacentPositions(hit).filterNot(board.hits.contains))).headOption
 
   /** @inheritdoc */
   abstract override def execute(
@@ -76,13 +68,18 @@ case class HumanAttackStrategy() extends AttackStrategy {
 }
 
 /** Represents the [[AttackStrategy]] of a basic bot [[Player]] */
-class RandomBotAttackStrategy extends AttackStrategy with RandomPositionGenerator {
+class RandomBotAttackStrategy extends AttackStrategy{
   override def execute(
       playerBoard: PlayerBoard,
       position: Option[Position]
   ): (PlayerBoard, Either[String, AttackResult]) = position match
     case Some(pos) => (playerBoard, Left("Position should not be required for a bot attack"))
     case None      => ShipAttack.attack(playerBoard, generateRandomPosition)
+
+  private def generateRandomPosition: Position =
+    val xValue = Random.nextInt(PlayerBoard.size)
+    val yValue = Random.nextInt(PlayerBoard.size)
+    Position(xValue, yValue)
 }
 
 class AverageBotAttackStrategy extends RandomBotAttackStrategy with TargetAlreadyHitStrategy
