@@ -39,10 +39,15 @@ trait TargetAlreadyHitStrategy extends AttackStrategy:
     * @param board the [[PlayerBoard]] to check for hits
     * @return an [[Option]] containing the first adjacent [[Position]] to attack, or [[None]] if no such position exists
     */
-  private def getAdjacentToAttack(board: PlayerBoard): Option[Position] = Random.shuffle(board.hits
-    .filter(pos => board.shipAtPosition(pos).isDefined)
-    .filterNot(pos => board.shipAtPosition(pos).exists(ship => ship.positions.subsetOf(board.hits)))
-    .flatMap(hit => getAdjacentPositions(hit).filterNot(board.hits.contains))).headOption
+  private def getAdjacentToAttack(board: PlayerBoard): Option[Position] =
+    val incompleteHits = board.hits.filter(pos =>
+      board.shipAtPosition(pos).exists(!_.positions.subsetOf(board.hits))
+    )
+    val directionalHits = incompleteHits.filter(hit =>
+      getAdjacentPositions(hit).exists(board.hits.contains)
+    )
+    val sourceHits = if (directionalHits.nonEmpty) directionalHits else incompleteHits
+    Random.shuffle(sourceHits.flatMap(getAdjacentPositions).diff(board.hits)).headOption
 
   /** @inheritdoc */
   abstract override def execute(
@@ -68,7 +73,7 @@ case class HumanAttackStrategy() extends AttackStrategy {
 }
 
 /** Represents the [[AttackStrategy]] of a basic bot [[Player]] */
-class RandomBotAttackStrategy extends AttackStrategy{
+class RandomBotAttackStrategy extends AttackStrategy {
   override def execute(
       playerBoard: PlayerBoard,
       position: Option[Position]
