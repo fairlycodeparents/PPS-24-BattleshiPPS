@@ -273,16 +273,46 @@ class GameController(
     }
   }
 
-  private def executeBotTurn(): Unit = {
+  private def showBotResultDialog(result: String): Unit = {
+    Swing.onEDT {
+      val dialog = new JDialog(view.peer, "Bot Turn", true)
+      dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE)
+      dialog.setSize(300, 150)
+      dialog.setLocationRelativeTo(view.peer)
+      dialog.setResizable(false)
+
+      val label = new JLabel(s"<html><center>Bot attack done!<br>${result}</center></html>")
+      label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER)
+
+      dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+        override def windowClosing(e: java.awt.event.WindowEvent): Unit = {
+          endBotTurn()
+        }
+      })
+
+      dialog.add(label, BorderLayout.CENTER)
+      waitingDialog = Some(dialog)
+      dialog.setVisible(true)
+    }
+  }
+
+  private def endBotTurn(): Unit = {
+    if state.gamePhase != GamePhase.GameOver then
+      turn = Turn.FirstPlayer
+      updateView(turn)
+      if !firstPlayer.isABot then
+        showTurnDialog("Player 1")
+  }
+
+  private def executeBotTurn(): String = {
     if turn == Turn.SecondPlayer && state.gamePhase == GamePhase.Battle then
       val (newState, messages) = handleBattleClick(state, None)
       messages.foreach(println)
 
-      if newState.gamePhase != GamePhase.GameOver then
-        turn = Turn.FirstPlayer
-
       state = newState
-      updateView(turn)
+      updateView(Turn.SecondPlayer)
+      messages.last
+    else "error! not bot turn"
   }
 
   private def executeWithDelay(action: () => Unit, delayMs: Int = 2000): Unit = {
@@ -336,8 +366,9 @@ class GameController(
               showWaitingDialog()
               executeWithDelay(() => {
                 if secondPlayer.isABot && state.gamePhase == GamePhase.Battle then
-                  executeBotTurn()
+                  val result = executeBotTurn()
                   hideWaitingDialog()
+                  showBotResultDialog(result)
               })
             else
               showTurnDialog("Player 2")

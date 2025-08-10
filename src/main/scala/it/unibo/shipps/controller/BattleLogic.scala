@@ -65,9 +65,9 @@ object BattleLogic:
       result: AttackResult
   ): (GameState, String) = {
     val message = result match
-      case AttackResult.Miss            => s"Miss at $pos!"
-      case AttackResult.Hit(ship)       => s"Hit ${ship} at $pos!"
-      case AttackResult.Sunk(ship)      => s"Sunk ${ship}!"
+      case AttackResult.Miss            => s"Miss at (${pos.col},${pos.row})!"
+      case AttackResult.Hit(ship)       => s"Hit ${ship.shipType} at (${pos.col},${pos.row})!"
+      case AttackResult.Sunk(ship)      => s"Sunk ${ship.shipType} anchored in (${ship.anchor.col},${ship.anchor.row})!"
       case AttackResult.EndOfGame(_)    => "Game over! All enemy ships sunk!"
       case AttackResult.AlreadyAttacked => s"Already attacked position $pos"
 

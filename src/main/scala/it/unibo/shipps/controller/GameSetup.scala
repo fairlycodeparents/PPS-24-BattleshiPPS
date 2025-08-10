@@ -1,7 +1,7 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.model.*
-import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
+import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player, PlayerFactory}
 import it.unibo.shipps.model.ship.ShipType
 import it.unibo.shipps.view.{SetupView, SimpleGui}
 
@@ -29,7 +29,7 @@ class GameSetup(val viewFrame: MainFrame):
   viewFrame.listenTo(SetupView.singlePlayerButton, SetupView.multiPlayerButton)
   viewFrame.reactions += {
     case ButtonClicked(SetupView.singlePlayerButton) =>
-      createController(BotPlayer(RandomBotAttackStrategy()))
+      createController(PlayerFactory.createBotPlayer(AverageBotAttackStrategy()))
     case ButtonClicked(SetupView.multiPlayerButton) =>
       createController(HumanPlayer())
   }
