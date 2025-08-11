@@ -98,3 +98,34 @@ object DialogFactory:
     */
   def hideDialogOpt(dialogOpt: Option[JDialog]): Unit =
     dialogOpt.foreach(hideDialog)
+
+  def showBotResultDialog(view: SimpleGui, result: String): JDialog =
+    val dialog = new JDialog(view.peer, "Bot Turn", true)
+    dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE)
+    dialog.setSize(300, 150)
+    dialog.setLocationRelativeTo(view.peer)
+    dialog.setResizable(false)
+
+    val label = new JLabel(s"<html><center>Bot attack done!<br>${result}</center></html>")
+    label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER)
+
+    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+      override def windowClosing(e: java.awt.event.WindowEvent): Unit = {
+        // endBotTurn()
+      }
+    })
+
+    val okButton = new javax.swing.JButton("OK")
+    okButton.addActionListener(_ => {
+      dialog.setVisible(false)
+      dialog.dispose()
+      // endBotTurn()
+    })
+
+    val panel = new javax.swing.JPanel(new BorderLayout())
+    panel.add(label, BorderLayout.CENTER)
+    panel.add(okButton, BorderLayout.SOUTH)
+
+    dialog.add(panel)
+    dialog.setVisible(true)
+    dialog

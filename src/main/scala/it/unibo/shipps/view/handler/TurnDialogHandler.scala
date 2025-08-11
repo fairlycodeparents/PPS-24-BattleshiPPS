@@ -1,9 +1,10 @@
 package it.unibo.shipps.view.handler
 
+import it.unibo.shipps.model.Turn
 import it.unibo.shipps.view.SimpleGui
 import it.unibo.shipps.view.components.DialogFactory
 
-import javax.swing.JDialog
+import javax.swing.{JDialog, JLabel}
 
 class TurnDialogHandler(gui: SimpleGui):
   private var currentDialog: Option[JDialog] = None
@@ -33,5 +34,11 @@ class TurnDialogHandler(gui: SimpleGui):
   def retryAttack(): Unit =
     hideCurrentDialog()
     val dialog = DialogFactory.createRetryAttackDialog(gui)
+    currentDialog = Some(dialog)
+    DialogFactory.showDialog(dialog)
+
+  def showBotResultDialog(result: String): Unit =
+    hideCurrentDialog()
+    val dialog = DialogFactory.showBotResultDialog(gui, result)
     currentDialog = Some(dialog)
     DialogFactory.showDialog(dialog)

@@ -7,6 +7,8 @@ import it.unibo.shipps.model.player.Player
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.ship.Ship
 import it.unibo.shipps.model.TurnLogic
+import it.unibo.shipps.view.SimpleGui
+import it.unibo.shipps.view.components.DialogFactory.showBotResultDialog
 
 import scala.util.Try
 
@@ -19,6 +21,7 @@ object GameStateManager:
     case ShowWaitingDialog
     case RetryAttack
     case HideDialog
+    case ShowBotResultDialog(result: String)
 
   /** Result of a game action */
   case class GameActionResult(
@@ -201,12 +204,14 @@ object GameStateManager:
     */
   def handleBotTurn(
       gameState: GameState,
+      view: SimpleGui,
       turn: Turn,
       firstPlayer: Player,
       secondPlayer: Player
   ): GameActionResult =
     val currentPlayer = TurnLogic.getCurrentPlayer(turn, firstPlayer, secondPlayer)
     val battleResult  = BattleController.processBotAttack(gameState, currentPlayer, turn)
+    showBotResultDialog(view, battleResult.messages.head)
 
     if battleResult.gameOver then
       GameActionResult(battleResult.newState, turn, battleResult.messages)

@@ -1,5 +1,6 @@
 package it.unibo.shipps.view
 
+import it.unibo.shipps.controller.GameStateManager.DialogAction
 import it.unibo.shipps.model.*
 import it.unibo.shipps.controller.{GameController, GamePhase, GameState}
 import it.unibo.shipps.model.board.PlayerBoard
@@ -25,18 +26,18 @@ class SimpleGui(controller: GameController) extends MainFrame:
     horizontalAlignment = Alignment.Center
   }
 
-  private val gridManager         = new GridManager(controller)
-  private val startButton         = ButtonFactory.createStartGameButton()
-  private val controlPanel        = createControlPanel(startButton)
-  private val gridPanel           = createGridPanel()
-  private val infoPanel           = createInfoPanel()
+  private val gridManager  = new GridManager(controller)
+  private val startButton  = ButtonFactory.createStartGameButton()
+  private val controlPanel = createControlPanel(startButton)
+  private val gridPanel    = createGridPanel()
+  private val infoPanel    = createInfoPanel()
 
   contents = new BorderPanel {
     layout(infoPanel) = BorderPanel.Position.North
     layout(gridPanel) = BorderPanel.Position.Center
     layout(controlPanel) = BorderPanel.Position.South
   }
-  controller.showTurnDialog("Player 1 - position your ships")
+  DialogAction.ShowTurnDialog("Player 1 - position your ships")
 
   private def createControlPanel(startGameButton: Button): FlowPanel = {
     new FlowPanel {

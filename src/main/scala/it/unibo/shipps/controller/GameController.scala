@@ -165,7 +165,7 @@ class GameController(
       result.showDialog.foreach(handleDialogAction)
 
       if TurnLogic.isBotTurn(turn, firstPlayer, secondPlayer) then
-        botHandler.scheduleBotMove(state, turn, firstPlayer, secondPlayer)
+        botHandler.scheduleBotMove(state, view.get, turn, firstPlayer, secondPlayer)
     }
 
   /** Handles the result of a game action and updates the game state and view.
@@ -179,7 +179,7 @@ class GameController(
     if TurnLogic.isBotTurn(turn, firstPlayer, secondPlayer) &&
       state.gamePhase == GamePhase.Battle
     then
-      botHandler.scheduleBotMove(state, turn, firstPlayer, secondPlayer)
+      botHandler.scheduleBotMove(state, view.get, turn, firstPlayer, secondPlayer)
 
     updateView(turn)
 
@@ -196,6 +196,13 @@ class GameController(
         dialogHandler.get.hideCurrentDialog()
       case DialogAction.RetryAttack =>
         dialogHandler.get.retryAttack()
+      case DialogAction.ShowBotResultDialog("") =>
+        dialogHandler.get.showBotResultDialog("")
+        if state.gamePhase != GamePhase.GameOver then
+          turn = Turn.FirstPlayer
+        updateView(turn)
+        if !firstPlayer.isABot then
+          dialogHandler.get.showTurnDialog("Player 1")
 
   /** Sets the view for the game controller.
     * @param result the view to set
