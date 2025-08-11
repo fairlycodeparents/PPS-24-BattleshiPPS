@@ -1,9 +1,10 @@
 package it.unibo.shipps.view.components
 
 import it.unibo.shipps.Main.{listenTo, reactions}
-import it.unibo.shipps.controller.{GameController, GameState, Turn}
+import it.unibo.shipps.controller.{GameController, GameState}
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.player.Player
+import it.unibo.shipps.model.{Turn, TurnLogic}
 import it.unibo.shipps.view.handler.{ClickHandler, ClickState}
 import it.unibo.shipps.view.renderer.ButtonRenderer
 

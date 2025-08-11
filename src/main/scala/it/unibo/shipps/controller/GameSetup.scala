@@ -1,9 +1,10 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.model.*
-import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player, PlayerFactory}
+import it.unibo.shipps.view.handler.TurnDialogHandler
+import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
 import it.unibo.shipps.model.ship.ShipType
-import it.unibo.shipps.view.{SetupView, SimpleGui}
+import it.unibo.shipps.view.{DifficultySelection, SetupView, SimpleGui}
 
 import javax.swing.event.ChangeEvent
 import scala.swing.*
@@ -29,7 +30,13 @@ class GameSetup(val viewFrame: MainFrame):
   viewFrame.listenTo(SetupView.singlePlayerButton, SetupView.multiPlayerButton)
   viewFrame.reactions += {
     case ButtonClicked(SetupView.singlePlayerButton) =>
-      createController(PlayerFactory.createBotPlayer(AverageBotAttackStrategy()))
+      val options           = Seq("Easy", "Medium", "Hard")
+      val choosenDifficulty = new DifficultySelection(options, viewFrame.peer)
+      choosenDifficulty.setVisible(true)
+      choosenDifficulty.selection match
+        case "Easy"   => createController(BotPlayer(RandomBotAttackStrategy()))
+        case "Medium" => createController(BotPlayer(AverageBotAttackStrategy()))
+        case "Hard"   => createController(BotPlayer(AdvancedBotAttackStrategy()))
     case ButtonClicked(SetupView.multiPlayerButton) =>
       createController(HumanPlayer())
   }
@@ -39,12 +46,12 @@ class GameSetup(val viewFrame: MainFrame):
       BoardFactory.createRandomBoard(currentConfig),
       BoardFactory.createRandomBoard(currentConfig),
       HumanPlayer(),
-      secondPlayer,
-      ShipPositioningImpl,
-      null
+      secondPlayer
     )
-    val view = new SimpleGui(controller)
-    controller.view = view
+    val view          = new SimpleGui(controller)
+    val dialogHandler = new TurnDialogHandler(view)
+    controller.view = Some(view)
+    controller.dialogHandler = Some(dialogHandler)
     view.update(Turn.FirstPlayer)
     view.visible = true
     viewFrame.close()

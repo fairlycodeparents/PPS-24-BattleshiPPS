@@ -1,8 +1,9 @@
 package it.unibo.shipps.view
 
 import it.unibo.shipps.model.*
-import it.unibo.shipps.controller.{GameController, GamePhase, GameState, Turn}
+import it.unibo.shipps.controller.{GameController, GamePhase, GameState}
 import it.unibo.shipps.model.board.PlayerBoard
+import it.unibo.shipps.model.TurnLogic
 import it.unibo.shipps.view.components.{ButtonFactory, GridManager}
 import it.unibo.shipps.view.handler.{ClickHandler, ClickState}
 
@@ -25,10 +26,10 @@ class SimpleGui(controller: GameController) extends MainFrame:
   }
 
   private val gridManager         = new GridManager(controller)
-  private val controlPanel        = createControlPanel()
+  private val startButton         = ButtonFactory.createStartGameButton()
+  private val controlPanel        = createControlPanel(startButton)
   private val gridPanel           = createGridPanel()
   private val infoPanel           = createInfoPanel()
-  private var startButton: Button = _
 
   contents = new BorderPanel {
     layout(infoPanel) = BorderPanel.Position.North
@@ -37,20 +38,22 @@ class SimpleGui(controller: GameController) extends MainFrame:
   }
   controller.showTurnDialog("Player 1 - position your ships")
 
-  private def createControlPanel(): FlowPanel = {
+  private def createControlPanel(startGameButton: Button): FlowPanel = {
     new FlowPanel {
       hGap = 5
       vGap = 5
       border = Swing.EmptyBorder(2, 0, 2, 0)
 
-      startButton = ButtonFactory.createStartGameButton()
-      startButton.reactions += {
+      listenTo(startGameButton)
+      startGameButton.reactions += {
         case ButtonClicked(_) => controller.onStartGame()
       }
-      contents += startButton
-
+      contents += startGameButton
     }
   }
+
+  def hideStartButton(): Unit =
+    startButton.visible = false
 
   private def createGridPanel(): GridPanel =
     new GridPanel(PlayerBoard.size, PlayerBoard.size) {
