@@ -12,7 +12,10 @@ import scala.swing.event.ButtonClicked
 
 class GameSetup(val viewFrame: MainFrame):
   private var currentConfig: GameConfig = GameConfig(ShipType.values.map(_ -> 0).toMap)
-  private val validators                = Seq(new MaxOccupancyValidator(maxOccupancy = 0.5))
+  private val validators = Seq(
+    new MaxOccupancyValidator(maxOccupancy = 0.5),
+    new NotEmptyValidator()
+  )
 
   viewFrame.title = "BattleshiPPS: Homepage"
   viewFrame.contents = SetupView.mainPanel
