@@ -93,13 +93,18 @@ object PlayerBoard:
       *       - "O" for an empty spot that has not been hit.
       */
     override def toString: String =
-      (0 until size).map(row =>
-        (0 until size).map(col =>
-          val pos = Position(col, row)
-          (shipAtPosition(pos), hits.contains(pos)) match
-            case (Some(_), true)  => "X"
-            case (Some(_), false) => "S"
-            case (None, true)     => "+"
-            case (None, false)    => "O"
-        ).mkString(" | ")
-      ).mkString("\n", "\n", "\n")
+      val allPositions =
+        for
+          row <- 0 until size
+          col <- 0 until size
+        yield Position(col, row)
+
+      allPositions.map(pos =>
+        (shipAtPosition(pos), hits.contains(pos)) match
+          case (Some(_), true)  => "X"
+          case (Some(_), false) => "S"
+          case (None, true)     => "+"
+          case (None, false)    => "O"
+      ).grouped(size)
+        .map(_.mkString(" | "))
+        .mkString("\n", "\n", "\n")
