@@ -42,7 +42,7 @@ class MaxOccupancyValidator(val maxOccupancy: Double) extends ConfigurationValid
 /** This validator ensures that at least one ship is present in the configuration. */
 class NotEmptyValidator extends ConfigurationValidator:
   def validate(config: GameConfig): GameConfig =
-    if config.ships.isEmpty then
+    if config.ships.values.sum == 0 then
       GameConfig(Map(ShipType.Frigate -> 1))
     else
       config
