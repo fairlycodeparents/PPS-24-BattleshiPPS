@@ -62,7 +62,6 @@ object PlayerBoard:
     PlayerBoardImpl(ships, hits)
 
   private case class PlayerBoardImpl(ships: Set[Ship], hits: Set[Position]) extends PlayerBoard:
-    private lazy val allShipPositions: Set[Position] = ships.flatMap(_.positions)
 
     override def addShip(ship: Ship): Either[String, PlayerBoard] =
       if isAnyPositionOccupied(ship.positions) then
@@ -80,6 +79,7 @@ object PlayerBoard:
       PlayerBoardImpl(ships, hits + target)
 
     override def isAnyPositionOccupied(positions: Set[Position]): Boolean =
+      val allShipPositions = ships.flatMap(_.positions)
       positions.exists(allShipPositions.contains)
 
     override def shipAtPosition(position: Position): Option[Ship] =
