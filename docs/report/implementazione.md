@@ -1,5 +1,5 @@
 ---
-title: Processo di Sviluppo
+title: Implementazione
 nav_order: 6
 ---
 
