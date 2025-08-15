@@ -4,6 +4,7 @@ import it.unibo.shipps.model.*
 import it.unibo.shipps.view.handler.TurnDialogHandler
 import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
 import it.unibo.shipps.model.ship.ShipType
+import it.unibo.shipps.model.ship.ShipType.*
 import it.unibo.shipps.view.{DifficultySelection, SetupView, SimpleGui}
 
 import javax.swing.event.ChangeEvent
@@ -11,7 +12,7 @@ import scala.swing.*
 import scala.swing.event.ButtonClicked
 
 class GameSetup(val viewFrame: MainFrame):
-  private var currentConfig: GameConfig = GameConfig(ShipType.values.map(_ -> 0).toMap)
+  private var currentConfig: GameConfig = GameConfig(ShipType.values.map(_ -> 1).toMap)
   private val validators = Seq(
     new MaxOccupancyValidator(maxOccupancy = 0.5),
     new NotEmptyValidator()
