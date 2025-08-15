@@ -8,7 +8,8 @@ import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.ship.Ship
 import it.unibo.shipps.model.TurnLogic
 import it.unibo.shipps.view.SimpleGui
-import it.unibo.shipps.view.components.DialogFactory.showBotResultDialog
+import it.unibo.shipps.view.components.DialogFactory
+import it.unibo.shipps.view.components.DialogFactory.createBotResultDialog
 
 import scala.util.Try
 
@@ -211,7 +212,6 @@ object GameStateManager:
   ): GameActionResult =
     val currentPlayer = TurnLogic.getCurrentPlayer(turn, firstPlayer, secondPlayer)
     val battleResult  = BattleController.processBotAttack(gameState, currentPlayer, turn)
-    showBotResultDialog(view, battleResult.messages.head)
 
     if battleResult.gameOver then
       GameActionResult(battleResult.newState, turn, battleResult.messages)

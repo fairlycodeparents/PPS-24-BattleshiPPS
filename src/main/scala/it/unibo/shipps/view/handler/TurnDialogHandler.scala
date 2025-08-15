@@ -37,8 +37,12 @@ class TurnDialogHandler(gui: SimpleGui):
     currentDialog = Some(dialog)
     DialogFactory.showDialog(dialog)
 
-  def showBotResultDialog(result: String): Unit =
+  /** Shows a dialog with the result of a bot action.
+    * @param result the result message to display
+    * @param onDismiss callback to execute when the dialog is closed
+    */
+  def showBotResultDialog(result: String, onDismiss: () => Unit): Unit =
     hideCurrentDialog()
-    val dialog = DialogFactory.showBotResultDialog(gui, result)
+    val dialog = DialogFactory.createBotResultDialog(gui, result, onDismiss)
     currentDialog = Some(dialog)
     DialogFactory.showDialog(dialog)

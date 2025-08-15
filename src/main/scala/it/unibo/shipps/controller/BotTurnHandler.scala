@@ -36,7 +36,28 @@ class BotTurnHandler(controller: GameController):
     * @param secondPlayer second player
     */
   def scheduleBotMove(state: GameState, view: SimpleGui, turn: Turn, firstPlayer: Player, secondPlayer: Player): Unit =
-    DelayedExecutor.runLater() {
+    controller.dialogHandler.foreach(_.showWaitingDialog())
+
+    DelayedExecutor.runLater(1500) {
       val result = handleBotTurn(state, view, turn, firstPlayer, secondPlayer)
-      controller.applyGameActionResult(result)
+
+      controller.state = result.newState
+      controller.turn = result.newTurn
+
+      Swing.onEDT {
+        view.update(turn)
+      }
+
+      DelayedExecutor.runLater(500) {
+        controller.dialogHandler.foreach(_.hideCurrentDialog())
+
+        val attackMessage = result.messages.headOption.getOrElse("Attack completed")
+
+        controller.dialogHandler.foreach(_.showBotResultDialog(
+          attackMessage,
+          () => {
+            controller.endBotTurn()
+          }
+        ))
+      }
     }

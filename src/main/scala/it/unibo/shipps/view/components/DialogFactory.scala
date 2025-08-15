@@ -1,5 +1,7 @@
 package it.unibo.shipps.view.components
 
+import it.unibo.shipps.controller.GamePhase
+import it.unibo.shipps.model.Turn
 import it.unibo.shipps.view.SimpleGui
 
 import java.awt.BorderLayout
@@ -99,27 +101,33 @@ object DialogFactory:
   def hideDialogOpt(dialogOpt: Option[JDialog]): Unit =
     dialogOpt.foreach(hideDialog)
 
-  def showBotResultDialog(view: SimpleGui, result: String): JDialog =
-    val dialog = new JDialog(view.peer, "Bot Turn", true)
-    dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE)
-    dialog.setSize(300, 150)
+  /** Creates a dialog to display the result of a bot action
+    * @param view the main GUI view
+    * @param result the result message to display
+    * @param onDismiss callback to execute when the dialog is closed
+    * @return the created dialog
+    */
+  def createBotResultDialog(view: SimpleGui, result: String, onDismiss: () => Unit): JDialog =
+    val dialog = new JDialog(view.peer, "Bot Turn Result", true)
+    dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE)
+    dialog.setSize(350, 200)
     dialog.setLocationRelativeTo(view.peer)
     dialog.setResizable(false)
 
-    val label = new JLabel(s"<html><center>Bot attack done!<br>${result}</center></html>")
+    val label = new JLabel(s"<html><center>Bot attack done!<br><br>$result<br><br>Click OK to continue</center></html>")
     label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER)
-
-    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-      override def windowClosing(e: java.awt.event.WindowEvent): Unit = {
-        // endBotTurn()
-      }
-    })
 
     val okButton = new javax.swing.JButton("OK")
     okButton.addActionListener(_ => {
       dialog.setVisible(false)
       dialog.dispose()
-      // endBotTurn()
+      onDismiss()
+    })
+
+    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+      override def windowClosing(e: java.awt.event.WindowEvent): Unit = {
+        onDismiss()
+      }
     })
 
     val panel = new javax.swing.JPanel(new BorderLayout())
@@ -127,5 +135,4 @@ object DialogFactory:
     panel.add(okButton, BorderLayout.SOUTH)
 
     dialog.add(panel)
-    dialog.setVisible(true)
     dialog
