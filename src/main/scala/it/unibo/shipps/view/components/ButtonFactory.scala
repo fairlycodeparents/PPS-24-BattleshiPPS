@@ -28,7 +28,7 @@ object ButtonFactory {
     * @return the [[Button]]
     */
   def createStartGameButton(): Button =
-    new Button("Start Game") {
+    new Button("Fleet deployed!") {
       background = java.awt.Color.GREEN
       foreground = java.awt.Color.BLACK
     }

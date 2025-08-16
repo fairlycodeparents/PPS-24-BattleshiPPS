@@ -41,6 +41,10 @@ object BattleLogic:
     }
   }
 
+  private def findAttackedPosition(originalBoard: PlayerBoard, updatedBoard: PlayerBoard): Option[Position] =
+    val newHits = updatedBoard.hits -- originalBoard.hits
+    newHits.headOption
+
   /** Performs a bot attack with retry logic for AlreadyAttacked cases.
     * @param player     the bot player
     * @param board      the board to attack
@@ -172,7 +176,16 @@ object BattleLogic:
           state.copy(enemyBoard = updatedBoard)
         else
           state.copy(board = updatedBoard)
-        val (finalState, message) = processAttackResult(turn, newState, pos.orNull, result)
+        val attackPosition = pos.getOrElse {
+          findAttackedPosition(targetBoard, updatedBoard) match {
+            case Some(position) => position
+            case _ =>
+              updatedBoard.hits.headOption.getOrElse {
+                throw new IllegalStateException("No attacked position found and no fallback available")
+              }
+          }
+        }
+        val (finalState, message) = processAttackResult(turn, newState, attackPosition, result)
         BattleClickResult(finalState, List(message), shouldChangeTurn = true)
       case Left(errorMessage) =>
         BattleClickResult(state, List(errorMessage), shouldChangeTurn = false)

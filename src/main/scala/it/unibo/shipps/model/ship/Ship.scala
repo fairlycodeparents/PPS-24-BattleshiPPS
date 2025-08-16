@@ -25,6 +25,9 @@ sealed trait Ship:
   /** @return the set of grid positions occupied by the [[Ship]] */
   def positions: Set[Position]
 
+  /** @return the type of the [[Ship]] */
+  def shipType: ShipType
+
 /** Predefined ship types with associated length. */
 enum ShipType(val length: Int):
   case Frigate   extends ShipType(2)

@@ -1,9 +1,10 @@
 package it.unibo.shipps.view.handler
 
+import it.unibo.shipps.model.Turn
 import it.unibo.shipps.view.SimpleGui
 import it.unibo.shipps.view.components.DialogFactory
 
-import javax.swing.JDialog
+import javax.swing.{JDialog, JLabel}
 
 class TurnDialogHandler(gui: SimpleGui):
   private var currentDialog: Option[JDialog] = None
@@ -33,5 +34,15 @@ class TurnDialogHandler(gui: SimpleGui):
   def retryAttack(): Unit =
     hideCurrentDialog()
     val dialog = DialogFactory.createRetryAttackDialog(gui)
+    currentDialog = Some(dialog)
+    DialogFactory.showDialog(dialog)
+
+  /** Shows a dialog with the result of a bot action.
+    * @param result the result message to display
+    * @param onDismiss callback to execute when the dialog is closed
+    */
+  def showBotResultDialog(result: String, onDismiss: () => Unit): Unit =
+    hideCurrentDialog()
+    val dialog = DialogFactory.createBotResultDialog(gui, result, onDismiss)
     currentDialog = Some(dialog)
     DialogFactory.showDialog(dialog)

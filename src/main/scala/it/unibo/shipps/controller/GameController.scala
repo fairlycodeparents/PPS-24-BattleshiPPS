@@ -2,6 +2,7 @@ package it.unibo.shipps.controller
 
 import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
 import it.unibo.shipps.controller.GameStateManager.DialogAction
+import it.unibo.shipps.controller.GameStateManager.DialogAction.ShowTurnDialog
 import it.unibo.shipps.controller.battle.BattleController
 import it.unibo.shipps.controller.utils.DelayedExecutor
 import it.unibo.shipps.model.*
@@ -130,8 +131,8 @@ class GameController(
   var state: GameState                         = GameState(initialBoard, enemyBoard, None, Positioning)
   var view: Option[SimpleGui]                  = None
   var dialogHandler: Option[TurnDialogHandler] = None
+  var turn: Turn                               = Turn.FirstPlayer
 
-  private var turn: Turn                          = Turn.FirstPlayer
   private var isPositioningPhaseComplete: Boolean = false
   private val positioning: ShipPositioning        = ShipPositioningImpl
   private val botHandler: BotTurnHandler          = BotTurnHandler(this)
@@ -165,7 +166,7 @@ class GameController(
       result.showDialog.foreach(handleDialogAction)
 
       if TurnLogic.isBotTurn(turn, firstPlayer, secondPlayer) then
-        botHandler.scheduleBotMove(state, turn, firstPlayer, secondPlayer)
+        botHandler.scheduleBotMove(state, view.get, turn, firstPlayer, secondPlayer)
     }
 
   /** Handles the result of a game action and updates the game state and view.
@@ -179,7 +180,7 @@ class GameController(
     if TurnLogic.isBotTurn(turn, firstPlayer, secondPlayer) &&
       state.gamePhase == GamePhase.Battle
     then
-      botHandler.scheduleBotMove(state, turn, firstPlayer, secondPlayer)
+      botHandler.scheduleBotMove(state, view.get, turn, firstPlayer, secondPlayer)
 
     updateView(turn)
 
@@ -196,6 +197,15 @@ class GameController(
         dialogHandler.get.hideCurrentDialog()
       case DialogAction.RetryAttack =>
         dialogHandler.get.retryAttack()
+      case DialogAction.ShowBotResultDialog(result) =>
+        dialogHandler.get.showBotResultDialog(result, () => endBotTurn())
+
+  def endBotTurn(): Unit =
+    if state.gamePhase != GamePhase.GameOver then
+      turn = Turn.FirstPlayer
+      updateView(turn)
+      if !firstPlayer.isABot then
+        ShowTurnDialog("Player 1")
 
   /** Sets the view for the game controller.
     * @param result the view to set

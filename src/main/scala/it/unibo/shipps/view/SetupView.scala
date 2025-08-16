@@ -1,8 +1,31 @@
 package it.unibo.shipps.view
 
 import it.unibo.shipps.model.ship.ShipType
-import javax.swing.{JSpinner, SpinnerNumberModel}
+
+import javax.swing.{JDialog, JSpinner, SpinnerNumberModel}
 import scala.swing.*
+
+class DifficultySelection(options: Seq[String], owner: java.awt.Frame)
+    extends JDialog(owner, "Choose the difficulty", true):
+
+  private val comboBox  = new ComboBox(options)
+  private val okButton  = new Button("OK")
+  var selection: String = options.head
+
+  okButton.action = Action("OK"):
+    selection = comboBox.selection.item
+    dispose()
+
+  val mainPanel: BoxPanel = new BoxPanel(Orientation.Vertical):
+    border = Swing.EmptyBorder(10)
+    contents += new Label("Choose an option:")
+    contents += comboBox
+    contents += new FlowPanel:
+      contents += okButton
+
+  setContentPane(mainPanel.peer)
+  pack()
+  setLocationRelativeTo(owner)
 
 object SetupView:
 

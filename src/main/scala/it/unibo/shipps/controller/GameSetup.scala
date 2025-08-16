@@ -4,15 +4,19 @@ import it.unibo.shipps.model.*
 import it.unibo.shipps.view.handler.TurnDialogHandler
 import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
 import it.unibo.shipps.model.ship.ShipType
-import it.unibo.shipps.view.{SetupView, SimpleGui}
+import it.unibo.shipps.model.ship.ShipType.*
+import it.unibo.shipps.view.{DifficultySelection, SetupView, SimpleGui}
 
 import javax.swing.event.ChangeEvent
 import scala.swing.*
 import scala.swing.event.ButtonClicked
 
 class GameSetup(val viewFrame: MainFrame):
-  private var currentConfig: GameConfig = GameConfig(ShipType.values.map(_ -> 0).toMap)
-  private val validators                = Seq(new MaxOccupancyValidator(maxOccupancy = 0.5))
+  private var currentConfig: GameConfig = GameConfig(ShipType.values.map(_ -> 1).toMap)
+  private val validators = Seq(
+    new MaxOccupancyValidator(maxOccupancy = 0.5),
+    new NotEmptyValidator()
+  )
 
   viewFrame.title = "BattleshiPPS: Homepage"
   viewFrame.contents = SetupView.mainPanel
@@ -30,7 +34,13 @@ class GameSetup(val viewFrame: MainFrame):
   viewFrame.listenTo(SetupView.singlePlayerButton, SetupView.multiPlayerButton)
   viewFrame.reactions += {
     case ButtonClicked(SetupView.singlePlayerButton) =>
-      createController(BotPlayer(RandomBotAttackStrategy()))
+      val options           = Seq("Easy", "Medium", "Hard")
+      val choosenDifficulty = new DifficultySelection(options, viewFrame.peer)
+      choosenDifficulty.setVisible(true)
+      choosenDifficulty.selection match
+        case "Easy"   => createController(BotPlayer(RandomBotAttackStrategy()))
+        case "Medium" => createController(BotPlayer(AverageBotAttackStrategy()))
+        case "Hard"   => createController(BotPlayer(AdvancedBotAttackStrategy()))
     case ButtonClicked(SetupView.multiPlayerButton) =>
       createController(HumanPlayer())
   }

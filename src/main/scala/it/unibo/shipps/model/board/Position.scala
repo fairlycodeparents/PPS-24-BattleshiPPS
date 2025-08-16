@@ -1,18 +1,24 @@
 package it.unibo.shipps.model.board
 
-/** A type alias to represent a coordinate dimension, which can be a single Int
-  * or a Range of Ints.
-  */
+/** A type alias to represent a coordinate dimension, which can be a single Int or a Range of Int. */
 type CoordinateDimension = Int | Range
 
 /** Represents a position on a 2D grid, defined by its column and row coordinates.
   * @param col the column coordinate
   * @param row the row coordinate
   */
-case class Position(col: Int, row: Int)
+case class Position(col: Int, row: Int):
+
+  /** Calculates the distance to another position using the Manhattan distance formula.
+    * @param other the other [[Position]] to calculate the distance to
+    * @return the Manhattan distance as an [[Int]]
+    */
+  def distanceTo(other: Position): Int =
+    Math.abs(col - other.col) + Math.abs(row - other.row)
 
 /** Companion object for the Position class, providing flexible factory methods. */
 object Position:
+
   /** Creates a Set of Position objects from the defined column and row dimensions.
     * @param colDimension The columns dimension, as a single [[Int]] value or a [[Range]].
     * @param rowDimension The rows dimension, as a single [[Int]] value or a [[Range]].
