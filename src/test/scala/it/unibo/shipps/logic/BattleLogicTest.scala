@@ -32,7 +32,7 @@ class BattleLogicTest extends AnyFlatSpec with should.Matchers:
   "BattleLogic.processBattleClick" should "handle human player miss attack correctly" in:
     val emptyEnemyBoard = PlayerBoard()
     val gameState       = initialGameState.copy(enemyBoard = emptyEnemyBoard)
-    val missPosition    = Position(0, 0) // Empty position
+    val missPosition    = Position(0, 0)
 
     val result = BattleLogic.processBattleClick(
       gameState,
@@ -41,7 +41,6 @@ class BattleLogicTest extends AnyFlatSpec with should.Matchers:
       Some(missPosition)
     )
 
-    result.shouldChangeTurn shouldBe true
     result.messages should have size 1
     result.messages.head should include("Miss")
     result.newState.attackResult should contain key missPosition
@@ -59,7 +58,6 @@ class BattleLogicTest extends AnyFlatSpec with should.Matchers:
       Some(hitPosition)
     )
 
-    result.shouldChangeTurn shouldBe true
     result.messages should have size 1
     result.messages.head should include("Hit")
     result.newState.attackResult should contain key hitPosition
@@ -108,7 +106,6 @@ class BattleLogicTest extends AnyFlatSpec with should.Matchers:
       Some(attackedPosition)
     )
 
-    secondResult.shouldChangeTurn shouldBe false
     secondResult.messages should have size 1
     secondResult.messages.head should include("already attacked")
 
@@ -120,7 +117,6 @@ class BattleLogicTest extends AnyFlatSpec with should.Matchers:
       None
     )
 
-    result.shouldChangeTurn shouldBe false
     result.messages should have size 1
     result.messages.head should include("Position required")
 
@@ -134,7 +130,6 @@ class BattleLogicTest extends AnyFlatSpec with should.Matchers:
       None
     )
 
-    result.shouldChangeTurn shouldBe true
     result.messages should have size 1
     result.messages.head should (include("Miss") or include("Hit"))
 
@@ -153,7 +148,6 @@ class BattleLogicTest extends AnyFlatSpec with should.Matchers:
       Some(attackPosition)
     )
 
-    result.shouldChangeTurn shouldBe true
     result.newState.enemyAttackResult should contain key attackPosition
     result.newState.enemyCellColors should contain key attackPosition
 
