@@ -108,7 +108,7 @@ class SimpleGui(controller: GameController) extends MainFrame:
       contents += new Label("Click a position to attack")
       contents += new Label("Shot legend:")
       contents += new FlowPanel(FlowPanel.Alignment.Left)(
-        colorBox(Color.YELLOW),
+        colorBox(Color.ORANGE),
         new Label(" + O = Ship hit")
       )
       contents += new FlowPanel(FlowPanel.Alignment.Left)(
