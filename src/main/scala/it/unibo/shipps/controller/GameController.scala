@@ -177,9 +177,7 @@ class GameController(
 
     result.showDialog.foreach(handleDialogAction)
 
-    if TurnLogic.isBotTurn(turn, firstPlayer, secondPlayer) &&
-      state.gamePhase == GamePhase.Battle
-    then
+    if TurnLogic.isBotTurn(turn, firstPlayer, secondPlayer) && state.gamePhase == GamePhase.Battle then
       botHandler.scheduleBotMove(state, view.get, turn, firstPlayer, secondPlayer)
 
     updateView(turn)
@@ -200,17 +198,10 @@ class GameController(
       case DialogAction.ShowBotResultDialog(result) =>
         dialogHandler.get.showBotResultDialog(result, () => endBotTurn())
 
-  def endBotTurn(): Unit =
-    if state.gamePhase != GamePhase.GameOver then
-      turn = Turn.FirstPlayer
-      updateView(turn)
-      if !firstPlayer.isABot then
-        ShowTurnDialog("Player 1")
-
   /** Sets the view for the game controller.
     * @param result the view to set
     */
-  def applyGameActionResult(result: GameStateManager.GameActionResult): Unit =
+  private def applyGameActionResult(result: GameStateManager.GameActionResult): Unit =
     val oldTurn = turn
     state = result.newState
 
@@ -223,6 +214,14 @@ class GameController(
       handleHumanAttackResult(result, oldTurn)
     else
       handleGameAction(result)
+
+  /** Ends the bot's turn and switches to the first player's turn. */
+  def endBotTurn(): Unit =
+    if state.gamePhase != GamePhase.GameOver then
+      turn = Turn.FirstPlayer
+      updateView(turn)
+      if !firstPlayer.isABot then
+        ShowTurnDialog("Player 1")
 
   /** Handles the click on a cell based on the current game phase.
     * @param pos the position of the cell clicked

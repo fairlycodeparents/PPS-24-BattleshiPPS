@@ -21,7 +21,6 @@ object TurnLogic:
     getCurrentPlayer(turn, firstPlayer, secondPlayer).isABot
 
   /** Gets the current player based on turn
-    *
     * @param turn         current turn
     * @param firstPlayer  first player
     * @param secondPlayer second player
@@ -33,7 +32,6 @@ object TurnLogic:
       case Turn.SecondPlayer => secondPlayer
 
   /** Switches to the next turn
-    *
     * @param currentTurn current turn
     * @return next turn
     */

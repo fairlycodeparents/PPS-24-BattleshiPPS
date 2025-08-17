@@ -30,17 +30,20 @@ object BattleLogic:
       player: Player,
       board: PlayerBoard,
       position: Position
-  ): (PlayerBoard, Either[String, AttackResult]) = {
+  ): (PlayerBoard, Either[String, AttackResult]) =
     val (updatedBoard, result) = player.makeAttack(board, Some(position))
 
-    result match {
+    result match
       case Right(AttackResult.AlreadyAttacked) =>
         (board, Left(s"Position $position already attacked. Please choose another position."))
       case _ =>
         (updatedBoard, result)
-    }
-  }
 
+  /** Finds the position that was attacked based on the difference between original and updated boards.
+    * @param originalBoard the original board before the attack
+    * @param updatedBoard  the board after the attack
+    * @return an Option containing the attacked position, if found
+    */
   private def findAttackedPosition(originalBoard: PlayerBoard, updatedBoard: PlayerBoard): Option[Position] =
     val newHits = updatedBoard.hits -- originalBoard.hits
     newHits.headOption
@@ -55,26 +58,21 @@ object BattleLogic:
       player: Player,
       board: PlayerBoard,
       maxRetries: Int = 100
-  ): (PlayerBoard, Either[String, AttackResult]) = {
-
+  ): (PlayerBoard, Either[String, AttackResult]) =
     @tailrec
-    def attemptAttack(currentBoard: PlayerBoard, retriesLeft: Int): (PlayerBoard, Either[String, AttackResult]) = {
-      if (retriesLeft <= 0) {
+    def attemptAttack(currentBoard: PlayerBoard, retriesLeft: Int): (PlayerBoard, Either[String, AttackResult]) =
+      if (retriesLeft <= 0)
         return (currentBoard, Left("Bot failed to find valid attack position after maximum retries"))
-      }
 
       val (updatedBoard, result) = player.makeAttack(currentBoard, None)
 
-      result match {
+      result match
         case Right(AttackResult.AlreadyAttacked) =>
           attemptAttack(currentBoard, retriesLeft - 1)
         case _ =>
           (updatedBoard, result)
-      }
-    }
 
     attemptAttack(board, maxRetries)
-  }
 
   /** Processes the result of an attack and updates the game state.
     * @param turn the current turn
@@ -88,7 +86,7 @@ object BattleLogic:
       state: GameState,
       pos: Position,
       result: AttackResult
-  ): (GameState, String) = {
+  ): (GameState, String) =
     val message = result match
       case AttackResult.Miss            => s"Miss at (${pos.col},${pos.row})!"
       case AttackResult.Hit(ship)       => s"Hit ${ship.shipType} at (${pos.col},${pos.row})!"
@@ -103,13 +101,11 @@ object BattleLogic:
         updateSunkShipResult(turn, state, ship, result)
           .copy(gamePhase = GamePhase.GameOver)
       case _ =>
-        turn match {
+        turn match
           case Turn.FirstPlayer  => state.addAttackResult(pos, result)
           case Turn.SecondPlayer => state.addEnemyAttackResult(pos, result)
-        }
 
     (updatedState, message)
-  }
 
   /** Updates the game state when a ship is sunk.
     * @param turn the current turn
@@ -119,7 +115,7 @@ object BattleLogic:
     * @return updated game state with sunk ship results
     */
   private def updateSunkShipResult(turn: Turn, state: GameState, ship: Ship, sunkResult: AttackResult): GameState =
-    turn match {
+    turn match
       case Turn.FirstPlayer =>
         val updatedAttackResults = ship.positions.foldLeft(state.attackResult) { (results, position) =>
           results + (position -> sunkResult)
@@ -143,7 +139,6 @@ object BattleLogic:
           enemyAttackResult = updatedAttackResults,
           enemyCellColors = updatedCellColors
         )
-    }
 
   /** Processes a click during the battle phase.
     *
@@ -159,7 +154,7 @@ object BattleLogic:
       turn: Turn,
       pos: Option[Position]
   ): BattleClickResult =
-    val (targetBoard, isAttackingEnemyBoard) = turn match
+    val (targetBoard, isAttackingSecondBoard) = turn match
       case Turn.FirstPlayer  => (state.enemyBoard, true)
       case Turn.SecondPlayer => (state.board, false)
 
@@ -172,7 +167,7 @@ object BattleLogic:
 
     attackResult match
       case Right(result) =>
-        val newState = if isAttackingEnemyBoard then
+        val newState = if isAttackingSecondBoard then
           state.copy(enemyBoard = updatedBoard)
         else
           state.copy(board = updatedBoard)

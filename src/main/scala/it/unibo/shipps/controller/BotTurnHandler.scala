@@ -22,12 +22,11 @@ class BotTurnHandler(controller: GameController):
     */
   private def handleBotTurn(
       state: GameState,
-      view: SimpleGui,
       turn: Turn,
       firstPlayer: Player,
       secondPlayer: Player
   ): GameActionResult =
-    GameStateManager.handleBotTurn(state, view, turn, firstPlayer, secondPlayer)
+    GameStateManager.handleBotTurn(state, turn, firstPlayer, secondPlayer)
 
   /** Schedules a bot move
     * @param state current game state
@@ -39,7 +38,7 @@ class BotTurnHandler(controller: GameController):
     controller.dialogHandler.foreach(_.showWaitingDialog())
 
     DelayedExecutor.runLater(1500) {
-      val result = handleBotTurn(state, view, turn, firstPlayer, secondPlayer)
+      val result = handleBotTurn(state, turn, firstPlayer, secondPlayer)
 
       controller.state = result.newState
       controller.turn = result.newTurn

@@ -205,7 +205,6 @@ object GameStateManager:
     */
   def handleBotTurn(
       gameState: GameState,
-      view: SimpleGui,
       turn: Turn,
       firstPlayer: Player,
       secondPlayer: Player
