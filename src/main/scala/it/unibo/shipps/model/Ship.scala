@@ -1,7 +1,6 @@
-package it.unibo.shipps.model.ship
+package it.unibo.shipps.model
 
 import it.unibo.shipps.model.board.Position
-import it.unibo.shipps.model.*
 
 /** Represents a ship in the game. */
 sealed trait Ship:
@@ -11,13 +10,14 @@ sealed trait Ship:
     */
   def move(pos: Position): Ship
 
-  /** Rotates the [[Orientation]] of the [[Ship]].
+  /** Rotates the [[ShipOrientation]] of the [[Ship]].
+    *
     * @return a new instance of [[Ship]] with the rotated orientation
     */
   def rotate: Ship
 
-  /** @return the shape of the [[Ship]] */
-  def shape: ShipShape
+  /** @return the [[ShipOrientation]] of the [[Ship]] */
+  def orientation: ShipOrientation
 
   /** @return the anchor [[Position]] of the [[Ship]] */
   def anchor: Position
@@ -35,24 +35,35 @@ enum ShipType(val length: Int):
   case Destroyer extends ShipType(4)
   case Carrier   extends ShipType(5)
 
-  def at(position: Position, orientation: Orientation = Orientation.Horizontal): Ship =
+  def at(position: Position, orientation: ShipOrientation = ShipOrientation.Horizontal): Ship =
     ShipImpl(this, position, orientation)
   def at(pos: Position): Ship            = at(pos)
   def at(x: Int, y: Int): Ship           = at(Position(x, y))
-  def verticalAt(pos: Position): Ship    = at(pos, Orientation.Vertical)
-  def verticalAt(x: Int, y: Int): Ship   = at(Position(x, y), Orientation.Vertical)
-  def horizontalAt(pos: Position): Ship  = at(pos, Orientation.Horizontal)
-  def horizontalAt(x: Int, y: Int): Ship = at(Position(x, y), Orientation.Horizontal)
+  def verticalAt(pos: Position): Ship    = at(pos, ShipOrientation.Vertical)
+  def verticalAt(x: Int, y: Int): Ship   = at(Position(x, y), ShipOrientation.Vertical)
+  def horizontalAt(pos: Position): Ship  = at(pos, ShipOrientation.Horizontal)
+  def horizontalAt(x: Int, y: Int): Ship = at(Position(x, y), ShipOrientation.Horizontal)
+
+/** Represents the orientation of a [[Ship]] */
+enum ShipOrientation:
+  case Horizontal, Vertical
+
+  /** Rotates the orientation.
+    *
+    * @return the opposite [[ShipOrientation]]
+    */
+  def rotate: ShipOrientation = this match
+    case Horizontal => Vertical
+    case Vertical   => Horizontal
 
 final private case class ShipImpl(
     shipType: ShipType,
     position: Position,
-    orientation: Orientation
+    orientation: ShipOrientation
 ) extends Ship:
   override def anchor: Position = position
   override lazy val positions: Set[Position] = orientation match
-    case Orientation.Horizontal => (0 until shipType.length).map(i => Position(anchor.col + i, anchor.row)).toSet
-    case Orientation.Vertical   => (0 until shipType.length).map(i => Position(anchor.col, anchor.row + i)).toSet
-  override lazy val shape: ShipShape     = ShipShapeImpl(orientation, shipType.length)
+    case ShipOrientation.Horizontal => (0 until shipType.length).map(i => Position(anchor.col + i, anchor.row)).toSet
+    case ShipOrientation.Vertical   => (0 until shipType.length).map(i => Position(anchor.col, anchor.row + i)).toSet
   override def move(pos: Position): Ship = copy(position = pos)
   override def rotate: Ship              = copy(orientation = orientation.rotate)

@@ -1,7 +1,6 @@
 package it.unibo.shipps.model
 
 import it.unibo.shipps.model.board.{PlayerBoard, PlayerBoardBuilder, Position}
-import it.unibo.shipps.model.ship.{Orientation, ShipType}
 
 /** Represents the configuration of a game, including the ships available and their counts.
   *
@@ -69,7 +68,7 @@ object BoardFactory:
   def createRandomBoard(config: GameConfig): Either[String, PlayerBoard] =
     val defaultPosition = Position(0, 0)
     val shipsToPlace = config.ships.flatMap((shipType, count) =>
-      List.fill(count)(shipType.at(defaultPosition, Orientation.Horizontal))
+      List.fill(count)(shipType.at(defaultPosition, ShipOrientation.Horizontal))
     ).toList
 
     ShipPositioningImpl.randomPositioning(PlayerBoardBuilder.board(), shipsToPlace)

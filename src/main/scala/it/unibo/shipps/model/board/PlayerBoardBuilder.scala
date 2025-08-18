@@ -1,8 +1,7 @@
 package it.unibo.shipps.model.board
 
-import it.unibo.shipps.model.ShipPositioningImpl
-import it.unibo.shipps.model.ship.ShipType.*
-import it.unibo.shipps.model.ship.{Orientation, ShipType}
+import it.unibo.shipps.model.{ShipOrientation, ShipPositioningImpl, ShipType}
+import it.unibo.shipps.model.ShipType.*
 import scala.language.postfixOps
 
 object PlayerBoardBuilder:
@@ -30,7 +29,7 @@ object ShipPlacementDSL:
     * @param start       the starting position of the ship
     * @param orientation the orientation of the ship (horizontal or vertical)
     */
-  case class Placement(shipType: ShipType, start: Position, orientation: Orientation)
+  case class Placement(shipType: ShipType, start: Position, orientation: ShipOrientation)
 
   /** DSL entry-point to start defining a ship placement. */
   object place:
@@ -54,12 +53,12 @@ object ShipPlacementDSL:
     /** Creates a horizontal placement for the ship.
       * @return a [[Placement]] with horizontal orientation
       */
-    def horizontal: Placement = Placement(shipType, pos, Orientation.Horizontal)
+    def horizontal: Placement = Placement(shipType, pos, ShipOrientation.Horizontal)
 
     /** Creates a vertical placement for the ship.
       * @return a [[Placement]] with vertical orientation
       */
-    def vertical: Placement = Placement(shipType, pos, Orientation.Vertical)
+    def vertical: Placement = Placement(shipType, pos, ShipOrientation.Vertical)
 
 object BoardCoordinates:
 

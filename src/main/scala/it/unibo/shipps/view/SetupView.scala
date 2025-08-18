@@ -1,7 +1,6 @@
 package it.unibo.shipps.view
 
-import it.unibo.shipps.model.ship.ShipType
-
+import it.unibo.shipps.model.ShipType
 import javax.swing.{JDialog, JSpinner, SpinnerNumberModel}
 import scala.swing.*
 

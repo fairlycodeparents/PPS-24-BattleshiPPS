@@ -3,8 +3,7 @@ package it.unibo.shipps.controller
 import it.unibo.shipps.model.*
 import it.unibo.shipps.view.handler.TurnDialogHandler
 import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
-import it.unibo.shipps.model.ship.ShipType
-import it.unibo.shipps.model.ship.ShipType.*
+import ShipType.*
 import it.unibo.shipps.view.{DifficultySelection, SetupView, SimpleGui}
 
 import javax.swing.event.ChangeEvent

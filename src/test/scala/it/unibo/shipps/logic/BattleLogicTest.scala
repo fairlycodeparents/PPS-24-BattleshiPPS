@@ -3,9 +3,16 @@ package it.unibo.shipps.logic
 import it.unibo.shipps.controller.{GamePhase, GameState}
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
-import it.unibo.shipps.model.ship.{Ship, ShipType}
-import it.unibo.shipps.model.ship.Orientation.{Horizontal, Vertical}
-import it.unibo.shipps.model.{AttackResult, BattleLogic, HumanAttackStrategy, RandomBotAttackStrategy, Turn}
+import it.unibo.shipps.model.ShipOrientation.{Horizontal, Vertical}
+import it.unibo.shipps.model.{
+  AttackResult,
+  BattleLogic,
+  HumanAttackStrategy,
+  RandomBotAttackStrategy,
+  Ship,
+  ShipType,
+  Turn
+}
 import it.unibo.shipps.view.renderer.ColorScheme
 import org.scalatest.*
 import flatspec.*

@@ -3,7 +3,6 @@ package it.unibo.shipps.model
 import it.unibo.shipps.controller.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
-import it.unibo.shipps.model.ship.Ship
 import it.unibo.shipps.model.{AttackResult, HumanAttackStrategy, RandomBotAttackStrategy, ShipAttack, Turn}
 import it.unibo.shipps.view.renderer.ColorScheme
 
