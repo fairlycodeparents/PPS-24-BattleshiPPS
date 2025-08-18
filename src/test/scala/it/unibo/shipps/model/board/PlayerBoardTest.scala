@@ -3,57 +3,62 @@ package it.unibo.shipps.model.board
 import org.scalatest.*
 import flatspec.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import it.unibo.shipps.model.board.BoardCoordinates.*
+import it.unibo.shipps.model.board.ShipPlacementDSL.*
 import it.unibo.shipps.model.ship.{Ship, ShipType}
+import it.unibo.shipps.model.ship.ShipType.*
 import matchers.*
 
-/** Test suite for the PlayerBoard class. */
+import scala.language.postfixOps
+
 class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
-  val position: Position = Position(2, 3)
-  val ship: Ship         = ShipType.Frigate.horizontalAt(position)
+
+  val position: Position = C(4)
+  val ship: Ship         = Frigate horizontalAt position
+
+  val emptyBoard: PlayerBoard = PlayerBoard()
+  val boardWithShip: PlayerBoard = PlayerBoardBuilder.board(
+    place a Frigate at C(4) horizontal
+  )
 
   "An empty player board" should "be initialised with no ships" in:
-    PlayerBoard().ships shouldBe empty
+    emptyBoard.ships shouldBe empty
 
   it should "return an error message when a ship is removed" in:
-    PlayerBoard().removeShip(ship).isLeft shouldBe true
+    emptyBoard.removeShip(ship).isLeft shouldBe true
 
   it should "allow adding a ship" in:
-    PlayerBoard().addShip(ship).getOrElse(fail()).ships should contain(ship)
+    emptyBoard.addShip(ship).getOrElse(fail()).ships should contain(ship)
 
   it should "consider any position as not occupied" in:
     val boardPositions: Set[Position] =
       (0 until PlayerBoard.size).flatMap(x =>
         (0 until PlayerBoard.size).map(y => Position(x, y))
       ).toSet
-    PlayerBoard().isAnyPositionOccupied(boardPositions) shouldBe false
+    emptyBoard.isAnyPositionOccupied(boardPositions) shouldBe false
 
   it should "return an empty set of hit positions" in:
-    PlayerBoard().hits shouldBe empty
+    emptyBoard.hits shouldBe empty
 
   "A player board" should "allow removing a ship that does exist" in:
-    val boardWithShip    = PlayerBoard().addShip(ship).getOrElse(fail())
     val boardWithoutShip = boardWithShip.removeShip(ship)
     boardWithoutShip.getOrElse(fail()).ships shouldBe empty
 
   it should "update occupied positions correctly, after a ship is added" in:
-    val boardWithShip = PlayerBoard().addShip(ship).getOrElse(fail())
     boardWithShip.isAnyPositionOccupied(Set(position)) shouldBe true
 
   it should "return a Left with an error message if a ship is added to an occupied position" in:
-    val board  = PlayerBoard().addShip(ship).getOrElse(fail())
-    val result = board.addShip(ship)
+    val result = boardWithShip.addShip(ship)
     result.isLeft shouldBe true
 
   it should "return the ship at a specific position" in:
-    val board = PlayerBoard().addShip(ship).getOrElse(fail())
-    board.shipAtPosition(position) shouldEqual Some(ship)
+    boardWithShip.shipAtPosition(position) shouldEqual Some(ship)
 
   it should "return an empty optional if no ship is at the specified position" in:
-    PlayerBoard().shipAtPosition(position) shouldEqual None
+    emptyBoard.shipAtPosition(position) shouldEqual None
 
   it should "print a nice and clear string representation" in:
-    val board = PlayerBoard().addShip(ship).getOrElse(fail())
-    board.toString shouldEqual (
+    boardWithShip.toString shouldEqual (
       "\n" +
         "O | O | O | O | O | O | O | O | O | O\n" +
         "O | O | O | O | O | O | O | O | O | O\n" +
@@ -68,13 +73,11 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     )
 
   it should "return a new board with the updated hits after a hit" in:
-    val boardWithShip = PlayerBoard().addShip(ship).getOrElse(fail())
-    val newBoard      = boardWithShip.hit(position)
+    val newBoard = boardWithShip.hit(position)
     newBoard.hits should contain(position)
 
   it should "update the string representation correctly after a hit on a ship" in:
-    val board    = PlayerBoard().addShip(ship).getOrElse(fail())
-    val newBoard = board.hit(position)
+    val newBoard = boardWithShip.hit(position)
     newBoard.toString shouldEqual (
       "\n" +
         "O | O | O | O | O | O | O | O | O | O\n" +
@@ -90,8 +93,7 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
     )
 
   it should "update the string representation correctly after a hit on an empty spot" in:
-    val board    = PlayerBoard().addShip(ship).getOrElse(fail())
-    val newBoard = board.hit(Position(0, 0))
+    val newBoard = boardWithShip.hit(A(1))
     newBoard.toString shouldEqual (
       "\n" +
         "+ | O | O | O | O | O | O | O | O | O\n" +

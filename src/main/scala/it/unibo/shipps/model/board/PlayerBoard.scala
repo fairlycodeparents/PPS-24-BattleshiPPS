@@ -58,28 +58,28 @@ object PlayerBoard:
     * @param hits the [[Set]] of [[Position]] to initialize the board with.
     * @return a new [[PlayerBoard]] instance.
     */
-  def apply(ships: Set[Ship] = Set.empty, hits: Set[Position] = Set.empty): PlayerBoard =
-    PlayerBoardImpl(ships, hits)
+  def apply(ships: Set[Ship] = Set.empty, hits: Set[Position] = Set.empty, size: Int = 10): PlayerBoard =
+    PlayerBoardImpl(ships, hits, size)
 
-  private case class PlayerBoardImpl(ships: Set[Ship], hits: Set[Position]) extends PlayerBoard:
-    private lazy val allShipPositions: Set[Position] = ships.flatMap(_.positions)
+  private case class PlayerBoardImpl(ships: Set[Ship], hits: Set[Position], size: Int) extends PlayerBoard:
 
     override def addShip(ship: Ship): Either[String, PlayerBoard] =
       if isAnyPositionOccupied(ship.positions) then
         Left(s"One or more of the following positions are already occupied: ${ship.positions.mkString(", ")}.")
       else
-        Right(PlayerBoardImpl(ships + ship, hits))
+        Right(PlayerBoardImpl(ships + ship, hits, size))
 
     override def removeShip(ship: Ship): Either[String, PlayerBoard] =
       if ships.contains(ship) then
-        Right(PlayerBoardImpl(ships - ship, hits))
+        Right(PlayerBoardImpl(ships - ship, hits, size))
       else
         Left("The ship does not exist on the player board.")
 
     override def hit(target: Position): PlayerBoard =
-      PlayerBoardImpl(ships, hits + target)
+      PlayerBoardImpl(ships, hits + target, size)
 
     override def isAnyPositionOccupied(positions: Set[Position]): Boolean =
+      val allShipPositions = ships.flatMap(_.positions)
       positions.exists(allShipPositions.contains)
 
     override def shipAtPosition(position: Position): Option[Ship] =
@@ -93,13 +93,18 @@ object PlayerBoard:
       *       - "O" for an empty spot that has not been hit.
       */
     override def toString: String =
-      (0 until size).map(row =>
-        (0 until size).map(col =>
-          val pos = Position(col, row)
-          (shipAtPosition(pos), hits.contains(pos)) match
-            case (Some(_), true)  => "X"
-            case (Some(_), false) => "S"
-            case (None, true)     => "+"
-            case (None, false)    => "O"
-        ).mkString(" | ")
-      ).mkString("\n", "\n", "\n")
+      val allPositions =
+        for
+          row <- 0 until size
+          col <- 0 until size
+        yield Position(col, row)
+
+      allPositions.map(pos =>
+        (shipAtPosition(pos), hits.contains(pos)) match
+          case (Some(_), true)  => "X"
+          case (Some(_), false) => "S"
+          case (None, true)     => "+"
+          case (None, false)    => "O"
+      ).grouped(size)
+        .map(_.mkString(" | "))
+        .mkString("\n", "\n", "\n")
