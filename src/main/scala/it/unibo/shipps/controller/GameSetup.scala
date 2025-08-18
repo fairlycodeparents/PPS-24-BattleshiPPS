@@ -22,13 +22,16 @@ class GameSetup(val viewFrame: MainFrame):
   viewFrame.contents = SetupView.mainPanel
   SetupView.applyConfig(ConfigurationManager.applyValidators(currentConfig, validators).ships)
 
+  private def updateConfig(shipType: ShipType, count: Int): Unit =
+    val updatedShips = currentConfig.ships.updated(shipType, count)
+    currentConfig = GameConfig(updatedShips)
+    val corrected = ConfigurationManager.applyValidators(currentConfig, validators)
+    currentConfig = corrected
+    SetupView.applyConfig(corrected.ships)
+
   for ((ship, spinner) <- SetupView.spinners) do
     spinner.addChangeListener((e: ChangeEvent) =>
-      val updatedShips = currentConfig.ships.updated(ship, spinner.getValue.asInstanceOf[Int])
-      currentConfig = GameConfig(updatedShips)
-      val corrected = ConfigurationManager.applyValidators(currentConfig, validators)
-      currentConfig = corrected
-      SetupView.applyConfig(corrected.ships)
+      updateConfig(ship, spinner.getValue.asInstanceOf[Int])
     )
 
   viewFrame.listenTo(SetupView.singlePlayerButton, SetupView.multiPlayerButton)
@@ -45,17 +48,34 @@ class GameSetup(val viewFrame: MainFrame):
       createController(HumanPlayer())
   }
 
-  private def createController(secondPlayer: Player): Unit =
-    val controller = GameController(
-      BoardFactory.createRandomBoard(currentConfig),
-      BoardFactory.createRandomBoard(currentConfig),
-      HumanPlayer(),
-      secondPlayer
+  private def showErrorDialog(message: String): Unit =
+    Dialog.showMessage(
+      viewFrame,
+      message,
+      "Errore di Configurazione",
+      Dialog.Message.Error
     )
-    val view          = new SimpleGui(controller)
-    val dialogHandler = new TurnDialogHandler(view)
-    controller.view = Some(view)
-    controller.dialogHandler = Some(dialogHandler)
-    view.update(Turn.FirstPlayer)
-    view.visible = true
-    viewFrame.close()
+
+  private def createController(secondPlayer: Player): Unit =
+    val maybeBoard1 = BoardFactory.createRandomBoard(currentConfig)
+    val maybeBoard2 = BoardFactory.createRandomBoard(currentConfig)
+
+    (maybeBoard1, maybeBoard2) match
+      case (Right(board1), Right(board2)) =>
+        val controller = GameController(
+          board1,
+          board2,
+          HumanPlayer(),
+          secondPlayer
+        )
+        val view          = new SimpleGui(controller)
+        val dialogHandler = new TurnDialogHandler(view)
+        controller.view = Some(view)
+        controller.dialogHandler = Some(dialogHandler)
+        view.update(Turn.FirstPlayer)
+        view.visible = true
+        viewFrame.close()
+      case (Left(error), _) =>
+        showErrorDialog(error)
+      case (_, Left(error)) =>
+        showErrorDialog(error)
