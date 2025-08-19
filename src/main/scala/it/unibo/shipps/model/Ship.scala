@@ -37,7 +37,6 @@ enum ShipType(val length: Int):
 
   def at(position: Position, orientation: ShipOrientation = ShipOrientation.Horizontal): Ship =
     ShipImpl(this, position, orientation)
-  def at(pos: Position): Ship            = at(pos)
   def at(x: Int, y: Int): Ship           = at(Position(x, y))
   def verticalAt(pos: Position): Ship    = at(pos, ShipOrientation.Vertical)
   def verticalAt(x: Int, y: Int): Ship   = at(Position(x, y), ShipOrientation.Vertical)
