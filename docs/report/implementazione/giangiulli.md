@@ -7,7 +7,8 @@ parent: Implementazione
 # Implementazione - Chiara Giangiulli
 Il primo contributo ha riguardato la modellazione delle navi (file `Ship`).
 L’obiettivo era quello di fornire un’astrazione che permettesse di:
-- distinguere le diverse tipologie di navi (Frigate, Submarine, Destroyer, Carrier), attraverso una `enum`, ognuna con una lunghezza predefinita:
+- distinguere le diverse tipologie di navi (Frigate, Submarine, Destroyer, Carrier), attraverso una `enum`, ognuna con una lunghezza predefinita, immediatamente disponibile.
+  In questo modo le tipologie di navi sono finite e non estendibili dall’esterno, garantendo sicurezza e coerenza interna:
     ```scala
     enum ShipType(val length: Int):
       case Frigate   extends ShipType(2)
@@ -20,8 +21,8 @@ orizzontale o verticale, della nave sul tabellone;
 - supportare le operazioni di spostamento e rotazione attraverso i metodi `move(pos: Position): Ship`, `rotate: Ship`;
 - calcolare dinamicamente le celle occupate, fornite dal metodo `positions: Set[Position]`.
 
-Le navi sono create a partire dal tipo stesso, attraverso dei factory methods all’interno della `enum`.
-Questo rende immediata e sicura la creazione di istanze di nave, evitando errori di configurazione:
+Le navi vengono istanziate direttamente a partire dal tipo, attraverso dei factory methods definiti all’interno della `enum`.
+Questo rende immediata e sicura la creazione di istanze di nave, evitando errori di configurazione e facilitando la leggibilità del codice:
 ```scala
 def at(position: Position, orientation: Orientation = Orientation.Horizontal): Ship = 
   ShipImpl(this, position, orientation)
