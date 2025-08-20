@@ -17,7 +17,6 @@ object ClickType:
     */
   case class DoubleClick(pos: Position) extends ClickType
 
-
 /** Represents the state of a click event.
   * @param pos the position of the click
   * @param time the time of the click
