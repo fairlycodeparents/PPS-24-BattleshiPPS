@@ -5,23 +5,21 @@ parent: Report
 ---
 
 # Requisiti
-L'analisi del problema ha permesso di evidenziare i seguenti requisiti.
+L'analisi del problema svolta nella prima fase del progetto ha permesso di evidenziare i requisiti elencati di seguito.
 
 ## Requisiti di business
-
-Il sistema vuole offrire:
-- un gioco intuitivo e fedele alla versione classica
-- la possibilità di avere una modalità multiplayer _hotseat_ e una contro un bot
-- la possibilità di personalizzare la partita (regole, posizionamento delle navi, difficoltà del bot)
-- un'interfaccia semplice e chiara con feedback immediati per l'utente.
+- Creare un sistema intuitivo e fedele alla versione classica
+- Introdurre sia una modalità multiplayer _hotseat_ (due giocatori sullo stesso dispositivo) sia una modalità vs bot
+- Fornire la possibilità di personalizzare la partita (regole, posizionamento delle navi, difficoltà del bot)
+- Offrire un'interfaccia semplice e chiara, entro un mese e mezzo dall’avvio del progetto.
 
 ## Modello di dominio
 Il dominio del progetto ruota attorno ai seguenti concetti principali:
 
-- _player_: entità che prende parte alla partita, umano o bot.
-- _board_: griglia di celle che rappresenta il campo di gioco, una per ogni giocatore.
-- _ship_: unità posizionabile sul tabellone; di tipologia diversa in base alla lunghezza.
-- _game_: insieme delle fasi di gioco (posizionamento, turni, attacco) che termina con la vittoria di uno dei giocatori.
+- _Player_: entità che prende parte alla partita, umano o bot.
+- _Board_: griglia di celle che rappresenta il campo di gioco, una per ogni giocatore.
+- _Ship_: unità posizionabile sul tabellone; di tipologia diversa in base alla lunghezza.
+- _Game_: insieme delle fasi di gioco (posizionamento, turni, attacco) che termina con la vittoria di uno dei giocatori.
 
 ## Requisiti funzionali
 ### Requisiti di utente
@@ -62,7 +60,8 @@ Il sistema dovrà rispettare le seguenti proprietà generali:
 - testabilità: testing e utilizzo di DSL per simulare partite e validare i comportamenti
 
 ## Requisiti di implementazione
-- Sviluppo con metodologia SCRUM-inspired, iterazioni brevi, integrazione continua
-- Un'architettura basata su una netta separazione tra logica di gioco e interfaccia utente
-- Utilizzo di funzionalità avanzate di Scala 3.x sfruttando la programmazione funzionale
-- Versioning e gestione collaborativa del codice
+- Sviluppo con metodologia SCRUM-inspired, con iterazioni brevi e integrazione continua.
+- Un'architettura basata su una netta separazione tra logica di gioco e interfaccia utente.
+- Utilizzo di funzionalità avanzate di Scala 3.x sfruttando la programmazione funzionale.
+- Sperimentazione dell’approccio Test-Driven Development (TDD).
+- Versioning e gestione collaborativa del codice.
