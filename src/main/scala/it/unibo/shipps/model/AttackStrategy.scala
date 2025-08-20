@@ -111,9 +111,10 @@ class MinPositionDistanceWeighting extends PositionWeighting:
     else
       hits.map(pos.distanceTo).min
 
-/** Represents an attack strategy that uniformly distributes attacks across the board. Based on the distance to already
-  * hit positions.
-  * @param positionWeighting The strategy to calculate the weight of positions based on existing hits.
+/** An attack strategy that uses a uniform distribution to select positions based on their weights.
+  * It calculates the weight of each position based on the provided [[PositionWeighting]] strategy and chooses the
+  * position with the highest weight.
+  * @param positionWeighting the strategy to calculate the weight of positions
   */
 class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
 
@@ -135,7 +136,7 @@ class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends 
         if unhitPositions.isEmpty then (playerBoard, Left("No positions left to attack"))
         else
           val weights = unhitPositions.map(pos =>
-            MinPositionDistanceWeighting().calculateWeight(pos, playerBoard.hits, PlayerBoard.size)
+            positionWeighting.calculateWeight(pos, playerBoard.hits, PlayerBoard.size)
           )
           val maxWeight      = weights.max
           val bestPositions  = unhitPositions.zip(weights).filter(_._2 == maxWeight).map(_._1)

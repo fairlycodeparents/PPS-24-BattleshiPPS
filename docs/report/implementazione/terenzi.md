@@ -143,7 +143,7 @@ class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends 
     if unhitPositions.isEmpty then (playerBoard, Left("No positions left to attack"))
     else
       val weights = unhitPositions.map(pos =>
-        MinPositionDistanceWeighting().calculateWeight(pos, playerBoard.hits, PlayerBoard.size)
+        positionWeighting.calculateWeight(pos, playerBoard.hits, PlayerBoard.size)
       )
       val maxWeight      = weights.max
       val bestPositions  = unhitPositions.zip(weights).filter(_._2 == maxWeight).map(_._1)
