@@ -16,7 +16,7 @@ principalmente sulle seguenti funzionalità e aree:
 * **Validazione della configurazione scelta dall'utente**: `GameConfig`, `ConfigurationValidator`, 
 `MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
 * **Interfaccia grafica e interazione con l'utente**: `SetupView`, `DifficultySelection`, `GameSetup`.
-* **Strategie d'attacco del bot**: `AdvancedBotAttackStrategy`, `PositionWeighting`, `MaxMinPositionWeighting`,
+* **Strategie d'attacco del bot**: `AdvancedBotAttackStrategy`, `PositionWeighting`, `MinPositionDistanceWeighting`,
   `UniformDistributionStrategy` e, insieme a Giangiulli Chiara, `TargetAlreadyHitStrategy`
 * **Classi di supporto**: `Position`.
 

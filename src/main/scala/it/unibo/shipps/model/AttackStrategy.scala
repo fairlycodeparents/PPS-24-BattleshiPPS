@@ -102,7 +102,7 @@ trait PositionWeighting:
   def calculateWeight(pos: Position, hits: Set[Position], boardSize: Int): Int
 
 /** A position weighting strategy that calculates the weight based on the minimum distance to existing hits. */
-class MaxMinPositionWeighting extends PositionWeighting:
+class MinPositionDistanceWeighting extends PositionWeighting:
 
   /** @inheritdoc */
   override def calculateWeight(pos: Position, hits: Set[Position], boardSize: Int): Int =
@@ -135,7 +135,7 @@ class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends 
         if unhitPositions.isEmpty then (playerBoard, Left("No positions left to attack"))
         else
           val weights = unhitPositions.map(pos =>
-            MaxMinPositionWeighting().calculateWeight(pos, playerBoard.hits, PlayerBoard.size)
+            MinPositionDistanceWeighting().calculateWeight(pos, playerBoard.hits, PlayerBoard.size)
           )
           val maxWeight      = weights.max
           val bestPositions  = unhitPositions.zip(weights).filter(_._2 == maxWeight).map(_._1)
@@ -144,5 +144,5 @@ class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends 
 
 /** An advanced bot attack strategy that combines uniform distribution with targeting already hit positions. */
 class AdvancedBotAttackStrategy
-    extends UniformDistributionStrategy(MaxMinPositionWeighting())
+    extends UniformDistributionStrategy(MinPositionDistanceWeighting())
     with TargetAlreadyHitStrategy

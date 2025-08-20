@@ -2,7 +2,7 @@ package it.unibo.shipps.logic
 
 import org.scalatest.*
 import flatspec.*
-import it.unibo.shipps.model.{MaxMinPositionWeighting, UniformDistributionStrategy}
+import it.unibo.shipps.model.{MinPositionDistanceWeighting, UniformDistributionStrategy}
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.board.BoardCoordinates.*
 import matchers.*
@@ -12,7 +12,7 @@ import scala.language.postfixOps
 /** Test suite for the [[UniformDistributionStrategy]] class. */
 class UniformDistributionStrategyTest extends AnyFlatSpec with should.Matchers:
 
-  val strategy: UniformDistributionStrategy = new UniformDistributionStrategy(MaxMinPositionWeighting())
+  val strategy: UniformDistributionStrategy = new UniformDistributionStrategy(MinPositionDistanceWeighting())
 
   "The strategy" should "return an error when a position is provided for a bot attack" in:
     val boardWithNoHits: PlayerBoard = PlayerBoard()
