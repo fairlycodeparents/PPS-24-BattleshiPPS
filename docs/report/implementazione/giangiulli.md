@@ -182,5 +182,81 @@ suddividendo i task in base al livello di intelligenza del bot:
 
   
 ### TDD
+Ciascuna delle parti citate è stata sviluppata cercando di seguire un approccio Test Driven:
+prima sono stati scritti mano a mano i test per formalizzare i comportamenti attesi, 
+successivamente è stata realizzata l’implementazione per soddisfarli, seguita da eveltuali refactor.
+Per la scrittura dei test è stato utilizzato ScalaTest, con il mixin `should.Matchers`, per mantenere una sintassi leggibile, 
+con descrizioni in linguaggio naturale e matcher espressivi (come ad esempio `should`, `shouldBe`, `matchPattern`).
+
+I file di test interessati sono, quindi:
+- `ShipTest`, per lo sviluppo delle navi:
+  - verifica che le diverse tipologie di navi abbiano la lunghezza corretta
+  - controlla la corretta creazione e rotazione delle navi
+  
+  ad esempio:
+  ```scala
+  it should "be able to rotate" in:
+    val rotatedShip = ship.rotate
+    rotatedShip.positions shouldBe Set(position, Position(2, 4))
+  ```
+  - assicura che le posizioni occupate e i movimenti siano calcolati correttamente
+- `ShipAttackTest` per la logica di attacco
+  - simula attacchi reali su una board
+  - copre casi di Hit, Sunk, Miss, AlreadyAttacked e Invalid attack position
+  
+  ad esempio:
+  ```scala
+  it should "be sunk after all its positions are hit" in:
+    val (_, result) = frigateSunk(board)
+    result shouldBe Sunk(frigate)
+  ```
+  sfruttando degli _helper methods_, che effettuano sequenze di attacchi finché la nave non viene affondata:
+  ```scala
+  def frigateSunk(initialBoard: PlayerBoard): (PlayerBoard, AttackResult) =
+    val (board1, _)      = attack(initialBoard, A(5))
+    val (board2, result) = attack(board1, B(5))
+    (board2, result)
+  ```
+  - valida la condizione di fine gioco (quando tutte le navi sono affondate)
+- `PlayerTest` per lo sviluppo dei giocatori e la strategia di attacco:
+  - verifica la creazione dei giocatori tramite factory (umani e bot)
+  - controlla la corretta applicazione delle strategie (`HumanAttackStrategy`, `RandomBotAttackStrategy`, `AverageBotAttackStrategy`)
+  - simula scenari complessi con bot di intelligenza media (attacchi adiacenti, capacità di affondare una nave, 
+  ritorno al comportamento casuale dopo l'affondamento)
+  
+  ad esempio:
+  ```scala
+  "An average smart bot" should "be able to hit an adjacent position after a hit" in:
+    val bot               = createBotPlayer(AverageBotAttackStrategy())
+    val (updatedBoard, _) = ShipAttack.attack(enemyBoard, G(1))
+    val expectedAdjacent  = List(F(1), H(1), G(2))
+    val (finalBoard, res) = bot.makeAttack(updatedBoard)
+    val attackedPosition  = finalBoard.hits.diff(updatedBoard.hits).headOption
+    attackedPosition shouldBe defined
+    expectedAdjacent should contain(attackedPosition.get)
+  ```
+  Anche in questo caso viene utilizzato un _helper method_, _tail-recursive_, 
+che itera sugli attacchi finché una nave non è affondata.
+Questo ha permesso di simulare una partita reale:
+  ```scala
+  def executeAttacksUntilSunk(
+    bot: Player,
+    initialBoard: PlayerBoard,
+    targetShip: Ship,
+    maxMoves: Int
+  ): (PlayerBoard, Either[String, AttackResult]) =
+  
+    @scala.annotation.tailrec
+    def loop(currentBoard: PlayerBoard, movesLeft: Int): (PlayerBoard, Either[String, AttackResult]) =
+      if (movesLeft <= 0) return (currentBoard, Left(s"Failed to sink ship within $maxMoves moves"))
+      val (newBoard, result) = bot.makeAttack(currentBoard)
+      result match
+        case Right(Sunk(ship)) if ship == targetShip => (newBoard, result)
+        case Right(Sunk(otherShip))                  => loop(newBoard, movesLeft - 1)
+        case Right(_)                                => loop(newBoard, movesLeft - 1)
+        case Left(error)                             => (currentBoard, Left(error))
+  
+    loop(initialBoard, maxMoves)
+  ```
 
 ### Contributi nella GUI
