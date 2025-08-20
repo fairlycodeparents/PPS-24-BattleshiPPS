@@ -181,7 +181,7 @@ suddividendo i task in base al livello di intelligenza del bot:
   che integra la distribuzione uniforme dei colpi (`UniformDistributionStrategy`) con lo stesso targeting intelligente.
 
   
-### TDD
+### Testing
 Ciascuna delle parti citate è stata sviluppata cercando di seguire un approccio Test Driven:
 prima sono stati scritti mano a mano i test per formalizzare i comportamenti attesi, 
 successivamente è stata realizzata l’implementazione per soddisfarli, seguita da eveltuali refactor.
