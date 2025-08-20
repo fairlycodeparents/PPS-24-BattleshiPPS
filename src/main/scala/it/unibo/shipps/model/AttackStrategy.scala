@@ -102,7 +102,7 @@ trait PositionWeighting:
   def calculateWeight(pos: Position, hits: Set[Position], boardSize: Int): Int
 
 /** A position weighting strategy that calculates the weight based on the minimum distance to existing hits. */
-class MinPositionDistanceWeighting extends PositionWeighting:
+class MinDistanceWeighting extends PositionWeighting:
 
   /** @inheritdoc */
   override def calculateWeight(pos: Position, hits: Set[Position], boardSize: Int): Int =
@@ -116,7 +116,7 @@ class MinPositionDistanceWeighting extends PositionWeighting:
   * position with the highest weight.
   * @param positionWeighting the strategy to calculate the weight of positions
   */
-class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
+class MaxWeightStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
 
   /** @inheritdoc */
   override def execute(
@@ -145,5 +145,5 @@ class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends 
 
 /** An advanced bot attack strategy that combines uniform distribution with targeting already hit positions. */
 class AdvancedBotAttackStrategy
-    extends UniformDistributionStrategy(MinPositionDistanceWeighting())
+    extends MaxWeightStrategy(MinDistanceWeighting())
     with TargetAlreadyHitStrategy

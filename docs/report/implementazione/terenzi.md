@@ -16,8 +16,8 @@ principalmente sulle seguenti funzionalità e aree:
 * **Validazione della configurazione scelta dall'utente**: `GameConfig`, `ConfigurationValidator`, 
 `MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
 * **Interfaccia grafica e interazione con l'utente**: `SetupView`, `DifficultySelection`, `GameSetup`.
-* **Strategie d'attacco del bot**: `AdvancedBotAttackStrategy`, `PositionWeighting`, `MinPositionDistanceWeighting`,
-  `UniformDistributionStrategy` e, insieme a Giangiulli Chiara, `TargetAlreadyHitStrategy`
+* **Strategie d'attacco del bot**: `AdvancedBotAttackStrategy`, `PositionWeighting`, `MinDistanceWeighting`,
+  `MaxWeightStrategy` e, insieme a Giangiulli Chiara, `TargetAlreadyHitStrategy`
 * **Classi di supporto**: `Position`.
 
 ## Gestione della configurazione
@@ -115,18 +115,18 @@ combinate o sostituite senza modificare il codice esistente e permettono il riut
 definire le strategia nel seguente modo:
 ```scala
 class AdvancedBotAttackStrategy
-    extends UniformDistributionStrate(MinPositionDistanceWeighting())
+    extends UniformDistributionStrate(MinDistanceWeighting())
     with TargetAlreadyHitStrategy
 ```
 
-La `UniformDistributionStrategy` si occupa di distribuire gli attacchi in modo uniforme su tutta la plancia,
+La `MaxWeightStrategy` si occupa di distribuire gli attacchi in modo uniforme su tutta la plancia,
 garantendo una copertura equilibrata. Dopo una prima implementazione, la classe è stata rifattorizzata per utilizzare
 una logica di assegnazione del peso variabile, passata come parametro al costruttore. Questa operazione è stata
 notevolmente semplificata dalla classe di test realizzata durante la prima implementazione, che ha permesso di
 verificare in ogni momento il corretto funzionamento della strategia, facilitando la transizione verso un approccio
 più modulare e flessibile.
 ```scala
-class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
+class MaxWeightStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
 
     override def execute(
         playerBoard: PlayerBoard,
