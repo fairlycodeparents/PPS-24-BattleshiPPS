@@ -68,12 +68,12 @@ con `PlayerBoard`, che rappresenta la plancia di un giocatore e contiene le navi
 
 Durante l'utilizzo dell'applicativo, l'utente può scegliere la configurazione della plancia di gioco utilizzando
 l'interfaccia grafica, che consente di selezionare il numero di navi e le loro posizioni. Per quanto riguarda i test,
-per renderli più semplici e leggibili, è stato implementato un **Domain-Specific Language (DSL)** che permettesse di
+per renderli più semplici e leggibili, è stato implementato un Domain-Specific Language (DSL) che permettesse di
 definire le posizioni delle navi in modo chiaro e intuitivo.
 
 Il `ShipPlacementDSL` utilizza un approccio fluido, permettendo di concatenare le operazioni di posizionamento delle
-navi e di definire le celle occupate in modo chiaro e intuitivo. Ad esempio, tramite `ShipPlacementDSL` è possibile
-aggiungere una nave con una sintassi simile a:
+navi e di definire le celle occupate in modo chiaro e intuitivo. Ad esempio, è possibile aggiungere una nave con una
+sintassi simile a:
 ```scala
   place a Cruiser at C(5) horizontal
 ```
@@ -81,10 +81,10 @@ Inoltre, il DSL semplifica anche la definizione delle coordinate delle celle, ut
 che consente di descrivere le posizioni delle navi in modo "classico", specificando le cordinate delle celle tramite
 una lettera e un numero, come ad esempio `C(5)` per indicare la colonna C e la riga 5.
 
-Infine, anche la gestione degli insiemi di celle è stata semplificata grazie all'uso di un DSL, che consente di definire
-le posizioni come _range_ di celle orizzontali o verticali, ad esempio `Position(9, 6 to 9)`. In questo modo, combinando
-le funzionalità del DSL con le classi di supporto come `Position`, è stato possibile scrivere i test in modo chiaro e
-intuitivo, garantendo una buona copertura e una facile comprensione del codice.
+Infine, anche la gestione degli insiemi di celle è stata semplificata tramite il metodo apply della classe `Position`, 
+che permette di definire le posizioni come _range_ di celle orizzontali o verticali, ad esempio `Position(9, 6 to 9)`.
+In questo modo, combinando le funzionalità del DSL con le classi di supporto come `Position`, è stato possibile scriver
+i test in modo chiaro e intuitivo, garantendo una buona copertura e una facile comprensione del codice.
 ```scala
 it should "handle a placement at the board's edge (bottom-right)" in:
     board(place a Destroyer at J(7) vertical).positions shouldEqual Position(9, 6 to 9)
