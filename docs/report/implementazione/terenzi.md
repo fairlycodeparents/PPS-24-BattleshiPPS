@@ -16,8 +16,8 @@ principalmente sulle seguenti funzionalità e aree:
 * **Validazione della configurazione scelta dall'utente**: `GameConfig`, `ConfigurationValidator`, 
 `MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
 * **Interfaccia grafica e interazione con l'utente**: `SetupView`, `DifficultySelection`, `GameSetup`.
-* **Strategie d'attacco del bot**: `AdvancedBotAttackStrategy`, `PositionWeighting`, `MaxMinPositionWeighting`,
-  `UniformDistributionStrategy` e, insieme a Giangiulli Chiara, `TargetAlreadyHitStrategy`
+* **Strategie d'attacco del bot**: `AdvancedBotAttackStrategy`, `PositionWeighting`, `MinDistanceWeighting`,
+  `MaxWeightStrategy` e, insieme a Giangiulli Chiara, `TargetAlreadyHitStrategy`
 * **Classi di supporto**: `Position`.
 
 ## Gestione della configurazione
@@ -89,3 +89,67 @@ i test in modo chiaro e intuitivo, garantendo una buona copertura e una facile c
 it should "handle a placement at the board's edge (bottom-right)" in:
     board(place a Destroyer at J(7) vertical).positions shouldEqual Position(9, 6 to 9)
 ```
+
+## Strategie d'attacco del bot
+Tra i requisiti del progetto, nel caso di una partita singleplayer (contro il bot), vi è la possibilità di scegliere
+tra diverse difficoltà. Queste sono state implementate attraverso l'utilizzo di diverse strategie di attacco del bot,
+che determinano il suo comportamento durante la partita. Questa specifica porzione di codice è stata in parte implementata
+in pair programming con Giangiulli Chiara. In particolare, Giangiulli si è occupata della strategia intermedia, mentre 
+io mi sono concentrato sulla difficoltà avanzata.
+
+Inizialmente le strategie sono state implementate come classi separate, basate sul trait `AttackStrategy`, e sono state
+definite con le seguenti caratteristiche:
+* **Semplice**: il bot attacca in modo casuale, scegliendo una cella a caso dalla plancia.
+* **Intermedia**: il bot attacca in modo casuale, ma sfrutta la conoscenza dei colpi andati a buon fine, colpendo le celle 
+  adiacenti in modo da affondare le navi.
+* **Avanzata**: il bot utilizza una strategia più complessa, che combina la conoscenza dei colpi andati a buon fine,
+  descritta nel punto precedente, con un sistema di punteggio per determinare la cella migliore da attaccare. Questa
+  strategia si basa sul cercare di colpire in modo uniforme le celle della plancia.
+
+In seguito, considerando che le strategie intermedia e avanzata condividono una logica comune, ho rifattorizzato il 
+codice per utilizzare un approccio basato su mixin e composizione delle strategie. Ciò ha permesso di creare un sistema 
+modulare, facilitando future estensioni e rendendo il codice più chiaro e manutenibile. In particolare, ho realizzato
+`AdvancedBotAttackStrategy` e `TargetAlreadyHitStrategy` e adattato la `AverageBotAttackStrategy` realizzata da 
+Giangiulli, per aderire al pattern decorator realizzato con il mixin. In questo modo, le strategie possono essere 
+combinate o sostituite senza modificare il codice esistente e permettono il riutilizzo di logica comune, permettendo di 
+definire le strategia nel seguente modo:
+```scala
+class AdvancedBotAttackStrategy
+    extends UniformDistributionStrate(MinDistanceWeighting())
+    with TargetAlreadyHitStrategy
+```
+
+La `MaxWeightStrategy` si occupa di distribuire gli attacchi in modo uniforme su tutta la plancia,
+garantendo una copertura equilibrata. Dopo una prima implementazione, la classe è stata rifattorizzata per utilizzare
+una logica di assegnazione del peso variabile, passata come parametro al costruttore. Questa operazione è stata
+notevolmente semplificata dalla classe di test realizzata durante la prima implementazione, che ha permesso di
+verificare in ogni momento il corretto funzionamento della strategia, facilitando la transizione verso un approccio
+più modulare e flessibile.
+```scala
+class MaxWeightStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
+
+    override def execute(
+        playerBoard: PlayerBoard,
+        position: Option[Position]
+    ): (PlayerBoard, Either[String, AttackResult]) =
+    /* ... */
+    val allPositions =
+      for
+        x <- 0 until PlayerBoard.size
+        y <- 0 until PlayerBoard.size
+      yield Position(x, y)
+    val unhitPositions = allPositions.filterNot(playerBoard.hits.contains)
+
+    if unhitPositions.isEmpty then (playerBoard, Left("No positions left to attack"))
+    else
+      val weights = unhitPositions.map(pos =>
+        positionWeighting.calculateWeight(pos, playerBoard.hits, PlayerBoard.size)
+      )
+      val maxWeight      = weights.max
+      val bestPositions  = unhitPositions.zip(weights).filter(_._2 == maxWeight).map(_._1)
+      val chosenPosition = bestPositions(Random.nextInt(bestPositions.length))
+      ShipAttack.attack(playerBoard, chosenPosition)
+```
+La classe sfrutta la `PositionWeighting` per calcolare un punteggio per ogni cella non colpita, in questo caso in base
+alla disposizione dei colpi sulla plancia. L'assegnamento del punteggio si basa sul calcolare la distanza minima 
+rispetto ai colpi già sferrati. Infine, la cella _target_ viene scelta casualmente tra quelle con il punteggio massimo.
