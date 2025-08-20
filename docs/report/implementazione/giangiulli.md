@@ -98,6 +98,89 @@ una gestione sicura degli errori: con `Either[String, AttackResult]` vengono dis
 
 ### Player e strategia di attacco
 
+La modellazione dei giocatori è affidata ad un `trait` `Player`, 
+che fornisce un’interfaccia uniforme sia per i giocatori umani che per i bot.
+Questa scelta permette di definire un contratto uniforme per tutte le tipologie di giocatori 
+e di rendere semplice l’estensione del sistema con nuove varianti.
+
+Attraverso il metodo `makeAttack` viene eseguito un attacco sulla board avversaria,
+restituendo la board aggiornata e l’`AttackResult`.
+
+Il `trait` viene concretamente implementato da due `case class`:
+```scala
+case class HumanPlayer(name: String = "player", strategy: AttackStrategy = HumanAttackStrategy()) extends Player:
+  override def makeAttack(
+    playerBoard: PlayerBoard,
+    position: Option[Position]
+    ): (PlayerBoard, Either[String, AttackResult]) = strategy.execute(playerBoard, position)
+  override def isABot: Boolean = false
+
+case class BotPlayer(strategy: AttackStrategy) extends Player:
+  override def makeAttack(
+    playerBoard: PlayerBoard,
+    position: Option[Position]
+    ): (PlayerBoard, Either[String, AttackResult]) = strategy.execute(playerBoard, position)
+  override def isABot: Boolean = true
+```
+
+La creazione dei giocatori è centralizzata in una factory, 
+che semplifica l’inizializzazione e incapsula le decisioni sulle strategie da assegnare ai giocatori:
+- `createHumanPlayer(name: String): Player = HumanPlayer(name)`
+- `createBotPlayer(strategy: AttackStrategy = RandomBotAttackStrategy()): Player = BotPlayer(strategy)`
+
+L’aspetto centrale è che ogni giocatore delega la logica di attacco a un `AttackStrategy`, 
+secondo lo Strategy Pattern. 
+
+In questo modo la responsabilità della scelta della mossa non è all’interno del giocatore, 
+ma affidata a una strategia intercambiabile. 
+Questo rende il sistema modulare, facilmente estendibile con nuove strategie e più semplice da mantenere.
+
+Il `trait` `AttackStrategy` espone un metodo `execute(playerBoard: PlayerBoard, position: Option[Position]): (PlayerBoard, Either[String, AttackResult])`
+che definisce il contratto per ogni strategia.
+Per i bot, `position` è `None`, mentre per l’umano, `position` deve essere specificata.
+
+Le strategie implementate sono:
+- `HumanAttackStrategy`: il giocatore fornisce la posizione manualmente.
+- `RandomBotAttackStrategy`: il bot sceglie una cella casuale nella board.
+```scala
+override def execute(
+  playerBoard: PlayerBoard,
+  position: Option[Position]
+  ): (PlayerBoard, Either[String, AttackResult]) = position match
+    case Some(pos) => (playerBoard, Left("Position should not be required for a bot attack"))
+    case None      => ShipAttack.attack(playerBoard, generateRandomPosition)
+```
+- `TargetAlreadyHitStrategy`(mixin): non è una strategia autonoma, ma un modulo riutilizzabile 
+che privilegia le celle adiacenti a quelle già colpite. Viene pensato per essere combinato ad altre strategie, 
+incrementandone l’intelligenza senza duplicare codice.
+```scala
+abstract override def execute(
+    playerBoard: PlayerBoard,
+    position: Option[Position]
+): (PlayerBoard, Either[String, AttackResult]) = position match
+  case Some(pos) => (playerBoard, Left("Position should not be required for a bot attack"))
+  case None =>
+    getAdjacentToAttack(playerBoard) match
+      case Some(value) =>
+        ShipAttack.attack(playerBoard, value)
+      case None =>
+        super.execute(playerBoard, position)
+``` 
+- `AverageBotAttackStrategy`: arricchisce la strategia casuale (`extends RandomBotAttackStrategy`) con il mixin citato (`with TargetAlreadyHitStrategy`).
+  Questo permette al bot di “seguire” un colpo andato a segno, rendendo l’attacco più intelligente.
+- `UniformDistributionStrategy`
+- `AdvancedBotAttackStrategy`
+
+Questa tecnica ha permesso di comporre comportamenti complessi a partire da strategie più semplici,
+evitando duplicazioni e mantenendo un codice leggibile ed estendibile.
+L’implementazione delle strategie basate sui mixin è stata sviluppata in _pair programming_ con Mirco Terenzi, 
+suddividendo i task in base al livello di intelligenza del bot:
+- io mi sono occupata della realizzazione del bot medio (`AverageBotAttackStrategy`), 
+    che combina la logica casuale con il targeting delle posizioni adiacenti già colpite;
+- Mirco ha invece sviluppato il bot avanzato (`AdvancedBotAttackStrategy`), 
+  che integra la distribuzione uniforme dei colpi (`UniformDistributionStrategy`) con lo stesso targeting intelligente.
+
+  
 ### TDD
 
 ### Contributi nella GUI
