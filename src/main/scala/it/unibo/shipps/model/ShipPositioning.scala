@@ -1,7 +1,6 @@
 package it.unibo.shipps.model
 
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
-import it.unibo.shipps.model.ship.Ship
 
 import scala.annotation.tailrec
 import scala.util.Random

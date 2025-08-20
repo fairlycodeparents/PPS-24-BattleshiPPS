@@ -1,17 +1,16 @@
 package it.unibo.shipps.logic
 
 import it.unibo.shipps.model
-import it.unibo.shipps.model.ship.Orientation.{Horizontal, Vertical}
+import it.unibo.shipps.model.ShipOrientation.{Horizontal, Vertical}
 import org.scalatest.*
 import flatspec.*
 import matchers.*
-import it.unibo.shipps.model.{ShipPositioning, ShipPositioningImpl}
+import it.unibo.shipps.model.{Ship, ShipPositioning, ShipPositioningImpl, ShipType}
 import it.unibo.shipps.model.board.PlayerBoardBuilder.*
-import it.unibo.shipps.model.ship.ShipType.{Carrier, Frigate, Submarine}
+import it.unibo.shipps.model.ShipType.{Carrier, Frigate, Submarine}
 import it.unibo.shipps.model.board.ShipPlacementDSL.place
 import it.unibo.shipps.model.board.BoardCoordinates._
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
-import it.unibo.shipps.model.ship.{Ship, ShipType}
 
 import scala.language.postfixOps
 
@@ -128,7 +127,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
     result.isRight shouldBe true
     val updatedBoard = result.getOrElse(fail())
     updatedBoard.ships should have size 1
-    updatedBoard.ships.head.shape.getOrientation shouldBe Horizontal
+    updatedBoard.ships.head.orientation shouldBe Horizontal
 
   it should "fail when rotated ship overlaps with another ship" in:
     val testBoard = board(
@@ -136,7 +135,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
       place a Frigate at A(1) horizontal
     )
     val shipToRotate = testBoard.ships
-      .find(_.shape.getOrientation == Horizontal)
+      .find(_.orientation == Horizontal)
       .getOrElse(fail())
 
     val result = shipPositioning.rotateShip(testBoard, shipToRotate)

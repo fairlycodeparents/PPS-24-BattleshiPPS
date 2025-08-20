@@ -3,7 +3,6 @@ package it.unibo.shipps.controller.positioning
 import it.unibo.shipps.controller.GameState
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
-import it.unibo.shipps.model.ship.Ship
 import it.unibo.shipps.model.{Turn, TurnLogic}
 
 /** Handles ship positioning logic and user interactions during positioning phase */

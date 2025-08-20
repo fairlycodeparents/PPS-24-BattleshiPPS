@@ -23,8 +23,6 @@ Il dominio del progetto ruota attorno ai seguenti concetti principali:
 - _ship_: unità posizionabile sul tabellone; di tipologia diversa in base alla lunghezza.
 - _game_: insieme delle fasi di gioco (posizionamento, turni, attacco) che termina con la vittoria di uno dei giocatori.
 
-//diagramma di classi?
-
 ## Requisiti funzionali
 ### Requisiti di utente
 Dal punto di vista dell’utente, il sistema deve consentire:
@@ -39,7 +37,7 @@ Dal punto di vista dell’utente, il sistema deve consentire:
   e i feedback sullo stato della partita.
 - La ricezione della notifica di fine della partita e del vincitore.
 
-//diagramma dei casi d'uso?
+<img src="../assets/img/use-case-diagram.png" alt="Battleship Game" width="500px" height="500px" />
 
 Funzionalità opzionali:
 - selezionare il livello di difficoltà del bot

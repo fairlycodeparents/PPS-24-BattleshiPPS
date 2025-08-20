@@ -4,10 +4,9 @@ import org.scalatest.*
 import flatspec.*
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.AttackResult.*
-import it.unibo.shipps.model.ship.ShipType.*
+import ShipType.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.board.BoardCoordinates.*
-import it.unibo.shipps.model.ship.Ship
 import matchers.*
 
 class ShipAttackTest extends AnyFlatSpec with should.Matchers:

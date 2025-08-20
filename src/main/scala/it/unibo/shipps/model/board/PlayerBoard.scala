@@ -1,6 +1,6 @@
 package it.unibo.shipps.model.board
 
-import it.unibo.shipps.model.ship.Ship
+import it.unibo.shipps.model.Ship
 
 /** Represents the player board in the game.
   * The board is a square grid of a defined size.
