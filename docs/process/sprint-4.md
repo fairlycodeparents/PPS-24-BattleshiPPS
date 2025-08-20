@@ -11,7 +11,7 @@ L'obiettivo del quarto sprint è quello di sistemare complessivamente il gioco
 e introdurre funzionalità aggiuntive quali l'intelligenza del bot ed eventualmente la presenza di ostacoli nella mappa.
 
 ## Deadline
-La scadenza dello sprint è il 18/08/2025.
+La scadenza dello sprint è il 22/08/2025.
 
 ## Backlog
 <table>
@@ -25,6 +25,7 @@ La scadenza dello sprint è il 18/08/2025.
       <th>Stima Sprint 1</th>
       <th>Stima Sprint 2</th>
       <th>Stima Sprint 3</th>
+      <th>Stima Sprint 4</th>
     </tr>
   </thead>
   <tbody>
@@ -35,14 +36,26 @@ La scadenza dello sprint è il 18/08/2025.
             Gestito tramite un approccio Git Flow.</td>
       <td>Git Flow Setup</td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Studio dell'architettura</td>
       <td>Chiara</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Docs Setup</td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td></td>
@@ -50,6 +63,10 @@ La scadenza dello sprint è il 18/08/2025.
       <td>Come utente, vorrei avere una prima visualizzazione del layout dell’applicazione</td>
       <td></td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="6">3</td>
@@ -59,24 +76,44 @@ La scadenza dello sprint è il 18/08/2025.
     <tr>
       <td>Creazione delle navi</td>
       <td>Chiara</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Realizzazione della GUI</td>
       <td>Chiara</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Logica spostamento navi (selezione nave da spostare, 
         muovere la nave nella nuova posizione, 
         ruotare la nave)</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Posizionamento iniziale</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Refactor player board</td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="3">4</td>
@@ -86,10 +123,18 @@ La scadenza dello sprint è il 18/08/2025.
     <tr>
       <td>Posizionamento iniziale automatico</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Posizionamento randomico ripetuto</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="3">5</td>
@@ -100,10 +145,18 @@ La scadenza dello sprint è il 18/08/2025.
     <tr>
       <td>Creazione DSL</td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Estensione DSL per l'attacco</td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="5">6</td>
@@ -113,18 +166,34 @@ La scadenza dello sprint è il 18/08/2025.
     <tr>
       <td>Logica di attacco e fine partita</td>
       <td>Chiara</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Feedback all'utente per il risultato dell'attacco</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Estensione della board per supportare la logica di attacco</td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Refactor del game controller</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="4">7</td>
@@ -135,14 +204,26 @@ La scadenza dello sprint è il 18/08/2025.
     <tr>
       <td>Logica del player umano</td>
       <td>Chiara</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Gestione dei turni e del loop di gioco</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Refactor del Game Controller</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="3">8</td>
@@ -152,10 +233,18 @@ La scadenza dello sprint è il 18/08/2025.
     <tr>
       <td>Logica del player bot (random)</td>
       <td>Chiara</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Gestione dei turni e del loop di gioco</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>9</td>
@@ -164,6 +253,10 @@ La scadenza dello sprint è il 18/08/2025.
             e il tipo di partita (multiplayer o bot)</td>
       <td>Logica e GUI delle impostazioni di gioco</td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="3">10</td>
@@ -173,10 +266,18 @@ La scadenza dello sprint è il 18/08/2025.
     <tr>
       <td>Intelligenza del bot media</td>
       <td>Chiara</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Intelligenza del bot avanzata</td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="4">11</td>
@@ -187,14 +288,26 @@ La scadenza dello sprint è il 18/08/2025.
     <tr>
       <td>Creazione ostacoli (interfaccia)</td>
       <td>Chiara</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Posizionamento ostacoli</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>Aggiunta ostacoli nella configurazione (settings)</td>
       <td>Mirco</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>12</td>
@@ -202,10 +315,22 @@ La scadenza dello sprint è il 18/08/2025.
       <td>Come utente vorrei poter utilizzare colpi speciali, 
             come colpi ad area attivabili una volta per partita</td>
       <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
   </tbody>
 </table>
 
 ## Sprint Review
-## Sprint Retrospective
+Al termine del quarto e ultimo sprint, lo stakeholder ha ottenuto la versione finale del gioco, dove
+si è di fatto realizzata una delle funzionalità opzionali, quale la possibilità di giocare contro un bot a diversi
+livelli di difficoltà. Purtroppo, l'aggiunta di ostacoli nella mappa non è stata realizzata, a differenza di come prefissato
+negli obiettivi dello sprint, lasciando quindi lo stakeholder non pienamente soddisfatto.
 
+## Sprint Retrospective
+A differenza degli altri sprint, questa volta la durata dello sprint è stata influenzata dalla settimana di ferragosto,
+la quale ha portato giorni di inattività. Ne ha quindi risentito la solita configurazione di una settimana di lavoro,
+portando quindi a una durata dello sprint coincidente con la scadenza del progetto.
+Gli obiettivi dello sprint sono stati parzialmente raggiunti, eccetto per l'implementazione degli ostacoli. 

@@ -14,7 +14,7 @@ import scala.swing.{Button, Swing}
 /** Manages the grid of buttons representing the game board. Handles button clicks and updates the game state.
   * @param controller the game controller that manages the game logic
   */
-class GridManager(controller: GameController) {
+class GridManager(controller: GameController):
   private var clickState = ClickState(None, 0L)
 
   /** Updates the grid buttons based on the current game state.
@@ -22,11 +22,11 @@ class GridManager(controller: GameController) {
     * @param turn the current turn of the game
     * @return a sequence of buttons representing the game board
     */
-  def createButtons(state: GameState, turn: Turn): IndexedSeq[Button] = {
-    for {
+  def createButtons(state: GameState, turn: Turn): IndexedSeq[Button] =
+    for
       y <- 0 until PlayerBoard.size
       x <- 0 until PlayerBoard.size
-    } yield {
+    yield
       val pos = Position(x, y)
       val btn = ButtonFactory.createGridButton(pos, state, turn)
 
@@ -39,6 +39,3 @@ class GridManager(controller: GameController) {
           ClickHandler.handleClick(clickType, controller)
       }
       btn
-    }
-  }
-}
