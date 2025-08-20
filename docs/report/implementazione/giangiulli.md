@@ -260,3 +260,9 @@ Questo ha permesso di simulare una partita reale:
   ```
 
 ### Contributi nella GUI
+Infine, gli ultimi contribuiti apportati hanno riguardato alcune parti dell'interfaccia grafica, la cui
+implementazione è stata suddivisa tra tutti i membri del team.
+
+In particolare, il mio contributo ha riguardato una prima semplice implementazione iniziale, per il posizionamento
+delle navi su una versione base della board e, nell'ultimo sprint, alcuni miglioramenti riguardanti l'usabilità, 
+finalizzati a rendere l’esperienza dell’applicazione finale più fluida e intuitiva.
