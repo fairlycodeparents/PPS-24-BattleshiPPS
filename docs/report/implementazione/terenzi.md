@@ -99,10 +99,10 @@ io mi sono concentrato sulla difficoltà avanzata.
 
 Inizialmente le strategie sono state implementate come classi separate, basate sul trait `AttackStrategy`, e sono state
 definite con le seguenti caratteristiche:
-* Semplice: il bot attacca in modo casuale, scegliendo una cella a caso dalla plancia.
-* Intermedia: il bot attacca in modo casuale, ma sfrutta la conoscenza dei colpi andati a buon fine, colpendo le celle 
+* **Semplice**: il bot attacca in modo casuale, scegliendo una cella a caso dalla plancia.
+* **Intermedia**: il bot attacca in modo casuale, ma sfrutta la conoscenza dei colpi andati a buon fine, colpendo le celle 
   adiacenti in modo da affondare le navi.
-* Avanzata: il bot utilizza una strategia più complessa, che combina la conoscenza dei colpi andati a buon fine,
+* **Avanzata**: il bot utilizza una strategia più complessa, che combina la conoscenza dei colpi andati a buon fine,
   descritta nel punto precedente, con un sistema di punteggio per determinare la cella migliore da attaccare. Questa
   strategia si basa sul cercare di colpire in modo uniforme le celle della plancia.
 
@@ -128,7 +128,10 @@ più modulare e flessibile.
 ```scala
 class UniformDistributionStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
 
-  override def execute(playerBoard: PlayerBoard, position: Option[Position]): (PlayerBoard, Either[String, AttackResult]) =
+    override def execute(
+        playerBoard: PlayerBoard,
+        position: Option[Position]
+    ): (PlayerBoard, Either[String, AttackResult]) =
     /* ... */
     val allPositions =
       for
