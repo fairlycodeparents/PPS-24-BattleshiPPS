@@ -14,6 +14,18 @@ e introdurre funzionalità aggiuntive quali l'intelligenza del bot ed eventualme
 La scadenza dello sprint è il 22/08/2025.
 
 ## Backlog
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table th, table td {
+    border: 1px solid #ddd;
+}
+table td[rowspan] {
+    vertical-align: middle;
+}
+</style>
 <table>
   <thead>
     <tr>
@@ -322,6 +334,7 @@ La scadenza dello sprint è il 22/08/2025.
       <td>Colpi speciali</td>
       <td>Come utente vorrei poter utilizzare colpi speciali, 
             come colpi ad area attivabili una volta per partita</td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>

@@ -15,6 +15,18 @@ appunto, la modalità (multiplayer o vs bot) e il numero di navi da posizionare.
 La scadenza dello sprint è il 04/08/2025.
 
 ## Backlog
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table th, table td {
+    border: 1px solid #ddd;
+}
+table td[rowspan] {
+    vertical-align: middle;
+}
+</style>
 <table>
   <thead>
     <tr>

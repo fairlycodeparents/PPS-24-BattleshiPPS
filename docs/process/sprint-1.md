@@ -14,6 +14,18 @@ spostare e/o ruotare a proprio piacimento le proprie navi, a partire da una disp
 La scadenza dello sprint è il 21/07/2025.
 
 ## Backlog
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table th, table td {
+    border: 1px solid #ddd;
+}
+table td[rowspan] {
+    vertical-align: middle;
+}
+</style>
 <table>
   <thead>
     <tr>
