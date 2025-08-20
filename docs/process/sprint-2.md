@@ -167,11 +167,13 @@ table td[rowspan] {
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>8</td>
       <td>Modalità vs bot</td>
       <td>Come utente, vorrei poter giocare contro un bot nel mio dispositivo</td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -184,11 +186,13 @@ table td[rowspan] {
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>10</td>
       <td>Scelta della difficoltà del bot</td>
       <td>Come utente, vorrei avere la possibilità di scegliere la difficoltà di gioco</td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -201,12 +205,14 @@ table td[rowspan] {
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>12</td>
       <td>Colpi speciali</td>
       <td>Come utente vorrei poter utilizzare colpi speciali, 
             come colpi ad area attivabili una volta per partita</td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>

@@ -248,6 +248,7 @@ table td[rowspan] {
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>11</td>
@@ -258,12 +259,14 @@ table td[rowspan] {
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>12</td>
       <td>Colpi speciali</td>
       <td>Come utente vorrei poter utilizzare colpi speciali, 
             come colpi ad area attivabili una volta per partita</td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
