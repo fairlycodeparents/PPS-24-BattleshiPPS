@@ -115,8 +115,8 @@ combinate o sostituite senza modificare il codice esistente e permettono il riut
 definire le strategia nel seguente modo:
 ```scala
 class AdvancedBotAttackStrategy
-    extends UniformDistributionStrate(MinDistanceWeighting())
-    with TargetAlreadyHitStrategy
+  extends MaxWeightStrategy(MinDistanceWeighting())
+  with TargetAlreadyHitStrategy
 ```
 
 La `MaxWeightStrategy` si occupa di distribuire gli attacchi in modo uniforme su tutta la plancia,
