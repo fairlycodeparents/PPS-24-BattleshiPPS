@@ -7,59 +7,63 @@ parent: Implementazione
 # Implementazione - Terenzi Mirco
 
 ## Panoramica dei Contributi
-Il mio contributo al progetto è stato realizzato seguendo un approccio TDD-like, utilizzando i test per guidare lo 
-sviluppo delle funzionalità e mantenerle coerenti in caso di modifiche al codice. In particolare, ho mi sono concentrato 
-principalmente sulle seguenti funzionalità e aree:
 
-* **Configurazione della plancia di gioco**: `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`, `BoardCoordinates`, 
+Il mio contributo al progetto è stato realizzato adottando un approccio ispirato al TDD, utilizzando i test per guidare
+lo sviluppo delle funzionalità e assicurare la coerenza del codice in caso di modifiche. Tuttavia, per motivi di tempo,
+questa metodologia è stata applicata alle sole classi principali e non a tutte le parti implementate.
+
+In particolare, mi sono concentrato sulle seguenti aree:
+
+* **Configurazione della plancia di gioco**: `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`, `BoardCoordinates`,
 `ShipPlacementDSL`.
-* **Validazione della configurazione scelta dall'utente**: `GameConfig`, `ConfigurationValidator`, 
+* **Validazione della configurazione scelta dall'utente**: `GameConfig`, `ConfigurationValidator`,
 `MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
 * **Interfaccia grafica e interazione con l'utente**: `SetupView`, `DifficultySelection`, `GameSetup`.
 * **Strategie d'attacco del bot**: `AdvancedBotAttackStrategy`, `PositionWeighting`, `MinDistanceWeighting`,
-  `MaxWeightStrategy` e, insieme a Giangiulli Chiara, `TargetAlreadyHitStrategy`
+`MaxWeightStrategy` e, in collaborazione con Giangiulli Chiara, `TargetAlreadyHitStrategy`.
 * **Classi di supporto**: `Position`.
 
 ## Gestione della configurazione
-Per poter iniziare una partita, è necessario che la configurazione scelta dall'utente rispetti determinate regole e
-condizioni, come garantire un numero minimo di navi e, al tempo stesso, evitare che la plancia sia troppo piena,
-limitando la libertà di posizionamento delle navi e rendendo il gioco meno interessante.
 
-Per questo motivo, è stato definita una classe `ConfigurationValidator` che si occupa di validare la configurazione
-scelta dall'utente, assicurandosi che rispetti le regole del gioco. Ciascuna configurazione è rappresentata da una
-classe `GameConfig`, che contiene le informazioni necessarie per la configurazione della plancia di gioco.
+Per avviare una partita, la configurazione scelta dall'utente deve rispettare determinate regole, come garantire un
+numero minimo di navi e, al tempo stesso, evitare che la plancia sia troppo affollata, il che limiterebbe la libertà di
+posizionamento delle navi e renderebbe il gioco meno interessante.
 
-Un esempio di validazione della configurazione è rappresentato dal `MaxOccupancyValidator`, che verifica che il numero 
-di celle occupate dalle navi non superi un certo limite, garantendo che la plancia non sia troppo piena.
-```scala
+Per questo motivo, è stato definito il trait `ConfigurationValidator`, che si occupa di validare la configurazione di
+gioco. Ogni configurazione è rappresentata da una classe `GameConfig`, che incapsula le informazioni sulle navi e le
+loro quantità.
+
+```scala 3
 class MaxOccupancyValidator(val maxOccupancy: Double) extends ConfigurationValidator:
-    def validate(config: GameConfig): GameConfig =
-        val boardCells     = PlayerBoard.size * PlayerBoard.size
-        val maxCells       = (boardCells * maxOccupancy).toInt
-        val totalShipCells = config.ships.map((shipType, amount) => shipType.length * amount).sum
-        
-        if totalShipCells <= maxCells then config
-        else
-            val sortedShips = ShipType.values.sortBy(-_.length)
-            val correctedShips = sortedShips.foldLeft((maxCells, Map.empty[ShipType, Int])) {
-              case ((remainingCells, acc), shipType) =>
-                val maxCount          = config.ships.getOrElse(shipType, 0)
-                val maxFit            = remainingCells / shipType.length
-                val actualCount       = math.min(maxCount, maxFit)
-                val newRemainingCells = remainingCells - actualCount * shipType.length
-                (newRemainingCells, acc + (shipType -> actualCount))
-            }._2
-            GameConfig(correctedShips)
+  def validate(config: GameConfig): GameConfig =
+    val boardCells     = PlayerBoard.size * PlayerBoard.size
+    val maxCells       = (boardCells * maxOccupancy).toInt
+    val totalShipCells = config.ships.map((shipType, amount) => shipType.length * amount).sum
+    
+    if totalShipCells <= maxCells then config
+    else
+      val sortedShips = ShipType.values.sortBy(-_.length)
+      val correctedShips = sortedShips.foldLeft((maxCells, Map.empty[ShipType, Int])) {
+        case ((remainingCells, acc), shipType) =>
+          val maxCount          = config.ships.getOrElse(shipType, 0)
+          val maxFit            = remainingCells / shipType.length
+          val actualCount       = math.min(maxCount, maxFit)
+          val newRemainingCells = remainingCells - actualCount * shipType.length
+          (newRemainingCells, acc + (shipType -> actualCount))
+      }._2
+      GameConfig(correctedShips)
 ```
-Quando il validatore rileva che la configurazione è valida la restituisce, altrimenti genera una nuova istanza di
-`GameConfig` riducendo il numero di navi in modo da rispettare le regole del gioco. In particolare, le navi sono ordinate
-per lunghezza decrescente e il validatore cerca di mantenere il numero di navi più lungo possibile, riducendo
-prima le navi più corte.
+Un esempio di validazione è rappresentato da `MaxOccupancyValidator`, che verifica che il numero di celle occupate dalle
+navi non superi un certo limite, garantendo che la plancia non sia eccessivamente piena. Quando la configurazione è
+valida, il validatore la restituisce; altrimenti, genera una nuova istanza di `GameConfig` riducendo il numero di navi
+in modo da rispettare le regole. In particolare, le navi sono ordinate per lunghezza decrescente e il validatore cerca
+di mantenere il numero di navi più lungo possibile, riducendo prima quelle più corte per ottimizzare lo spazio.
 
-In modo analogo, il `NotEmptyValidator` si occupa di verificare che la configurazione contenga almeno una nave,
-restituendo la configurazione originale se valida. Infine, il `ConfigurationManager` si occupa di orchestrare
-l'applicazione di tutti i validatori, applicandoli in sequenza e restituendo una configurazione finale che rispetta
-tutte le regole del gioco.
+Analogamente, il `NotEmptyValidator` verifica che la configurazione includa almeno una nave; se necessario, la corregge
+aggiungendo una nave di tipo *Frigate*.
+
+Infine, il `ConfigurationManager` si occupa di applicare tutti i validatori in sequenza, restituendo una configurazione
+finale conforme alle regole del gioco.
 
 ## Creazione della plancia
 La plancia di gioco è uno degli elementi più importanti relativi allo stato della partita, che deve garantire una
@@ -91,56 +95,64 @@ it should "handle a placement at the board's edge (bottom-right)" in:
 ```
 
 ## Strategie d'attacco del bot
-Tra i requisiti del progetto, nel caso di una partita singleplayer (contro il bot), vi è la possibilità di scegliere
-tra diverse difficoltà. Queste sono state implementate attraverso l'utilizzo di diverse strategie di attacco del bot,
-che determinano il suo comportamento durante la partita. Questa specifica porzione di codice è stata in parte implementata
-in pair programming con Giangiulli Chiara. In particolare, Giangiulli si è occupata della strategia intermedia, mentre 
-io mi sono concentrato sulla difficoltà avanzata.
 
-Inizialmente le strategie sono state implementate come classi separate, basate sul trait `AttackStrategy`, e sono state
-definite con le seguenti caratteristiche:
-* **Semplice**: il bot attacca in modo casuale, scegliendo una cella a caso dalla plancia.
-* **Intermedia**: il bot attacca in modo casuale, ma sfrutta la conoscenza dei colpi andati a buon fine, colpendo le celle 
-  adiacenti in modo da affondare le navi.
-* **Avanzata**: il bot utilizza una strategia più complessa, che combina la conoscenza dei colpi andati a buon fine,
-  descritta nel punto precedente, con un sistema di punteggio per determinare la cella migliore da attaccare. Questa
-  strategia si basa sul cercare di colpire in modo uniforme le celle della plancia.
+Tra i requisiti del progetto, era prevista la possibilità di scegliere tra varie difficoltà per la partita in modalità
+single-player. Queste sono state implementate attraverso diverse strategie di attacco del bot, basate sul `trait`
+`AttackStrategy`. Questo modulo di codice è stato sviluppato in parte in *pair programming* con Giangiulli Chiara, che
+si è occupata della strategia intermedia, mentre io mi sono concentrato su quella avanzata.
 
-In seguito, considerando che le strategie intermedia e avanzata condividono una logica comune, ho rifattorizzato il 
-codice per utilizzare un approccio basato su mixin e composizione delle strategie. Ciò ha permesso di creare un sistema 
-modulare, facilitando future estensioni e rendendo il codice più chiaro e manutenibile. In particolare, ho realizzato
-`AdvancedBotAttackStrategy` e `TargetAlreadyHitStrategy` e adattato la `AverageBotAttackStrategy` realizzata da 
-Giangiulli, per aderire al pattern decorator realizzato con il mixin. In questo modo, le strategie possono essere 
-combinate o sostituite senza modificare il codice esistente e permettono il riutilizzo di logica comune, permettendo di 
-definire le strategia nel seguente modo:
-```scala
+Le strategie sono state definite con le seguenti caratteristiche:
+* **Semplice**: il bot attacca in modo completamente casuale.
+* **Intermedia**: il bot attacca in modo casuale, ma sfrutta i colpi andati a buon fine per colpire le celle adiacenti
+e affondare la nave.
+* **Avanzata**: il bot usa una strategia più complessa, combinando la ricerca delle posizioni adiacenti (descritta al
+punto precedente) con un sistema di punteggio per determinare la cella migliore da attaccare, basato sulla distribuzione
+uniforme dei colpi sulla plancia.
+
+Successivamente, notando che le strategie intermedia e avanzata condividono una logica comune, ho rifattorizzato il
+codice per utilizzare un approccio basato su *mixin* e composizione delle strategie. Ciò ha permesso di creare un
+sistema modulare, facilitando future estensioni e rendendo il codice più chiaro e manutenibile.
+
+In particolare, ho realizzato `AdvancedBotAttackStrategy` e `TargetAlreadyHitStrategy`, e ho adattato la
+`AverageBotAttackStrategy` di Giangiulli, per allinearsi al mixin. In questo modo, le strategie possono essere
+combinate senza modificare il codice esistente e la logica comune può essere riutilizzata. Ad esempio la strategia
+avanzata viene definita come mostrato di seguito:
+
+```scala 3
 class AdvancedBotAttackStrategy
   extends MaxWeightStrategy(MinDistanceWeighting())
   with TargetAlreadyHitStrategy
 ```
 
-La `MaxWeightStrategy` si occupa di distribuire gli attacchi in modo uniforme su tutta la plancia,
-garantendo una copertura equilibrata. Dopo una prima implementazione, la classe è stata rifattorizzata per utilizzare
-una logica di assegnazione del peso variabile, passata come parametro al costruttore. Questa operazione è stata
-notevolmente semplificata dalla classe di test realizzata durante la prima implementazione, che ha permesso di
-verificare in ogni momento il corretto funzionamento della strategia, facilitando la transizione verso un approccio
-più modulare e flessibile.
-```scala
+Inizialmente, ho implementato una classe `UniformDistributionStrategy` che si occupasse di selezionare la miglior cella
+da colpire come è stato precedentemente descritto, distribuendo i colpi sulla mappa in modo da selezionare la cella in
+modo da massimizzare la distanza minima dai colpi già sferrati. Successivamente, la strategia è stata sostituita da una
+`MaxWeightStrategy`, la quale si occupa solamente di scegliere la cella con il peso (punteggio) maggiore. Questa
+modifica ha permesso di delegare l'assegnazione dei pesi a una classe esterna, passata come parametro al costruttore,
+facilitando eventuali estensioni del codice o modifiche. In particolare, questo processo è stato notevolemnte
+semplificato dai test esistenti, che hanno permesso di verificare il corretto funzionamento dell' implementazione in
+ogni momemnto. 
+
+```scala 3
 class MaxWeightStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
 
-    override def execute(
-        playerBoard: PlayerBoard,
-        position: Option[Position]
-    ): (PlayerBoard, Either[String, AttackResult]) =
+  override def execute(
+    playerBoard: PlayerBoard,
+    position: Option[Position]
+  ): (PlayerBoard, Either[String, AttackResult]) =
+    
     /* ... */
+
     val allPositions =
       for
         x <- 0 until PlayerBoard.size
         y <- 0 until PlayerBoard.size
       yield Position(x, y)
+
     val unhitPositions = allPositions.filterNot(playerBoard.hits.contains)
 
-    if unhitPositions.isEmpty then (playerBoard, Left("No positions left to attack"))
+    if unhitPositions.isEmpty then
+      (playerBoard, Left("No positions left to attack"))
     else
       val weights = unhitPositions.map(pos =>
         positionWeighting.calculateWeight(pos, playerBoard.hits, PlayerBoard.size)
@@ -150,6 +162,18 @@ class MaxWeightStrategy(positionWeighting: PositionWeighting) extends AttackStra
       val chosenPosition = bestPositions(Random.nextInt(bestPositions.length))
       ShipAttack.attack(playerBoard, chosenPosition)
 ```
-La classe sfrutta la `PositionWeighting` per calcolare un punteggio per ogni cella non colpita, in questo caso in base
-alla disposizione dei colpi sulla plancia. L'assegnamento del punteggio si basa sul calcolare la distanza minima 
-rispetto ai colpi già sferrati. Infine, la cella _target_ viene scelta casualmente tra quelle con il punteggio massimo.
+
+La classe `MaxWeightStrategy` sfrutta positionWeighting, il quale aderisce al trait `PositionWeighting`, per assegnare
+un punteggio a ciascuna cella non ancora colpita. Nell'implementazione, il calcolo si basa sulla distanza dai colpi già
+effettuati (`MinDistanceWeighting`). In caso di parità di punteggio tra più celle, il target viene scelto in modo
+casuale tra quelle con il punteggio più elevato.
+
+```scala 3
+class MinDistanceWeighting extends PositionWeighting:
+
+  override def calculateWeight(pos: Position, hits: Set[Position], boardSize: Int): Int =
+    if hits.isEmpty then
+      Int.MaxValue
+    else
+      hits.map(pos.distanceTo).min
+```
