@@ -104,9 +104,9 @@ da colpire come è stato precedentemente descritto, distribuendo i colpi sulla m
 modo da massimizzare la distanza minima dai colpi già sferrati. Successivamente, la strategia è stata sostituita da una
 `MaxWeightStrategy`, la quale si occupa solamente di scegliere la cella con il peso (punteggio) maggiore. Questa
 modifica ha permesso di delegare l'assegnazione dei pesi a una classe esterna, passata come parametro nel metodo `apply`,
-facilitando eventuali estensioni del codice o modifiche. In particolare, questo processo è stato notevolemnte
+facilitando eventuali estensioni del codice o modifiche. In particolare, questo processo è stato notevolmente
 semplificato dai test esistenti, che hanno permesso di verificare il corretto funzionamento dell' implementazione in
-ogni momemnto. 
+ogni momento. 
 
 ```scala
 /** An attack strategy that uses a uniform distribution to select positions based on their weights.
@@ -262,6 +262,7 @@ it should "support placement of a vertical ship" in:
 ```
 
 ## Contributi nell'interfaccia utente
+
 Per quanto riguarda l'interfaccia utente, ho lavorato principalmente sulla schermata di configurazione della partita,
 implementando la classe `SetupView`, che consente di selezionare la difficoltà e di configurare le navi da
 utilizzare, gestendo le interazioni con l'utente in caso di errori tramite messaggi di errore.
