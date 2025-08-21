@@ -439,3 +439,140 @@ La gestione dello stato opzionale utilizza operazioni monadiche per evitare null
 controller.dialogHandler.foreach(_.showWaitingDialog())
 controller.dialogHandler.foreach(_.hideCurrentDialog())
 ```
+
+## Testing
+Come anticipato nella sezione della *gestione del posizionamento delle navi nella baord*, ho utilizzato il *TDD* per 
+la realizzazione della logica di posizionamento delle navi, creando il file `ShipPositioningTest` per poi andare a
+implementare la logica in `ShipPositioning`. Purtroppo, non sono riuscito a garantire questo approccio anche per gli
+altri file da me implementati, i quali hanno visto solo in seconda sede la realizzazione dei test, come ad esempio 
+`BattleLogicTest` e `TurnLogicTest`. Questo è stato possibile solo grazie a un refactor che ha permesso 
+di separare la logica di battaglia e turnazione, permettendo così di testare le singole responsabilità.
+Per lo sviluppo dei test ho utilizzato ScalaTest
+
+### ShipPositioningTest
+In questo test viene verificato il corretto funzionamento della logica di posizionamento delle navi, con casi di test per:
+-   recupero navi: verifica la capacità di trovare una nave in una posizione specifica
+-   posizionamento: verifica il corretto posizionamento delle navi
+```scala
+"ShipPositioning" should "successfully return a ship at a given position" in:
+    val testBoard = board(
+        place a Frigate at A(1) vertical
+    )
+    val position = A(1)
+
+    val result = shipPositioning.getShipAt(testBoard, position)
+
+    result.isRight shouldBe true
+    result.getOrElse(fail()).anchor shouldBe A(1)
+```
+
+È stato fatto uso del `Either` per gestire il risultato della ricerca della nave, dove in caso di successo viene restituita la nave, altrimenti un messaggio di errore.
+Inoltre, l'uso del `DSL` per la creazione della board permette di rendere i test più leggibili e concisi, evitando la creazione manuale di ogni singolo elemento della board.
+
+```scala
+it should "return an error when no ship is found at the position" in:
+    val testBoard = board()
+    val position  = B(2)
+
+    val result = shipPositioning.getShipAt(testBoard, position)
+
+    result.isLeft shouldBe true
+    result.left.getOrElse(fail()) should include("No ship found at the selected position.")
+```
+
+```scala
+it should "successfully place a ship on empty board" in:
+    val ship  = Frigate.at(A(1), Vertical)
+    val board = PlayerBoard()
+
+    val result = shipPositioning.placeShip(board, ship)
+
+    result.isRight shouldBe true
+    val updatedBoard = result.getOrElse(fail())
+    updatedBoard.ships should have size 1
+    updatedBoard.ships.head.anchor shouldBe A(1)
+```
+
+```scala
+it should "fail when ship overlaps with existing ship" in:
+    val testBoard = board(
+        place a Frigate at A(1) vertical
+    )
+    val newShip = Submarine.at(A(1), Vertical)
+
+    val result = shipPositioning.placeShip(testBoard, newShip)
+
+    result.isLeft shouldBe true
+    result.left.getOrElse(fail()) should include("overlap")
+```
+
+### BattleLogicTest
+Il test `BattleLogicTest` verifica la logica di battaglia, assicurando che gli attacchi vengano gestiti correttamente e che le navi vengano affondate, mancate o colpite come previsto (Sunk/Miss/Hit).
+Viene inoltre controllato il caso di attacco a una cella già attaccata in precedenza, creando quindi il messaggio *AlreadyAttack*. È presente anche la verifica della differenziazione tra i due player, i quali attaccano le rispettive board.
+Viene gestito anche il caso di transizione a *Game over* e l'aggiornamento dei colori dei bottoni nella board.
+Per l'implementazione dei test ho usato `pattern matching` per la gestione dei risultati di gioco, i `case class` per rappresentare lo stato immutabile del gioco,
+e `foldLeft` per accumulare stati attraverso attacchi multipli.  
+
+```scala
+"BattleLogic.processBattleClick" should "handle human player miss attack correctly" in:
+    val emptyEnemyBoard = PlayerBoard()
+    val gameState       = initialGameState.copy(enemyBoard = emptyEnemyBoard)
+    val missPosition    = Position(0, 0)
+
+    val result = BattleLogic.processBattleClick(
+      gameState,
+      humanPlayer,
+      Turn.FirstPlayer,
+      Some(missPosition)
+    )
+
+    result.messages should have size 1
+    result.messages.head should include("Miss")
+    result.newState.attackResult should contain key missPosition
+    result.newState.attackResult(missPosition) shouldBe AttackResult.Miss
+    result.newState.cellColors(missPosition) shouldBe ColorScheme.MISS
+```
+
+Infine è stato possibile anche testare una sequenza di attacchi per verificare la corretta gestione di multipli attacchi:
+```scala
+it should "handle multiple consecutive attacks correctly" in:
+    val gameState = initialGameState.copy(enemyBoard = emptyBoard)
+    val positions = List(Position(0, 0), Position(1, 1), Position(2, 2))
+
+    val finalResult = positions.foldLeft((gameState, List.empty[String])) {
+      case ((currentState, messages), pos) =>
+        val result = BattleLogic.processBattleClick(
+          currentState,
+          humanPlayer,
+          Turn.FirstPlayer,
+          Some(pos)
+        )
+        (result.newState, messages ++ result.messages)
+    }
+
+    val (finalState, allMessages) = finalResult
+
+    allMessages should have size 3
+    allMessages.foreach(_ should include("Miss"))
+    finalState.attackResult should have size 3
+    positions.foreach { pos =>
+      finalState.attackResult should contain key pos
+      finalState.cellColors should contain key pos
+    }
+```
+
+### TurnLogicTest
+In questo file viene verificata la tipologia del player, se human o bot e il meccanismo di turnazione.
+Sono stati usati degli `enum` per stati, come `Turn.FirstPlayer`.
+
+```scala
+"TurnLogic.isBotTurn" should "return true when current player is a bot" in:
+    TurnLogic.isBotTurn(Turn.FirstPlayer, botPlayer, humanPlayer) shouldBe true
+    TurnLogic.isBotTurn(Turn.SecondPlayer, humanPlayer, botPlayer) shouldBe true
+```
+
+```scala
+"TurnLogic.switchTurn" should "switch from FirstPlayer to SecondPlayer" in:
+  TurnLogic.switchTurn(Turn.FirstPlayer) shouldBe Turn.SecondPlayer
+```
+
