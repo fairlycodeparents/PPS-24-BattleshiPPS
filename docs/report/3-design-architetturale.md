@@ -35,6 +35,7 @@ Permette di sviluppare e testare ciascun componente in modo indipendente, facili
 sistema. Inoltre, consente di sostituire facilmente la View senza dover modificare il Model o il Controller.
 
 ## Struttura del Progetto
+![Diagramma package](../assets/img/architecture-package-diagram.png)
 
 La struttura del progetto è organizzata in tre moduli principali, corrispondenti ai componenti del pattern MVC:
 * Model: Contiene la logica del gioco e la gestione dello stato.
