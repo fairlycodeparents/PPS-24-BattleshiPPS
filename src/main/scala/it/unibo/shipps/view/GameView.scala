@@ -1,6 +1,6 @@
 package it.unibo.shipps.view
 
-import it.unibo.shipps.controller.GameStateManager.DialogAction
+import it.unibo.shipps.model.GameStateManager.DialogAction
 import it.unibo.shipps.model.*
 import it.unibo.shipps.controller.{GameController, GamePhase, GameState}
 import it.unibo.shipps.model.board.PlayerBoard
