@@ -2,17 +2,9 @@ package it.unibo.shipps.logic
 
 import it.unibo.shipps.controller.{GamePhase, GameState}
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
-import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
+import it.unibo.shipps.model.player.PlayerFactory.*
 import it.unibo.shipps.model.ShipOrientation.{Horizontal, Vertical}
-import it.unibo.shipps.model.{
-  AttackResult,
-  BattleLogic,
-  HumanAttackStrategy,
-  RandomBotAttackStrategy,
-  Ship,
-  ShipType,
-  Turn
-}
+import it.unibo.shipps.model.{AttackResult, BattleLogic, Ship, ShipType, Turn}
 import it.unibo.shipps.view.renderer.ColorScheme
 import org.scalatest.*
 import flatspec.*
@@ -26,8 +18,8 @@ class BattleLogicTest extends AnyFlatSpec with should.Matchers:
   private val emptyBoard    = PlayerBoard()
   private val boardWithShip = emptyBoard.addShip(testShip).getOrElse(fail("Failed to add ship"))
 
-  private val humanPlayer = HumanPlayer("TestPlayer", HumanAttackStrategy())
-  private val botPlayer   = BotPlayer(RandomBotAttackStrategy())
+  private val humanPlayer = createHumanPlayer()
+  private val botPlayer   = createBotPlayer()
 
   private val initialGameState = GameState(
     board = boardWithShip,
