@@ -34,6 +34,9 @@ gioco. Ogni configurazione è rappresentata da una classe `GameConfig`, che inca
 loro quantità.
 
 ```scala 3
+/** This validator ensures the total number of ship cells does not exceed a predefined percentage of the board.
+ * @param maxOccupancy The maximum percentage of board cells that can be occupied by ships.
+ */
 class MaxOccupancyValidator(val maxOccupancy: Double) extends ConfigurationValidator:
   def validate(config: GameConfig): GameConfig =
     val boardCells     = PlayerBoard.size * PlayerBoard.size
@@ -90,6 +93,7 @@ combinate senza modificare il codice esistente e la logica comune può essere ri
 avanzata viene definita come mostrato di seguito:
 
 ```scala 3
+/** An advanced bot attack strategy that combines uniform distribution with targeting already hit positions. */
 class AdvancedBotAttackStrategy
   extends MaxWeightStrategy(MinDistanceWeighting())
   with TargetAlreadyHitStrategy
@@ -105,8 +109,14 @@ semplificato dai test esistenti, che hanno permesso di verificare il corretto fu
 ogni momemnto. 
 
 ```scala 3
+/** An attack strategy that uses a uniform distribution to select positions based on their weights.
+ * It calculates the weight of each position based on the provided [[PositionWeighting]] strategy and chooses the
+ * position with the highest weight.
+ * @param positionWeighting the strategy to calculate the weight of positions
+ */
 class MaxWeightStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
 
+  /** @inheritdoc */
   override def execute(
     playerBoard: PlayerBoard,
     position: Option[Position]
@@ -140,8 +150,10 @@ effettuati (`MinDistanceWeighting`). In caso di parità di punteggio tra più ce
 casuale tra quelle con il punteggio più elevato.
 
 ```scala 3
+/** A position weighting strategy that calculates the weight based on the minimum distance to existing hits. */
 class MinDistanceWeighting extends PositionWeighting:
 
+  /** @inheritdoc */
   override def calculateWeight(pos: Position, hits: Set[Position], boardSize: Int): Int =
     if hits.isEmpty then
       Int.MaxValue
