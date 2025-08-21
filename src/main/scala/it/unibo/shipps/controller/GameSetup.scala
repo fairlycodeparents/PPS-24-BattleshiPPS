@@ -2,8 +2,9 @@ package it.unibo.shipps.controller
 
 import it.unibo.shipps.model.*
 import it.unibo.shipps.view.handler.TurnDialogHandler
-import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
+import it.unibo.shipps.model.player.PlayerFactory.*
 import ShipType.*
+import it.unibo.shipps.model.player.Player
 import it.unibo.shipps.view.{DifficultySelection, SetupView, SimpleGui}
 
 import javax.swing.event.ChangeEvent
@@ -40,11 +41,11 @@ class GameSetup(val viewFrame: MainFrame):
       val choosenDifficulty = new DifficultySelection(options, viewFrame.peer)
       choosenDifficulty.setVisible(true)
       choosenDifficulty.selection match
-        case "Easy"   => createController(BotPlayer(RandomBotAttackStrategy()))
-        case "Medium" => createController(BotPlayer(AverageBotAttackStrategy()))
-        case "Hard"   => createController(BotPlayer(AdvancedBotAttackStrategy()))
+        case "Easy"   => createController(createBotPlayer(RandomBotAttackStrategy()))
+        case "Medium" => createController(createBotPlayer(AverageBotAttackStrategy()))
+        case "Hard"   => createController(createBotPlayer(AdvancedBotAttackStrategy()))
     case ButtonClicked(SetupView.multiPlayerButton) =>
-      createController(HumanPlayer())
+      createController(createHumanPlayer())
   }
 
   private def showErrorDialog(message: String): Unit =
@@ -64,7 +65,7 @@ class GameSetup(val viewFrame: MainFrame):
         val controller = GameController(
           board1,
           board2,
-          HumanPlayer(),
+          createHumanPlayer(),
           secondPlayer
         )
         val view          = new SimpleGui(controller)
