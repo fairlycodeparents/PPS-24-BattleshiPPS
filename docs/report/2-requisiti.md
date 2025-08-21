@@ -35,7 +35,7 @@ Dal punto di vista dell’utente, il sistema deve consentire:
   e i feedback sullo stato della partita.
 - La ricezione della notifica di fine della partita e del vincitore.
 
-<img src="../assets/img/use-case-diagram.png" alt="Battleship Game" width="500px" height="500px" />
+<img src="../assets/img/use-case-diagram.png" alt="User Requirements Use Case Diagram" width="568px" height="657px" />
 
 Funzionalità opzionali:
 - selezionare il livello di difficoltà del bot
