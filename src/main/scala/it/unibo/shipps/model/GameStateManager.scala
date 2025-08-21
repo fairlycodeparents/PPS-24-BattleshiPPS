@@ -1,9 +1,9 @@
-package it.unibo.shipps.controller
+package it.unibo.shipps.model
 
-import it.unibo.shipps.model.*
-import it.unibo.shipps.model.player.Player
+import it.unibo.shipps.controller.{GamePhase, GameState}
+import it.unibo.shipps.model.{TurnLogic, *}
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
-import it.unibo.shipps.model.TurnLogic
+import it.unibo.shipps.model.player.Player
 import it.unibo.shipps.view.GameView
 import it.unibo.shipps.view.components.DialogFactory
 import it.unibo.shipps.view.components.DialogFactory.createBotResultDialog
