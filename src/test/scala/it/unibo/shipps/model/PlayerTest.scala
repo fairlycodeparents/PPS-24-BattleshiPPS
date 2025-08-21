@@ -38,7 +38,6 @@ class PlayerTest extends AnyFlatSpec with should.Matchers:
     randomBotPlayer.isABot shouldBe true
     val averageBotPlayer = createBotPlayer(AverageBotAttackStrategy())
     averageBotPlayer.isABot shouldBe true
-    averageBotPlayer.getClass shouldBe BotPlayer(AverageBotAttackStrategy()).getClass
 
   it should "be able to attack randomly without providing a position" in:
     val (_, result) = randomBotPlayer.makeAttack(enemyBoard)

@@ -4,13 +4,7 @@ import it.unibo.shipps.controller.{GamePhase, GameState}
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.player.PlayerFactory.*
 import it.unibo.shipps.model.ShipOrientation.{Horizontal, Vertical}
-import it.unibo.shipps.model.{
-  AttackResult,
-  BattleLogic,
-  Ship,
-  ShipType,
-  Turn
-}
+import it.unibo.shipps.model.{AttackResult, BattleLogic, Ship, ShipType, Turn}
 import it.unibo.shipps.view.renderer.ColorScheme
 import org.scalatest.*
 import flatspec.*

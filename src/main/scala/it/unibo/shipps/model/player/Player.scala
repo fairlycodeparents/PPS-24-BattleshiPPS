@@ -21,7 +21,8 @@ trait Player {
   def isABot: Boolean
 }
 
-private[player] case class HumanPlayer(name: String = "player", strategy: AttackStrategy = HumanAttackStrategy()) extends Player:
+private[player] case class HumanPlayer(name: String = "player", strategy: AttackStrategy = HumanAttackStrategy())
+    extends Player:
   override def makeAttack(
       playerBoard: PlayerBoard,
       position: Option[Position]
