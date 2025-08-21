@@ -55,9 +55,9 @@ table td[rowspan] {
     <tr>
       <td>Studio dell'architettura</td>
       <td>Chiara</td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Docs Setup</td>
@@ -84,16 +84,16 @@ table td[rowspan] {
     <tr>
       <td>Creazione delle navi</td>
       <td>Chiara</td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Realizzazione della GUI</td>
       <td>Chiara</td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Logica spostamento navi (selezione nave da spostare, 
@@ -165,9 +165,9 @@ table td[rowspan] {
     <tr>
       <td>Logica di attacco e fine partita</td>
       <td>Chiara</td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>15</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Feedback all'utente per il risultato dell'attacco</td>
@@ -199,9 +199,9 @@ table td[rowspan] {
     <tr>
       <td>Logica del player umano</td>
       <td>Chiara</td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
     </tr>
      <tr>
       <td>Gestione dei turni e del loop di gioco</td>
@@ -218,9 +218,9 @@ table td[rowspan] {
     <tr>
       <td>Logica del player bot (random)</td>
       <td>Chiara</td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
     </tr>
     <tr>
       <td>Gestione dei turni e del loop di gioco</td>
