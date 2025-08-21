@@ -5,7 +5,7 @@ import it.unibo.shipps.model.board.Position
 import it.unibo.shipps.model.{Turn, TurnLogic}
 import it.unibo.shipps.controller.GameStateManager.GameActionResult
 import it.unibo.shipps.controller.utils.DelayedExecutor
-import it.unibo.shipps.view.SimpleGui
+import it.unibo.shipps.view.GameView
 import it.unibo.shipps.view.handler.TurnDialogHandler
 
 import javax.swing.Timer
@@ -34,7 +34,7 @@ class BotTurnHandler(controller: GameController):
     * @param firstPlayer first player
     * @param secondPlayer second player
     */
-  def scheduleBotMove(state: GameState, view: SimpleGui, turn: Turn, firstPlayer: Player, secondPlayer: Player): Unit =
+  def scheduleBotMove(state: GameState, view: GameView, turn: Turn, firstPlayer: Player, secondPlayer: Player): Unit =
     controller.dialogHandler.foreach(_.showWaitingDialog())
 
     DelayedExecutor.runLater(1500) {

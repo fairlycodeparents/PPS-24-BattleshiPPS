@@ -2,7 +2,7 @@ package it.unibo.shipps.view.components
 
 import it.unibo.shipps.controller.GamePhase
 import it.unibo.shipps.model.Turn
-import it.unibo.shipps.view.SimpleGui
+import it.unibo.shipps.view.GameView
 
 import java.awt.BorderLayout
 import javax.swing.{JDialog, JLabel}
@@ -22,7 +22,7 @@ object DialogFactory:
     * @param playerName name of the player whose turn it is
     * @return the created dialog for external management
     */
-  def createTurnDialog(view: SimpleGui, playerName: String): JDialog =
+  def createTurnDialog(view: GameView, playerName: String): JDialog =
     val dialog = new JDialog(view.peer, "Player Turn", true)
     dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE)
     dialog.setSize(350, 200)
@@ -49,7 +49,7 @@ object DialogFactory:
     * @param view the main GUI view
     * @return the created dialog for external management
     */
-  def createWaitingDialog(view: SimpleGui): JDialog =
+  def createWaitingDialog(view: GameView): JDialog =
     val dialog = new JDialog(view.peer, "Bot Turn", true)
     dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE)
     dialog.setSize(300, 150)
@@ -66,7 +66,7 @@ object DialogFactory:
     * @param view the main GUI view
     * @return the created dialog for external management
     */
-  def createRetryAttackDialog(view: SimpleGui): JDialog =
+  def createRetryAttackDialog(view: GameView): JDialog =
     val dialog = new JDialog(view.peer, "Retry Attack", true)
     dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE)
     dialog.setSize(300, 150)
@@ -107,7 +107,7 @@ object DialogFactory:
     * @param onDismiss callback to execute when the dialog is closed
     * @return the created dialog
     */
-  def createBotResultDialog(view: SimpleGui, result: String, onDismiss: () => Unit): JDialog =
+  def createBotResultDialog(view: GameView, result: String, onDismiss: () => Unit): JDialog =
     val dialog = new JDialog(view.peer, "Bot Turn Result", true)
     dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE)
     dialog.setSize(350, 200)
