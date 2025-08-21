@@ -86,7 +86,7 @@ object BoardCoordinates:
   private def createColumnObject(char: Char): ColumnObject =
     (row: Int) => column(char)(row)
 
-  /** Helpers per definire coordinate leggibili, ad esempio C(5). */
+  /** Helpers to define readable coordinates, e.g. C(5). */
   val A: Int => Position = createColumnObject('A')
   val B: Int => Position = createColumnObject('B')
   val C: Int => Position = createColumnObject('C')
