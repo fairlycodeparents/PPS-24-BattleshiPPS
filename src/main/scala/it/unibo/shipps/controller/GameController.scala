@@ -1,8 +1,8 @@
 package it.unibo.shipps.controller
 
 import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
-import it.unibo.shipps.controller.GameStateManager.DialogAction
-import it.unibo.shipps.controller.GameStateManager.DialogAction.ShowTurnDialog
+import it.unibo.shipps.model.GameStateManager.DialogAction
+import it.unibo.shipps.model.GameStateManager.DialogAction.ShowTurnDialog
 import it.unibo.shipps.controller.utils.DelayedExecutor
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
