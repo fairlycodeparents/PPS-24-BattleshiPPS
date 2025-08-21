@@ -1,12 +1,12 @@
-package it.unibo.shipps.controller.battle
+package it.unibo.shipps.model
 
 import it.unibo.shipps.controller.{GamePhase, GameState}
-import it.unibo.shipps.model.{BattleLogic, Turn}
 import it.unibo.shipps.model.board.Position
 import it.unibo.shipps.model.player.Player
+import it.unibo.shipps.model.{BattleLogic, Turn}
 
 /** BattleController handles the battle phase of the game, processing player actions. */
-object BattleController:
+object BattleHandler:
 
   /** Result of a battle turn containing new state and messages */
   case class BattleResult(newState: GameState, messages: List[String], gameOver: Boolean)

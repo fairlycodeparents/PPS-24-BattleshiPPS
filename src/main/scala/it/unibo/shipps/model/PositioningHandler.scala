@@ -1,12 +1,11 @@
-package it.unibo.shipps.controller.positioning
+package it.unibo.shipps.model
 
 import it.unibo.shipps.controller.GameState
-import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
-import it.unibo.shipps.model.{Turn, TurnLogic}
+import it.unibo.shipps.model.*
 
 /** Handles ship positioning logic and user interactions during positioning phase */
-object PositioningController:
+object PositioningHandler:
 
   /** Selects a ship at the given position
     * @param gameState current game state

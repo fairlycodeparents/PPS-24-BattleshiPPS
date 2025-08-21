@@ -1,12 +1,12 @@
 package it.unibo.shipps.view.handler
 
 import it.unibo.shipps.model.Turn
-import it.unibo.shipps.view.SimpleGui
+import it.unibo.shipps.view.GameView
 import it.unibo.shipps.view.components.DialogFactory
 
 import javax.swing.{JDialog, JLabel}
 
-class TurnDialogHandler(gui: SimpleGui):
+class TurnDialogHandler(gui: GameView):
   private var currentDialog: Option[JDialog] = None
 
   /** Shows a dialog indicating whose turn it is.

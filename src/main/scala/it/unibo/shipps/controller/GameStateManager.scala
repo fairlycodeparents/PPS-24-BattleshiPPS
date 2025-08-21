@@ -1,12 +1,10 @@
 package it.unibo.shipps.controller
 
-import it.unibo.shipps.controller.battle.BattleController
-import it.unibo.shipps.controller.positioning.PositioningController
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.player.Player
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.TurnLogic
-import it.unibo.shipps.view.SimpleGui
+import it.unibo.shipps.view.GameView
 import it.unibo.shipps.view.components.DialogFactory
 import it.unibo.shipps.view.components.DialogFactory.createBotResultDialog
 
@@ -131,7 +129,7 @@ object GameStateManager:
       turn: Turn,
       positioning: ShipPositioning
   ): GameActionResult =
-    val newState = PositioningController.handlePositioningClick(gameState, position, turn, positioning)
+    val newState = PositioningHandler.handlePositioningClick(gameState, position, turn, positioning)
     GameActionResult(newState, turn, List())
 
   /** Handles positioning double click
@@ -147,7 +145,7 @@ object GameStateManager:
       turn: Turn,
       positioning: ShipPositioning
   ): GameActionResult =
-    val newState = PositioningController.handlePositioningDoubleClick(gameState, position, turn, positioning)
+    val newState = PositioningHandler.handlePositioningDoubleClick(gameState, position, turn, positioning)
     GameActionResult(newState, turn, List())
 
   /** Handles randomize positions
@@ -163,7 +161,7 @@ object GameStateManager:
       turn: Turn,
       positioning: ShipPositioning
   ): GameActionResult =
-    val newState = PositioningController.handleRandomizePositions(gameState, ships, turn, positioning)
+    val newState = PositioningHandler.handleRandomizePositions(gameState, ships, turn, positioning)
     GameActionResult(newState, turn, List())
 
   /** Handles battle click
@@ -182,7 +180,7 @@ object GameStateManager:
       secondPlayer: Player
   ): GameActionResult =
     val currentPlayer = TurnLogic.getCurrentPlayer(turn, firstPlayer, secondPlayer)
-    val battleResult  = BattleController.processHumanAttack(gameState, currentPlayer, turn, position)
+    val battleResult  = BattleHandler.processHumanAttack(gameState, currentPlayer, turn, position)
 
     if battleResult.gameOver then
       GameActionResult(battleResult.newState, turn, battleResult.messages)
@@ -209,7 +207,7 @@ object GameStateManager:
       secondPlayer: Player
   ): GameActionResult =
     val currentPlayer = TurnLogic.getCurrentPlayer(turn, firstPlayer, secondPlayer)
-    val battleResult  = BattleController.processBotAttack(gameState, currentPlayer, turn)
+    val battleResult  = BattleHandler.processBotAttack(gameState, currentPlayer, turn)
 
     if battleResult.gameOver then
       GameActionResult(battleResult.newState, turn, battleResult.messages)

@@ -14,7 +14,7 @@ import scala.swing.*
 import scala.swing.MenuBar.NoMenuBar.{focusable, keys}
 import scala.swing.event.*
 
-class SimpleGui(controller: GameController) extends MainFrame:
+class GameView(controller: GameController) extends MainFrame:
 
   private final val SIZE = 600
   title = "BattleshiPPS"

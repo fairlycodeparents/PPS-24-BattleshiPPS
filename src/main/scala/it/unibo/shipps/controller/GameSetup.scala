@@ -4,7 +4,7 @@ import it.unibo.shipps.model.*
 import it.unibo.shipps.view.handler.TurnDialogHandler
 import it.unibo.shipps.model.player.{BotPlayer, HumanPlayer, Player}
 import ShipType.*
-import it.unibo.shipps.view.{DifficultySelection, SetupView, SimpleGui}
+import it.unibo.shipps.view.{DifficultySelection, GameView, SetupView}
 
 import javax.swing.event.ChangeEvent
 import scala.swing.*
@@ -67,7 +67,7 @@ class GameSetup(val viewFrame: MainFrame):
           HumanPlayer(),
           secondPlayer
         )
-        val view          = new SimpleGui(controller)
+        val view          = new GameView(controller)
         val dialogHandler = new TurnDialogHandler(view)
         controller.view = Some(view)
         controller.dialogHandler = Some(dialogHandler)

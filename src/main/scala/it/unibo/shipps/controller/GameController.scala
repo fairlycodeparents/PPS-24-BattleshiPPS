@@ -3,13 +3,12 @@ package it.unibo.shipps.controller
 import it.unibo.shipps.controller.GamePhase.{Battle, Positioning}
 import it.unibo.shipps.controller.GameStateManager.DialogAction
 import it.unibo.shipps.controller.GameStateManager.DialogAction.ShowTurnDialog
-import it.unibo.shipps.controller.battle.BattleController
 import it.unibo.shipps.controller.utils.DelayedExecutor
 import it.unibo.shipps.model.*
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
 import it.unibo.shipps.model.player.Player
 import it.unibo.shipps.model.{Turn, TurnLogic}
-import it.unibo.shipps.view.SimpleGui
+import it.unibo.shipps.view.GameView
 import it.unibo.shipps.view.components.DialogFactory
 import it.unibo.shipps.view.handler.TurnDialogHandler
 import it.unibo.shipps.view.renderer.ColorScheme
@@ -128,7 +127,7 @@ class GameController(
 ):
 
   var state: GameState                         = GameState(initialBoard, enemyBoard, None, Positioning)
-  var view: Option[SimpleGui]                  = None
+  var view: Option[GameView]                   = None
   var dialogHandler: Option[TurnDialogHandler] = None
   var turn: Turn                               = Turn.FirstPlayer
 

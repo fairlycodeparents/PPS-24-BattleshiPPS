@@ -5,7 +5,7 @@ parent: Implementazione
 ---
 
 # Implementazione - Dilaver Shtini
-Il codice prodotto dal sottoscritto durante la realizzazione del progetto riguarda i file: `BattleController`, `PositioningController`, `DelayedExecutor`, `TurnLogic`, `BotTurnHandler`, `GameStateManager`, `BattleLogic`, `ShipPositioning`, `ButtonFactory`, `DialogFactory`, `GridManager`, `ClickHandler`, `TurnDialogHandler`, `ButtonRenderer`, `ColorScheme`, e in parte `GameController` e `SimpleGui`, suddivisi nelle seguenti parti:
+Il codice prodotto dal sottoscritto durante la realizzazione del progetto riguarda i file: `BattleHandler`, `PositioningHandler`, `DelayedExecutor`, `TurnLogic`, `BotTurnHandler`, `GameStateManager`, `BattleLogic`, `ShipPositioning`, `ButtonFactory`, `DialogFactory`, `GridManager`, `ClickHandler`, `TurnDialogHandler`, `ButtonRenderer`, `ColorScheme`, e in parte `GameController` e `GameView`, suddivisi nelle seguenti parti:
 
 ## Gestione del posizionamento delle navi nella board
 Affidato durante il primo dei quattro sprint, è stato realizzato seguendo l'approccio *TDD* (Test Driven Development). Questa fase ha portato alla realizzazione del file di test `ShipPositioningTest` per verificare il corretto funzionamento del posizionamento delle navi. La logica è stata successivamente implementata in `ShipPositioning`.
@@ -60,7 +60,7 @@ private def checkOverlap(board: PlayerBoard, ship: Ship): Either[String, Unit]
 ```
 
 ## Gestione del feedback a seguito di azioni dell'utente
-La classe `SimpleGui` si occupa di presentare all'utente lo stato del gioco e fornire feedback visivo.
+La classe `GameView` si occupa di presentare all'utente lo stato del gioco e fornire feedback visivo.
 Gestito da tutti i membri del team in momenti differenti, mi sono occupato principalmente della gestione del *GameOver*, della visualizzazione del cambio del turno tramite la funzione *updateTurnLabel* e dell'aggiornamento dello stato del game nella funzione *update*.
 
 Il sistema aggiorna la board da visualizzare in base al turno del player utilizzando la classe `GridManager` per creare a ogni *update* una griglia di bottoni aggiornati (colore e testo) che rappresentano il nuovo stato della board di gioco e tramite il `ButtonFactory` che si occupa di creare i bottoni della mappa e il bottone per iniziare la partita.
@@ -162,12 +162,12 @@ def handleClick(clickType: ClickType, controller: GameController): Unit =
 ```
 
 ### Sistema di Gestione della battaglia
-#### BattleContoller
-Il `BattleController` coordina la logica di battaglia senza implementarla direttamente, delegando gli attacchi, umani e bot, a `BattleLogic`.
+#### BattleHandler
+Il `BattleHandler coordina la logica di battaglia senza implementarla direttamente, delegando gli attacchi, umani e bot, a `BattleLogic`.
 Le funzioni sono il risultato della combinazione di risultati di altre funzioni, sfruttando così la delegazione della logica a moduli specializzati.
 
 ```scala
-object BattleController:
+object BattleHandler:
   case class BattleResult(newState: GameState, messages: List[String], gameOver: Boolean)
   
   def processHumanAttack(gameState: GameState, player: Player, turn: Turn, position: Position): BattleResult
@@ -295,7 +295,7 @@ L'utilizzo di `foldLeft` permette la trasformazione aggregata di collezioni, qui
 Il `BotTurnHandler` gestisce la turnazione del bot utilizzando effetti temporali e asincroni. Mostra
 dialog di attesa durante il turno del bot e mostra i risultati con timing appropriato.
 ```scala
-def scheduleBotMove(state: GameState, view: SimpleGui, turn: Turn, firstPlayer: Player, secondPlayer: Player): Unit =
+def scheduleBotMove(state: GameState, view: GameView, turn: Turn, firstPlayer: Player, secondPlayer: Player): Unit =
   controller.dialogHandler.foreach(_.showWaitingDialog())
 
     DelayedExecutor.runLater(1500) {
@@ -336,7 +336,7 @@ Il `TunDialogHandler` gestisce la visualizzazione di dialog per la turnazione e 
 Sono gestiti diversi tipi di dialog, come il dialog per il cambio turno, per la gestione del feedback per azioni del bot e per l'attesa durante l'elaborazione di azioni.
 Viene usato l'*Option type* per gestire in sicurezza lo stato del dialog. Inoltre, l'utilizzo del *DialogFactory* ha permesso di separare la creazione dalla gestione dei dialog.
 ```scala
-class TurnDialogHandler(gui: SimpleGui):
+class TurnDialogHandler(gui: GameView):
   private var currentDialog: Option[JDialog] = None
   
   def showTurnDialog(playerName: String): Unit =
@@ -373,7 +373,7 @@ Per la gestione dell'avvio del gioco viene invocato `handleStartGame` che gestis
 -   partita in modalità *multi player* con gestione del posizionamento dei tue player tramite dialog
 -   avvio della battaglia dopo il posizionamento delle navi in entrambe le modalità
 
-Ogni funzione ritorna un nuovo *GameActionResult*. Per la fase di posizionamento, l'azione è delegata al *PositioningController*, ma il risultato viene incapsulato sempre in un *GameActionResult*, come si può notare per le funzioni *handlePositioningClick*, *handlePositioningDoubleClick*, *handleRandomizePositions*.
+Ogni funzione ritorna un nuovo *GameActionResult*. Per la fase di posizionamento, l'azione è delegata al *PositioningHandler*, ma il risultato viene incapsulato sempre in un *GameActionResult*, come si può notare per le funzioni *handlePositioningClick*, *handlePositioningDoubleClick*, *handleRandomizePositions*.
 Anche per la fase d'attacco, nel caso di un player umano, in *handleBattleClick*, viene restituito il *GameActionResult*, dove in caso di fine partita, ritorna lo stato finale, altrimenti controlla se cambiare il turno o riproporre l'attacco per un attacco invalido precedente.
 Nel caso in cui sia il turno d'attacco del bot, l'attacco viene effettuato automaticamente, e in caso di non vittoria, viene aggiornato il turno.
 ```scala
@@ -383,7 +383,7 @@ def handlePositioningClick(
       turn: Turn,
       positioning: ShipPositioning
   ): GameActionResult =
-    val newState = PositioningController.handlePositioningClick(gameState, position, turn, positioning)
+    val newState = PositioningHandler.handlePositioningClick(gameState, position, turn, positioning)
     GameActionResult(newState, turn, List())
 ```
 ```scala
@@ -393,7 +393,7 @@ def handlePositioningDoubleClick(
       turn: Turn,
       positioning: ShipPositioning
   ): GameActionResult =
-    val newState = PositioningController.handlePositioningDoubleClick(gameState, position, turn, positioning)
+    val newState = PositioningHandler.handlePositioningDoubleClick(gameState, position, turn, positioning)
     GameActionResult(newState, turn, List())
 ```
 ```scala
@@ -403,14 +403,14 @@ def handleRandomizePositions(
       turn: Turn,
       positioning: ShipPositioning
   ): GameActionResult =
-    val newState = PositioningController.handleRandomizePositions(gameState, ships, turn, positioning)
+    val newState = PositioningHandler.handleRandomizePositions(gameState, ships, turn, positioning)
     GameActionResult(newState, turn, List())
 ```
 
-### PositioningController
+### PositioningHandler
 Gestisce le interazioni dell'utente durante la fase di posizionamento.
 ```scala
-object PositioningController:
+object PositioningHandler:
   def handlePositioningClick(gameState: GameState, position: Position, turn: Turn, positioning: ShipPositioning): GameState
   def handlePositioningDoubleClick(gameState: GameState, position: Position, turn: Turn, positioning: ShipPositioning): GameState
 ```
