@@ -14,6 +14,18 @@ e introdurre funzionalità aggiuntive quali l'intelligenza del bot ed eventualme
 La scadenza dello sprint è il 22/08/2025.
 
 ## Backlog
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table th, table td {
+    border: 1px solid #ddd;
+}
+table td[rowspan] {
+    vertical-align: middle;
+}
+</style>
 <table>
   <thead>
     <tr>
@@ -159,9 +171,9 @@ La scadenza dello sprint è il 22/08/2025.
       <td></td>
     </tr>
     <tr>
-      <td rowspan="5">6</td>
-      <td rowspan="5">Fase d'attacco</td>
-      <td rowspan="5">Come utente, vorrei poter scegliere una casella dell’avversario da colpire</td>
+      <td rowspan="6">6</td>
+      <td rowspan="6">Fase d'attacco</td>
+      <td rowspan="6">Come utente, vorrei poter scegliere una casella dell’avversario da colpire</td>
     </tr>
     <tr>
       <td>Logica di attacco e fine partita</td>
@@ -190,6 +202,14 @@ La scadenza dello sprint è il 22/08/2025.
     <tr>
       <td>Refactor del game controller</td>
       <td>Dilaver</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Miglioramento usabilità GUI</td>
+      <td>Dilaver, Chiara</td>
       <td></td>
       <td></td>
       <td></td>
@@ -286,7 +306,7 @@ La scadenza dello sprint è il 22/08/2025.
         con ostacoli che impediscono il posizionamento delle navi</td>
     </tr>
     <tr>
-      <td>Creazione ostacoli (interfaccia)</td>
+      <td>Creazione ostacoli</td>
       <td>Chiara</td>
       <td></td>
       <td></td>
@@ -319,18 +339,25 @@ La scadenza dello sprint è il 22/08/2025.
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
     </tr>
   </tbody>
 </table>
 
 ## Sprint Review
-Al termine del quarto e ultimo sprint, lo stakeholder ha ottenuto la versione finale del gioco, dove
-si è di fatto realizzata una delle funzionalità opzionali, quale la possibilità di giocare contro un bot a diversi
-livelli di difficoltà. Purtroppo, l'aggiunta di ostacoli nella mappa non è stata realizzata, a differenza di come prefissato
-negli obiettivi dello sprint, lasciando quindi lo stakeholder non pienamente soddisfatto.
+Al termine del quarto e ultimo sprint, lo stakeholder ha ottenuto la versione finale del gioco, nella quale è
+stata di fatto realizzata una delle funzionalità opzionali: la possibilità di giocare contro un bot a diversi
+livelli di difficoltà.
+Non è stato invece possibile realizzare l’aggiunta di ostacoli nella mappa, 
+prevista inizialmente tra i possibili obiettivi dello sprint.
+
+Sono stati comunque introdotti miglioramenti dal punto di vista dell’usabilità, 
+come suggerito al termine del terzo sprint. Lo stakeholder si ritiene, quindi, complessivamente 
+soddisfatto del risultato finale.
 
 ## Sprint Retrospective
-A differenza degli altri sprint, questa volta la durata dello sprint è stata influenzata dalla settimana di ferragosto,
-la quale ha portato giorni di inattività. Ne ha quindi risentito la solita configurazione di una settimana di lavoro,
-portando quindi a una durata dello sprint coincidente con la scadenza del progetto.
-Gli obiettivi dello sprint sono stati parzialmente raggiunti, eccetto per l'implementazione degli ostacoli. 
+A differenza degli altri sprint, questa volta la durata è stata influenzata dalla settimana di Ferragosto, 
+durante la quale si sono verificati giorni di inattività. 
+Di conseguenza, la consueta durata di una settimana è stata estesa fino a coincidere con la scadenza del progetto.
+
+Gli obiettivi dello sprint sono stati parzialmente raggiunti: l’unica funzionalità non completata è stata l’implementazione degli ostacoli.

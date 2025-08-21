@@ -14,7 +14,18 @@ spostare e/o ruotare a proprio piacimento le proprie navi, a partire da una disp
 La scadenza dello sprint è il 21/07/2025.
 
 ## Backlog
-
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table th, table td {
+    border: 1px solid #ddd;
+}
+table td[rowspan] {
+    vertical-align: middle;
+}
+</style>
 <table>
   <thead>
     <tr>
@@ -34,14 +45,17 @@ La scadenza dello sprint è il 21/07/2025.
             Gestito tramite un approccio Git Flow.</td>
       <td>Git Flow Setup</td>
       <td>Mirco</td>
+      <td></td>
     </tr>
     <tr>
       <td>Studio dell'architettura</td>
       <td>Chiara</td>
+      <td></td>
     </tr>
     <tr>
       <td>Docs Setup</td>
       <td>Mirco</td>
+      <td></td>
     </tr>
     <tr>
       <td></td>
@@ -49,6 +63,7 @@ La scadenza dello sprint è il 21/07/2025.
       <td>Come utente, vorrei avere una prima visualizzazione del layout dell’applicazione</td>
       <td></td>
       <td>Mirco</td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="5">3</td>
@@ -58,20 +73,24 @@ La scadenza dello sprint è il 21/07/2025.
     <tr>
       <td>Creazione delle navi</td>
       <td>Chiara</td>
+      <td></td>
     </tr>
     <tr>
       <td>Realizzazione della GUI</td>
       <td>Chiara</td>
+      <td></td>
     </tr>
     <tr>
       <td>Logica spostamento navi (selezione nave da spostare, 
         muovere la nave nella nuova posizione, 
         ruotare la nave)</td>
       <td>Dilaver</td>
+      <td></td>
     </tr>
     <tr>
       <td>Posizionamento iniziale</td>
       <td>Dilaver</td>
+      <td></td>
     </tr>
     <tr>
       <td>4</td>
@@ -79,6 +98,7 @@ La scadenza dello sprint è il 21/07/2025.
       <td>Come utente, vorrei la possibilità di schierare in modo automatico le mie navi</td>
       <td></td>
       <td>Dilaver</td>
+      <td></td>
     </tr>
     <tr>
       <td rowspan="1">5</td>
@@ -87,11 +107,14 @@ La scadenza dello sprint è il 21/07/2025.
         in modo chiaro ed efficace il corretto funzionamento del progetto</td>
       <td></td>
       <td>Mirco</td>
+      <td></td>
     </tr>
     <tr>
       <td>6</td>
       <td>Fase d'attacco</td>
       <td>Come utente, vorrei poter scegliere una casella dell’avversario da colpire</td>
+      <td></td>
+      <td></td>
       <td></td>
     </tr>
     <tr>
@@ -100,11 +123,15 @@ La scadenza dello sprint è il 21/07/2025.
       <td>Come utente, vorrei poter giocare
             contro un altro giocatore sul mio dispositivo</td>
       <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>8</td>
       <td>Modalità vs bot</td>
       <td>Come utente, vorrei poter giocare contro un bot nel mio dispositivo</td>
+      <td></td>
+      <td></td>
       <td></td>
     </tr>
     <tr>
@@ -113,11 +140,15 @@ La scadenza dello sprint è il 21/07/2025.
       <td>Come utente, vorrei poter scegliere alcune regole di gioco come il numero di barche schierabili 
             e il tipo di partita (multiplayer o bot)</td>
       <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>10</td>
       <td>Scelta della difficoltà del bot</td>
       <td>Come utente, vorrei avere la possibilità di scegliere la difficoltà di gioco</td>
+      <td></td>
+      <td></td>
       <td></td>
     </tr>
     <tr>
@@ -126,12 +157,16 @@ La scadenza dello sprint è il 21/07/2025.
       <td>Come utente, vorrei una mappa diversa, 
         con ostacoli che impediscono il posizionamento delle navi</td>
       <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td>12</td>
       <td>Colpi speciali</td>
       <td>Come utente vorrei poter utilizzare colpi speciali, 
             come colpi ad area attivabili una volta per partita</td>
+      <td></td>
+      <td></td>
       <td></td>
     </tr>
   </tbody>

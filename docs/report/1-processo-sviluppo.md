@@ -5,46 +5,62 @@ parent: Report
 ---
 
 # Processo di sviluppo adottato
-Processo di sviluppo adottato 
-Il gruppo ha adottato una metodologia Agile per lo sviluppo del progetto. 
-La scelta è ricaduta sul metodo Scrum per la sua flessibilità e capacità di adattarsi alle esigenze del team
-e del progetto, producendo a ogni iterazione nuove funzionalità al sistema o miglioramenti a quelle esistenti.
-Per la coordinazione del team e la gestione del progetto sono stato utlizzati:
-- **Notion**: per la gestione delle attività e la pianificazione delle iterazioni
-- **GitHub**: per il versionamento del codice e la gestione delle pull request a ogni fine sprint
-- **Discord**: per la comunicazione via chiamata tra i membri del team
+Il gruppo ha adottato una metodologia Agile per lo sviluppo del progetto.
+
+In particolare, la scelta è ricaduta sul metodo Scrum per la sua flessibilità e capacità di adattarsi alle esigenze del team
+e del progetto, producendo ad ogni iterazione nuove funzionalità del sistema o miglioramenti a quelle esistenti.
+
+Per la coordinazione del team e la gestione del progetto sono stati utlizzati:
+- **Notion**: per la gestione delle attività e la pianificazione dei task nelle iterazioni
+- **GitHub**: per la collaborazione tra i membri, il versionamento del codice e la gestione delle pull request al termine di ogni sprint
+- **Discord**: per le comunicazioni e le call tra i membri del team
 - **IntelliJ IDEA**: come ambiente di sviluppo integrato (IDE) per la scrittura del codice
 
 ## Modalità di divisione in itinere dei task
-La suddivisione dei task è stata effettuata in modo collaborativo durante le riunioni di pianificazione degli sprint,
-per permettere a tutti i membri del team di contribuire alla definizione delle attività da svolgere. Al primo incontro
-sono stati definiti i task principali del progetto assegnandoli le priorità in base all'importanza delle
-funzionalità. Quindi, durante le riunioni di pianificazione degli sprint, i task sono stati suddivisi in attività
-più piccole per permettere una equa distribuzione del lavoro tra i membri del team e per facilitare la gestione
-delle attività.
-La nostra *Definition of done* prevede che una funzionalità sia considerata completata quando:
+La suddivisione dei task è stata gestita in modo collaborativo durante le riunioni di pianificazione degli sprint, 
+per permettere a tutti i membri del team di contribuire alla definizione delle attività da svolgere. 
+
+Nel primo incontro (_Sprint Planning_) sono stati individuati i task principali del progetto e sono state assegnate delle priorità 
+in base alla rilevanza delle funzionalità, andando così a redigere il _Product Backlog_.
+In questa fase è stata inoltre stabilita la *Definition of done* secondo cui una funzionalità può considerarsi 
+completata quando:
 -   è stata implementata e testata con esito positivo
 -   rispetta quanto richiesto dall'utente
 
-## Meeting/interazioni pianificate
-In una prima fase di analisi e modellazione il gruppo ha cooperato in un meeting iniziale con lo scopo di definire
-l’architettura del progetto. Inoltre, nella stessa sede, sono state programmate la durata degli sprint e le successive
-interazioni. Il team ha scelto di organizzare le iterazioni sulla base di sprint settimanali, a eccezione della prima,
-della durata di due settimane per via delle configurazioni iniziali del progetto, e dell'ultima, influenzata
-dalle festività e quindi il seguente prolungamento fino alla data di consegna. La scelta di sprint settimanali 
-è stata fatta per garantire lo sviluppo di funzionalità in tempi brevi ottenere un feedback rapido da parte
-dello stakeholder. Inoltre, il team, oltre agli incontri settimanali di pianificazione, prevedeva un incontro quotidiano 
-per discutere dello stato di avanzamento del progetto e risolvere eventuali problemi.
+Nelle successive riunioni di pianificazione degli sprint, i task sono stati ulteriormente suddivisi in attività 
+più piccole (_Sprint Backlog_) per permettere un'equa distribuzione del lavoro tra i membri del team e semplificare la gestione 
+operativa delle attività.
+Al termine di ogni riunione vengono inoltre redatti una _Sprint Review_ e una _Sprint Retrospective_, per valutare,
+rispettivamente, sia il progresso a livello di funzionalità e soddisfazione del cliente, sia il processo di sviluppo,
+individuando possibili aree di miglioramento.
+
+## Meeting/iterazioni pianificate
+In una prima fase di analisi e modellazione, il gruppo ha partecipato a un meeting iniziale con l’obiettivo 
+di definire l’architettura del progetto. 
+In quella stessa sede sono stati inoltre stabiliti la durata degli sprint e le modalità delle successive iterazioni.
+
+Il team ha deciso di adottare sprint settimanali, a eccezione del primo,
+della durata di due settimane per via delle configurazioni iniziali del progetto, e dell'ultimo, influenzato
+dalle festività e prolungato, quindi, fino alla data di consegna.
+
+La decisione di organizzare sprint brevi è stata motivata dall’esigenza di sviluppare funzionalità in tempi 
+brevi e ottenere un feedback rapido dallo stakeholder.
+
+Oltre alle riunioni settimanali di pianificazione, il team ha previsto un breve confronto quotidiano (_Daily Scrum_) 
+per discutere dello stato di avanzamento e affrontare eventuali criticità o problemi.
 
 ## Modalità di revisione in itinere dei task
-Per la revisione dei task si è optato per l’introduzione di un meccanismo a pull request. Nello specifico ogni feature
-è stata implementata in un branch separato da *main* dove, a ogni sprint ultimato, è stata integrata tramite una pull
-request; per avere successo, tale richiesta doveva ottenere l’approvazione di tutti i membri del gruppo. Lo scopo di
-questa metodologia è quello di permettere a tutto il team di rimanere aggiornato, qual’ora la definizione di uno sprint
-preveda molto lavoro parallelo, oltre che eventualmente aggiungere un controllo addizionale.
+Per la revisione dei task è stato adottato un meccanismo basato sulle pull request.
+Durante lo sprint, ogni _feature_ è stata implementata in un branch separato e poi integrata nel branch _develop_, 
+permettendo al team di lavorare in parallelo senza interrompere il flusso principale. 
+
+Al termine di ogni sprint, le modifiche consolidate in _develop_ sono state unite nel branch _main_ tramite pull request:
+per avere successo, ogni pull request ha dovuto ottenere l’approvazione di tutti i membri del gruppo.
+Questo approccio ha permesso sia l’aggiornamento costante del gruppo sulle attività in corso,
+sia un ulteriore livello di controllo e validazione del codice prima della sua integrazione definitiva.
 
 ## Scelta degli strumenti di test/build/continuous integration
-Per il testing si è scelto di utilizzare scalatest come strumento di automazione, essendo una tecnologia nota e facile
-da integrare. Come build tool è stato scelto sbt, il quale nasce specificatamente per Scala. Vengono infatti usati
-plugin dedicati come *scalafmtAll* che integrano perfettamente strumenti di formattazione e refactoring automatico.
-L’intera relazione è stata gestita tramite GitHub.
+Per il testing si è scelto di utilizzare `ScalaTest` come strumento di automazione, essendo una tecnologia nota e facile
+da integrare. Come build tool è stato scelto `sbt`, in quanto nasce specificatamente per Scala.
+Sono stati usati plugin dedicati come _scalafmtAll_ che integrano perfettamente strumenti di formattazione e refactoring automatico.
+L’intero progetto (inclusa la relazione) è stato gestito tramite GitHub.
