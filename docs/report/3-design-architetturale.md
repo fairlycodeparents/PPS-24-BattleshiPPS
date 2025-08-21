@@ -48,5 +48,5 @@ La struttura del progetto è organizzata in tre moduli principali, corrispondent
     * `GameController`: Gestisce il flusso della partita, l'interazione tra i giocatori e gli aggiornamenti dello stato.
     * `GameSetup`:Gestisce la fase di configurazione, validando le scelte dell'utente prima che la partita inizi.
 * View: Contiene tutti i componenti responsabili dell'interfaccia grafica e dell'interazione con l'utente.
-    * `SimpleGUI`: Implementa l'interfaccia grafica del gioco, mostrando le plance, le navi e i risultati degli attacchi.
+    * `GameView`: Implementa l'interfaccia grafica del gioco, mostrando le plance, le navi e i risultati degli attacchi.
     * `SetupView`: Gestisce la configurazione iniziale della partita, consentendo agli utenti di scegliere le regole.
