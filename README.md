@@ -16,7 +16,7 @@ For more in-depth information about the project's design and features, you can r
 ### Optional Requirements
 
 - [x]   **Bot Difficulty**: You can select different difficulty levels for the computer-controlled opponent.
-- [x]   **Special Attacks**: Special attacks, such as area-of-effect strikes, have been added.
+- [ ]   **Special Attacks**: Special attacks, such as area-of-effect strikes, have been added.
 - [ ]   **Obstacles**: The map can contain obstacles that influence ship placement, adding a strategic element.
 
 ### Contributions
