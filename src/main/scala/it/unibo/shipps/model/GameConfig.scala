@@ -38,6 +38,14 @@ class MaxOccupancyValidator(val maxOccupancy: Double) extends ConfigurationValid
       }._2
       GameConfig(correctedShips)
 
+/** This validator ensures that at least one ship is present in the configuration. */
+class NotEmptyValidator extends ConfigurationValidator:
+  def validate(config: GameConfig): GameConfig =
+    if config.ships.values.sum == 0 then
+      GameConfig(Map(ShipType.Frigate -> 1))
+    else
+      config
+
 /** An object that orchestrates a series of [[ConfigurationValidator]] strategies.
   * It applies each validator in order to produce a final, corrected configuration.
   */
@@ -57,12 +65,10 @@ object BoardFactory:
     * @return The [[PlayerBoard]] with the ships.
     * @throws RuntimeException if ship positioning fails.
     */
-  def createRandomBoard(config: GameConfig): PlayerBoard =
+  def createRandomBoard(config: GameConfig): Either[String, PlayerBoard] =
     val defaultPosition = Position(0, 0)
     val shipsToPlace = config.ships.flatMap((shipType, count) =>
-      List.fill(count)(shipType.at(defaultPosition, Orientation.Horizontal))
+      List.fill(count)(shipType.at(defaultPosition, ShipOrientation.Horizontal))
     ).toList
 
-    ShipPositioningImpl.randomPositioning(PlayerBoardBuilder.board(), shipsToPlace) match
-      case Right(board) => board
-      case Left(error)  => throw new RuntimeException(s"Error positioning ships: $error")
+    ShipPositioningImpl.randomPositioning(PlayerBoardBuilder.board(), shipsToPlace)

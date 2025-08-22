@@ -1,14 +1,15 @@
 package it.unibo.shipps.view.components
 
-import it.unibo.shipps.controller.{GameState, Turn}
-import it.unibo.shipps.model.Player
+import it.unibo.shipps.controller.GameState
 import it.unibo.shipps.model.board.Position
+import it.unibo.shipps.model.player.Player
+import it.unibo.shipps.model.{Turn, TurnLogic}
 import it.unibo.shipps.view.renderer.ButtonRenderer
 
 import scala.swing.{Button, Swing}
 
 /** Factory for creating buttons. */
-object ButtonFactory {
+object ButtonFactory:
 
   /** Creates a button for a specific position on the game board.
     * @param pos the position on the board
@@ -27,8 +28,7 @@ object ButtonFactory {
     * @return the [[Button]]
     */
   def createStartGameButton(): Button =
-    new Button("Start Game") {
+    new Button("Fleet deployed!") {
       background = java.awt.Color.GREEN
       foreground = java.awt.Color.BLACK
     }
-}

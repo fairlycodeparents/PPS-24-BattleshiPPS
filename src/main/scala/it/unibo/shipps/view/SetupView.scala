@@ -1,14 +1,65 @@
 package it.unibo.shipps.view
 
-import it.unibo.shipps.model.ShipType
-
-import javax.swing.{JSpinner, SpinnerNumberModel}
+import it.unibo.shipps.model.{GameConfig, ShipType}
+import it.unibo.shipps.controller.GameSetup
+import javax.swing.{JDialog, JSpinner, SpinnerNumberModel}
 import scala.swing.*
 
-object SetupView:
+import javax.swing.event.ChangeEvent
+import scala.swing.event.ButtonClicked
 
-  val singlePlayerButton = new Button("Play vs Computer")
-  val multiPlayerButton  = new Button("Multiplayer")
+class DifficultySelection(options: Seq[String], owner: java.awt.Frame)
+    extends JDialog(owner, "Choose the difficulty", true):
+
+  private val comboBox  = new ComboBox(options)
+  private val okButton  = new Button("OK")
+  var selection: String = options.head
+
+  okButton.action = Action("OK"):
+    selection = comboBox.selection.item
+    dispose()
+
+  val mainPanel: BoxPanel = new BoxPanel(Orientation.Vertical):
+    border = Swing.EmptyBorder(10)
+    contents += new Label("Choose an option:")
+    contents += comboBox
+    contents += new FlowPanel:
+      contents += okButton
+
+  setContentPane(mainPanel.peer)
+  pack()
+  setLocationRelativeTo(owner)
+
+object SetupView:
+  private var controller: Option[GameSetup] = None
+
+  /** Sets the controller for handling user interactions.
+    * @param c The GameSetup controller instance.
+    */
+  def setController(c: GameSetup): Unit =
+    controller = Some(c)
+    mainPanel.listenTo(singlePlayerButton, multiPlayerButton)
+    mainPanel.reactions += {
+      case ButtonClicked(`singlePlayerButton`) =>
+        controller.foreach(_.handleSinglePlayerClick())
+      case ButtonClicked(`multiPlayerButton`) =>
+        controller.foreach(_.handleMultiPlayerClick())
+    }
+    for ((ship, spinner) <- spinners) do
+      spinner.addChangeListener((e: ChangeEvent) =>
+        controller.foreach(_.onSpinnerChange())
+      )
+
+  /** Retrieves the current game configuration based on user selections.
+    * @return The current GameConfig instance.
+    */
+  def getGameConfig: GameConfig =
+    GameConfig(spinners.map { case (shipType, spinner) =>
+      shipType -> spinner.getValue.asInstanceOf[Int]
+    })
+
+  private val singlePlayerButton = new Button("Play vs Computer")
+  private val multiPlayerButton  = new Button("Multiplayer")
 
   private val maxShipCount    = 5
   private val minShipCount    = 0
@@ -16,7 +67,7 @@ object SetupView:
   private val framePadding    = 30
   private val verticalSpacing = 10
 
-  val spinners: Map[ShipType, JSpinner] = ShipType.values.map(ship =>
+  private val spinners: Map[ShipType, JSpinner] = ShipType.values.map(ship =>
     ship -> new JSpinner(new SpinnerNumberModel(minShipCount, minShipCount, maxShipCount, stepShipCount))
   ).toMap
 
@@ -35,7 +86,7 @@ object SetupView:
     contents += buttonPanel
     border = Swing.EmptyBorder(framePadding)
 
-  def applyConfig(config: Map[ShipType, Int]): Unit =
+  def updateConfigDisplay(config: GameConfig): Unit =
     for ((ship, spinner) <- spinners) do
-      val value = config.getOrElse(ship, 0)
+      val value = config.ships.getOrElse(ship, 0)
       if (spinner.getValue != value) spinner.setValue(value)

@@ -1,6 +1,7 @@
-package it.unibo.shipps.model
+package it.unibo.shipps.model.player
 
 import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import it.unibo.shipps.model.{AttackResult, AttackStrategy, HumanAttackStrategy}
 
 /** Represents a player in the game */
 trait Player {
@@ -20,14 +21,15 @@ trait Player {
   def isABot: Boolean
 }
 
-case class HumanPlayer(name: String = "player", strategy: AttackStrategy = HumanAttackStrategy()) extends Player:
+private[player] case class HumanPlayer(name: String = "player", strategy: AttackStrategy = HumanAttackStrategy())
+    extends Player:
   override def makeAttack(
       playerBoard: PlayerBoard,
       position: Option[Position]
   ): (PlayerBoard, Either[String, AttackResult]) = strategy.execute(playerBoard, position)
   override def isABot: Boolean = false
 
-case class BotPlayer(strategy: AttackStrategy) extends Player:
+private[player] case class BotPlayer(strategy: AttackStrategy) extends Player:
   override def makeAttack(
       playerBoard: PlayerBoard,
       position: Option[Position]
