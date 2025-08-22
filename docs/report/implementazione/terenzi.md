@@ -270,7 +270,7 @@ Per quanto riguarda l'interfaccia utente, ho lavorato principalmente sulla scher
 implementando la classe `SetupView`, che consente di selezionare la difficoltà e di configurare le navi da
 utilizzare, gestendo le interazioni con l'utente in caso di errori tramite messaggi di errore.
 
-# Testing
+## Testing
 Come già accennato nella sezione precedente, i test sono stati fondamentali per garantire la qualità del codice e per
 facilitare il processo di sviluppo, specialmente durante la rifattorizzazione, e sono stati scritti con particolare
 attenzione alla leggibilità.
