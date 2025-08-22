@@ -16,6 +16,16 @@ Per la coordinazione del team e la gestione del progetto sono stati utlizzati:
 - **Discord**: per le comunicazioni e le call tra i membri del team
 - **IntelliJ IDEA**: come ambiente di sviluppo integrato (IDE) per la scrittura del codice
 
+Il team è stato così suddiviso:
+-  *Product Owner*: si occupa di redigere il _Product Backlog_ e di verificare il corretto funzionamento del sistema realizzato.
+    Il ruolo è stato assunto da Shtini Dilaver  
+-  *Committente*: esperto del dominio, garantisce l'usabilità e qualità del risulato. Il ruolo è stato assunto da Giangiulli
+    Chiara.
+-  *Sviluppatori*: tutti i membri del team hanno assunto il ruolo di sviluppatori:
+    - Giangiulli Chiara
+    - Shtini Dilaver
+    - Terenzi Mirco
+
 ## Modalità di divisione in itinere dei task
 La suddivisione dei task è stata gestita in modo collaborativo durante le riunioni di pianificazione degli sprint, 
 per permettere a tutti i membri del team di contribuire alla definizione delle attività da svolgere. 
