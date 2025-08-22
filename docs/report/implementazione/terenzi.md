@@ -92,14 +92,14 @@ e affondare la nave.
 punto precedente) con un sistema di punteggio per determinare la cella migliore da attaccare, basato sulla distribuzione
 uniforme dei colpi sulla plancia.
 
-Successivamente, notando che le strategie intermedia e avanzata condividono una logica comune, ho rifattorizzato il
-codice per utilizzare un approccio basato su *mixin* e composizione delle strategie. Ciò ha permesso di creare un
-sistema modulare, facilitando future estensioni e rendendo il codice più chiaro e manutenibile.
+Considerando che le strategie intermedia e avanzata condividono una logica comune, il codice è stato rifattorizzato per
+utilizzare un approccio basato su *mixin* e composizione delle strategie. Ciò ha permesso di creare un sistema modulare,
+facilitando future estensioni e rendendo il codice più chiaro e manutenibile.
 
-In particolare, ho realizzato `AdvancedBotAttackStrategy` e `TargetAlreadyHitStrategy`, e ho adattato la
-`AverageBotAttackStrategy` di Giangiulli, per allinearsi al mixin. In questo modo, le strategie possono essere
-combinate senza modificare il codice esistente e la logica comune può essere riutilizzata. Ad esempio, la strategia
-avanzata viene definita come mostrato di seguito:
+In particolare, ho realizzato `AdvancedBotAttackStrategy` e ho collaborato con Giangiulli per allineare
+`TargetAlreadyHitStrategy` e `AverageBotAttackStrategy` al mixin. In questo modo, le strategie possono essere combinate
+senza modificare il codice esistente e la logica comune può essere riutilizzata. Ad esempio, la strategia avanzata viene
+definita come mostrato di seguito:
 
 ```scala
 /** An advanced bot attack strategy that combines uniform distribution with targeting already hit positions. */
