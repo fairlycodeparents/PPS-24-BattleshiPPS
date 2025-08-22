@@ -58,7 +58,7 @@ object PlayerBoard:
     * @param hits the [[Set]] of [[Position]] to initialize the board with.
     * @return a new [[PlayerBoard]] instance.
     */
-  def apply(ships: Set[Ship] = Set.empty, hits: Set[Position] = Set.empty, size: Int = 10): PlayerBoard =
+  def apply(ships: Set[Ship] = Set.empty, hits: Set[Position] = Set.empty): PlayerBoard =
     PlayerBoardImpl(ships, hits, size)
 
   private case class PlayerBoardImpl(ships: Set[Ship], hits: Set[Position], size: Int) extends PlayerBoard:
