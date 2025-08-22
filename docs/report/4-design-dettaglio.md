@@ -40,6 +40,24 @@ permettono la creazione modulare delle diverse strategie:
 <img src="../assets/img/strategy-class-diagram.png" alt="Strategy Class Diagram" width="1027px" height="487px" />
 
 ## View
+La view si occupa in un primo momento di gestire l'avvio della partita, che prevede le configurazioni iniziali, 
+e successivamente, la gestione della partita. C'è una chiara separazione tra logica di visualizzazione, gestione degli
+eventi e rendering. 
+## Setup View
+## Game View
+Sono stati utilizzati i seguenti pattern:
+- factory pattern: per `ButtonFactory`, che centralizza la creazione di bottoni, e `DialogFactory` che gestisce la
+  creazione dei dialog
+- observer pattern: per gestire facilmente le azioni dell'interfaccia utente come click o pressione dei tasti
+- state pattern: rendering basato su `GamePhase`, la view cambia in base alla fase della partita
+- strategy pattern: per incapsulare comportamenti alternativi, come per la gestione dei click. `ClickHandler` applica
+  strategie divers per i diversi tipi di click 
+- template method: i dialog hanno una struttura comune in `DialogFactory`, ma comportamenti specifici
+
+<div style="text-align: center;">
+    <img src="../assets/img/view-render-class-diagram.png" alt="View rendering Class Diagram" width="2159"/>
+    <img src="../assets/img/view-turn-class-diagram.png" alt="View turn dialog Class Diagram" width="658"/>
+</div>
 
 ## Controller
 Il controller si occupa di gestire l'andamento della partita facendo collaborare la logica e la grafica.
