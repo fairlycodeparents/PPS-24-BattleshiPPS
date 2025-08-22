@@ -10,7 +10,7 @@ import javax.swing.event.ChangeEvent
 import scala.swing.*
 
 class GameSetup(val viewFrame: MainFrame):
-  private var currentConfig: GameConfig = GameConfig(ShipType.values.map(_ -> 1).toMap)
+  private val initialConfig = GameConfig(ShipType.values.map(_ -> 1).toMap)
   private val validators = Seq(
     new MaxOccupancyValidator(maxOccupancy = 0.5),
     new NotEmptyValidator()
@@ -18,22 +18,16 @@ class GameSetup(val viewFrame: MainFrame):
 
   viewFrame.title = "BattleshiPPS: Homepage"
   viewFrame.contents = SetupView.mainPanel
-  SetupView.updateConfigDisplay(ConfigurationManager.applyValidators(currentConfig, validators))
+  SetupView.updateConfigDisplay(ConfigurationManager.applyValidators(initialConfig, validators))
   SetupView.setController(this)
-
-  private def updateConfig(shipType: ShipType, count: Int): Unit =
-    val updatedShips = currentConfig.ships.updated(shipType, count)
-    currentConfig = GameConfig(updatedShips)
-    val corrected = ConfigurationManager.applyValidators(currentConfig, validators)
-    currentConfig = corrected
-    SetupView.updateConfigDisplay(corrected)
 
   for ((ship, spinner) <- SetupView.spinners) do
     spinner.addChangeListener((e: ChangeEvent) =>
-      updateConfig(ship, spinner.getValue.asInstanceOf[Int])
+      val currentConfig = SetupView.getGameConfig
+      val corrected     = ConfigurationManager.applyValidators(currentConfig, validators)
+      SetupView.updateConfigDisplay(corrected)
     )
 
-  /** Handles the event when the single-player button is clicked. */
   def handleSinglePlayerClick(): Unit =
     val options           = Seq("Easy", "Medium", "Hard")
     val choosenDifficulty = new DifficultySelection(options, viewFrame.peer)
@@ -43,7 +37,6 @@ class GameSetup(val viewFrame: MainFrame):
       case "Medium" => createController(createBotPlayer(AverageBotAttackStrategy()))
       case "Hard"   => createController(createBotPlayer(AdvancedBotAttackStrategy()))
 
-  /** Handles the event when the multiplayer button is clicked. */
   def handleMultiPlayerClick(): Unit =
     createController(createHumanPlayer())
 
@@ -56,8 +49,9 @@ class GameSetup(val viewFrame: MainFrame):
     )
 
   private def createController(secondPlayer: Player): Unit =
-    val maybeBoard1 = BoardFactory.createRandomBoard(SetupView.getGameConfig)
-    val maybeBoard2 = BoardFactory.createRandomBoard(SetupView.getGameConfig)
+    val gameConfig  = SetupView.getGameConfig
+    val maybeBoard1 = BoardFactory.createRandomBoard(gameConfig)
+    val maybeBoard2 = BoardFactory.createRandomBoard(gameConfig)
 
     (maybeBoard1, maybeBoard2) match
       case (Right(board1), Right(board2)) =>
