@@ -13,13 +13,13 @@ L’obiettivo era quello di fornire un’astrazione che permettesse di:
   predefinita, immediatamente disponibile.
   In questo modo le tipologie di navi sono finite e non estendibili dall’esterno (_Algebraic Data Type_ chiuso), 
   garantendo sicurezza e coerenza interna:
-    ```scala
-    enum ShipType(val length: Int):
-      case Frigate   extends ShipType(2)
-      case Submarine extends ShipType(3)
-      case Destroyer extends ShipType(4)
-      case Carrier   extends ShipType(5)
-    ```
+  ```scala
+  enum ShipType(val length: Int):
+    case Frigate   extends ShipType(2)
+    case Submarine extends ShipType(3)
+    case Destroyer extends ShipType(4)
+    case Carrier   extends ShipType(5)
+  ```
 - gestire la posizione (o _ancora_, situata per ogni nave in alto a sinistra) e l'orientamento (`ShipOrientation`), 
 orizzontale o verticale, della nave sul tabellone;
   ```scala
@@ -83,7 +83,7 @@ def attack(board: PlayerBoard, position: Position): (PlayerBoard, Either[String,
 ```
 Si occupa di:
 - validare la posizione scelta (`validateAttack`), cioè controllare che sia nel tabellone e non sia già stata attaccata:
-  ```
+  ```scala
   private def validateAttack(board: PlayerBoard, position: Position): Option[Unit] =
     Option.when(!board.hits.contains(position) && isValidPosition(position))(())
   ```
@@ -98,29 +98,44 @@ Si occupa di:
       .getOrElse(Right(AttackResult.Miss))
     (newBoard, result)
   ```
-In caso di colpo valido, quindi, viene aggiornata la board attraverso `hit(position)`.
-Se c’è una nave in quella posizione (`shipAtPosition`), allora viene calcolato il nuovo stato della nave 
-e si decide se è `Hit`, `Sunk` o `EndOfGame`, attraverso il metodo `attackShip`, se invece non c’è nessuna nave, ritorna `Miss`.
 
+  In caso di colpo valido, quindi, viene aggiornata la board attraverso `hit(position)`.
+  Se c’è una nave in quella posizione (`shipAtPosition`), allora viene calcolato il nuovo stato della nave 
+  e si decide se è `Hit`, `Sunk` o `EndOfGame`, attraverso il metodo `attackShip`, se invece non c’è nessuna nave, ritorna `Miss`.
+  
+  ```scala
+  private def attackShip(board: PlayerBoard, position: Position)(ship: Ship): Either[String, AttackResult] =
+    for
+      damagedShip <- Right(findDamagedShip(board, ship))
+      updatedShip <- damagedShip.hit(position).toRight("Invalid attack")
+    yield determineAttackResult(updatedShip, board)
+  ```
+  Qui la _for-comprehension_ consente di comporre in modo leggibile una sequenza di operazioni che potrebbero fallire,
+  sfruttando `Either` come monade per la gestione degli errori: ogni passo può produrre un `Left`, interrompendo il flusso,
+  o un `Right`, proseguendo fino al risultato finale.
+
+Per ottenere l’insieme delle navi danneggiate in un certo momento della partita è stato introdotto il metodo `damagedShips`:
 ```scala
-private def attackShip(board: PlayerBoard, position: Position)(ship: Ship): Either[String, AttackResult] =
-  for
-    damagedShip <- Right(findDamagedShip(board, ship))
-    updatedShip <- damagedShip.hit(position).toRight("Invalid attack")
-  yield determineAttackResult(updatedShip, board)
+  def damagedShips(board: PlayerBoard): Set[DamagedShip] =
+    board.ships.view
+      .map(ship => ship -> board.hits.intersect(ship.positions))
+      .collect { case (ship, hitPositions) if hitPositions.nonEmpty => DamagedShip(ship, hitPositions) }
+      .toSet
 ```
-Qui la _for-comprehension_ consente di comporre in modo leggibile una sequenza di operazioni che potrebbero fallire,
-sfruttando `Either` come monade per la gestione degli errori: ogni passo può produrre un `Left`, interrompendo il flusso,
-o un `Right`, proseguendo fino al risultato finale.
-
-Per gestire poi lo stato dei danni di una nave è stata sfruttata una struttura immutabile `DamagedShip`, 
+Questo metodo calcola dinamicamente, a partire dalla board, tutte le navi che hanno subito almeno un colpo, 
+costruendo per ciascuna una struttura separata e immutabile `DamagedShip`, 
 che rappresenta una nave con lo stato dei colpi ricevuti (`hitPositions`).
 Contiene un metodo `isSunk` per confrontare le posizioni colpite con quelle della nave 
 e permettere di stabilire se la nave è affondata, e un metodo `hit` che aggiorna lo stato aggiungendo un colpo, 
 solo se la posizione appartiene alla nave.
+
 La scelta di creare una struttura separata, invece di mutare la nave stessa,
-rispetta il principio di immutabilità e di separazione delle responsabilità, mantenendo il design modulare:
+rispetta il principio di immutabilità e di separazione delle responsabilità:
 la nave resta un’entità separata, mentre lo stato dei danni è un’informazione calcolata a runtime.
+
+L’uso di `.view` nel metodo permette inoltre di applicare le trasformazioni in maniera _lazy_, 
+evitando collezioni intermedie fino al momento in cui viene costruito l’insieme finale, migliorando così l’efficienza 
+computazionale, soprattutto nel caso di un gran numero di navi presenti.
 
 Il metodo `attack`, infine, ritorna sia la nuova board aggiornata, sia il risultato dell'attacco, permettendo 
 una gestione sicura degli errori: con `Either[String, AttackResult]` vengono distinti errori veri 
@@ -214,7 +229,7 @@ suddividendo i task in base al livello di intelligenza del bot:
 Ciascuna delle parti citate è stata sviluppata cercando di seguire un approccio _Test Driven_:
 prima sono stati scritti mano a mano i test per formalizzare i comportamenti attesi, 
 successivamente è stata realizzata l’implementazione per soddisfarli, seguita da eventuali refactor.
-Per la scrittura dei test,come specificato nel [capitolo dedicato](../6-testing.md), è stato utilizzato `ScalaTest`, con il mixin `should.Matchers`, 
+Per la scrittura dei test, come specificato nel [capitolo dedicato](../6-testing.md), è stato utilizzato `ScalaTest`, con il mixin `should.Matchers`, 
 per mantenere una sintassi leggibile, 
 con descrizioni in linguaggio naturale e matcher espressivi (come ad esempio `should`, `shouldBe`, `matchPattern`).
 
