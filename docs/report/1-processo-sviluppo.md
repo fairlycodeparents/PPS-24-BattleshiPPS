@@ -59,7 +59,7 @@ per avere successo, ogni pull request ha dovuto ottenere l’approvazione di tut
 Questo approccio ha permesso sia l’aggiornamento costante del gruppo sulle attività in corso,
 sia un ulteriore livello di controllo e validazione del codice prima della sua integrazione definitiva.
 
-## Scelta degli strumenti di test/build/continuous integration
+## Scelta degli strumenti di test, build e Continuous Integration (CI)
 Per il testing si è scelto di utilizzare *ScalaTest* come strumento di automazione, essendo una tecnologia nota e facile
 da integrare, mentre come build tool è stato scelto *sbt*, in quanto nasce specificatamente per Scala. Inoltre, è stato
 utilizzato *scalafmt* per formattare automaticamente il codice sorgente per renderlo coerente e standardizzato
