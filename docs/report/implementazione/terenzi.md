@@ -14,19 +14,22 @@ questa metodologia è stata applicata alle sole classi principali e non a tutte 
 
 In particolare, mi sono concentrato sulle seguenti aree:
 
-* **Configurazione della plancia di gioco**: `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`, `BoardCoordinates`,
-`ShipPlacementDSL`.
-* **Validazione della configurazione scelta dall'utente**: `GameConfig`, `ConfigurationValidator`,
-`MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
-* **Interfaccia grafica e interazione con l'utente**: `SetupView`, `DifficultySelection`, `GameSetup`.
-* **Strategie d'attacco del bot**: `AdvancedBotAttackStrategy`, `PositionWeighting`, `MinDistanceWeighting`,
-`MaxWeightStrategy` e, in collaborazione con Giangiulli Chiara, `TargetAlreadyHitStrategy`.
-* **Classi di supporto**: `Position`.
+* **[Configurazione della plancia di gioco](#plancia-di-gioco)**: `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`,
+`BoardCoordinates`, `ShipPlacementDSL`.
+* **[Validazione della configurazione scelta dall'utente](#gestione-della-configurazione)**: `GameConfig`,
+`ConfigurationValidator`, `MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
+* **[Interfaccia grafica e interazione con l'utente](#contributi-nellinterfaccia-utente)**: `SetupView`,
+`DifficultySelection`, `GameSetup`.
+* **[Strategie d'attacco del bot](#strategie-dattacco-del-bot)**: `AdvancedBotAttackStrategy`, `PositionWeighting`,
+`MinDistanceWeighting`, `MaxWeightStrategy` e, in collaborazione con Giangiulli Chiara, `TargetAlreadyHitStrategy`.
+* **[Classi di supporto](#creazione-della-plancia)**: `Position`.
+
+---
 
 ## Gestione della configurazione
 
 Per avviare una partita, la configurazione scelta dall'utente deve rispettare determinate regole, come garantire un
-numero minimo di navi e, al tempo stesso, evitare che la plancia sia troppo affollata, il che limiterebbe la libertà di
+numero minimo di navi e, al tempo stesso, evitare che la plancia sia troppo piena, il che limiterebbe la libertà di
 posizionamento delle navi e renderebbe il gioco meno interessante.
 
 Per questo motivo, è stato definito il trait `ConfigurationValidator`, che si occupa di validare la configurazione di
@@ -38,6 +41,7 @@ loro quantità.
  * @param maxOccupancy The maximum percentage of board cells that can be occupied by ships.
  */
 class MaxOccupancyValidator(val maxOccupancy: Double) extends ConfigurationValidator:
+
   def validate(config: GameConfig): GameConfig =
     val boardCells     = PlayerBoard.size * PlayerBoard.size
     val maxCells       = (boardCells * maxOccupancy).toInt
@@ -56,11 +60,14 @@ class MaxOccupancyValidator(val maxOccupancy: Double) extends ConfigurationValid
       }._2
       GameConfig(correctedShips)
 ```
-Un esempio di validazione è rappresentato da `MaxOccupancyValidator`, che verifica che il numero di celle occupate dalle
-navi non superi un certo limite, garantendo che la plancia non sia eccessivamente piena. Quando la configurazione è
-valida, il validatore la restituisce; altrimenti, genera una nuova istanza di `GameConfig` riducendo il numero di navi
-in modo da rispettare le regole. In particolare, le navi sono ordinate per lunghezza decrescente e il validatore cerca
-di mantenere il numero di navi più lungo possibile, riducendo prima quelle più corte per ottimizzare lo spazio.
+Un esempio di validazione è rappresentato da `MaxOccupancyValidator`, il cui ruolo è garantire che il numero di celle
+occupate non superi una soglia predefinita, evitando così che la plancia sia eccessivamente piena. Se la configurazione
+iniziale è già conforme al limite, il validatore la accetta e la restituisce senza apportare modifiche. Se, invece,
+le navi superano il numero massimo di celle consentite, il validatore interviene per "correggere" la configurazione.
+Per farlo, genera una nuova istanza di `GameConfig` come segue: le navi vengono ordinate in ordine decrescente in base
+alla loro lunghezza e il validatore scorre la lista, mantenendo le navi finché il numero di celle disponibili non si
+esaurisce. In questo modo, garantisce che le navi più grandi rimangano nella configurazione, rimuovendo prima quelle
+più corte.
 
 Analogamente, il `NotEmptyValidator` verifica che la configurazione includa almeno una nave; se necessario, la corregge
 aggiungendo una nave di tipo *Frigate*.
@@ -89,7 +96,7 @@ sistema modulare, facilitando future estensioni e rendendo il codice più chiaro
 
 In particolare, ho realizzato `AdvancedBotAttackStrategy` e `TargetAlreadyHitStrategy`, e ho adattato la
 `AverageBotAttackStrategy` di Giangiulli, per allinearsi al mixin. In questo modo, le strategie possono essere
-combinate senza modificare il codice esistente e la logica comune può essere riutilizzata. Ad esempio la strategia
+combinate senza modificare il codice esistente e la logica comune può essere riutilizzata. Ad esempio, la strategia
 avanzata viene definita come mostrato di seguito:
 
 ```scala
@@ -116,7 +123,6 @@ ogni momento.
  */
 class MaxWeightStrategy(positionWeighting: PositionWeighting) extends AttackStrategy:
 
-  /** @inheritdoc */
   override def execute(
     playerBoard: PlayerBoard,
     position: Option[Position]
@@ -144,8 +150,8 @@ class MaxWeightStrategy(positionWeighting: PositionWeighting) extends AttackStra
       ShipAttack.attack(playerBoard, chosenPosition)
 ```
 
-La classe `MaxWeightStrategy` sfrutta positionWeighting, il quale aderisce al trait `PositionWeighting`, per assegnare
-un punteggio a ciascuna cella non ancora colpita. Nell'implementazione, il calcolo si basa sulla distanza dai colpi già
+La classe `MaxWeightStrategy` sfrutta una strategia di assegnazione pesi, la quale aderisce al trait `PositionWeighting`,
+per classificare ciascuna cella non ancora colpita. Nel progetto attuale, il calcolo si basa sulla distanza dai colpi già
 effettuati (`MinDistanceWeighting`). In caso di parità di punteggio tra più celle, il target viene scelto in modo
 casuale tra quelle con il punteggio più elevato.
 
@@ -153,7 +159,6 @@ casuale tra quelle con il punteggio più elevato.
 /** A position weighting strategy that calculates the weight based on the minimum distance to existing hits. */
 class MinDistanceWeighting extends PositionWeighting:
 
-  /** @inheritdoc */
   override def calculateWeight(pos: Position, hits: Set[Position], boardSize: Int): Int =
     if hits.isEmpty then
       Int.MaxValue
