@@ -39,7 +39,7 @@ l’implementazione di una nuova strategia, senza intaccare la logica esistente.
 Di seguito sono riportati, sottoforma di Diagramma delle Classi UML, tutti gli elementi che combinati tra loro 
 permettono la creazione modulare delle diverse strategie:
 
-<img src="../assets/img/strategy-class-diagram.png" alt="Strategy Class Diagram" width="1027px" height="487px" />
+<img src="../assets/img/strategy-class-diagram.png" alt="Strategy Class Diagram" width="898px" height="621px" />
 
 ## View
 La view si occupa in un primo momento di gestire l'avvio della partita, che prevede le configurazioni iniziali, 
