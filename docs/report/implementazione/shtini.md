@@ -9,7 +9,7 @@ Il codice prodotto dal sottoscritto durante la realizzazione del progetto riguar
 
 ## Gestione del posizionamento delle navi nella board
 Affidato durante il primo dei quattro sprint, è stato realizzato seguendo l'approccio *TDD* (Test Driven Development). Questa fase ha portato alla realizzazione del file di test `ShipPositioningTest` per verificare il corretto funzionamento del posizionamento delle navi. La logica è stata successivamente implementata in `ShipPositioning`.
-La classe `ShipPositioning` si occupa quindi di gestire il posizionamento delle navi, la loro rotazione e lo spostamento, garantendo che le operazioni siano valide tramite controlli di possibili sovrapposizioni o fuori dai limiti della board. Permette inoltre di posizionare le navi in modo casuale ma con un numero massimo di tentativi per evitare loop infiniti
+La classe `ShipPositioning` si occupa quindi di gestire il posizionamento delle navi, la loro rotazione e lo spostamento, garantendo che le operazioni siano valide tramite controlli di possibili sovrapposizioni o fuori dai limiti della board. Permette inoltre di posizionare le navi in modo casuale ma con un numero massimo di tentativi per evitare loop infiniti.
 Ho cercato di applicare il più possibile gli aspetti della programmazione funzionale, sfruttando i seguenti principi:
 -   Immutabilità: tutte le funzioni sono *pure*, non modificano mai lo stato esistente, ma restituiscono una nuova istanza della board;
 ```scala
@@ -53,7 +53,7 @@ playerBoard.addShip(movedShip) match
   case Left(error)         => tryPlaceShips(playerBoard, remaining, attempts + 1)
 ```
 
-Per generalizzare la fase di validazione, nel caso in cui in futuro bisogni aggiungere altri controlli, come ad esempio l'aggiunta di ostacoli nella mappa, ho scelto di isolare ogni responsabilità, per poi creare le validazioni tramite l'utilizzo del  *for-comprehension*, sfruttando così il principio `fail-fast`, così che alla prima validazione fallita viene interotta la catena.
+Per generalizzare la fase di validazione, nel caso in cui in futuro bisogni aggiungere altri controlli, come ad esempio l'aggiunta di ostacoli nella mappa, ho scelto di isolare ogni responsabilità, per poi creare le validazioni tramite l'utilizzo del `for-comprehension`, sfruttando così il principio `fail-fast`, così che alla prima validazione fallita viene interotta la catena.
 ```scala
 private def checkBounds(ship: Ship): Either[String, Unit]
 private def checkOverlap(board: PlayerBoard, ship: Ship): Either[String, Unit]
@@ -61,7 +61,7 @@ private def checkOverlap(board: PlayerBoard, ship: Ship): Either[String, Unit]
 
 ## Gestione del feedback a seguito di azioni dell'utente
 La classe `GameView` si occupa di presentare all'utente lo stato del gioco e fornire feedback visivo.
-Gestito da tutti i membri del team in momenti differenti, mi sono occupato principalmente della gestione del *GameOver*, della visualizzazione del cambio del turno tramite la funzione *updateTurnLabel* e dell'aggiornamento dello stato del game nella funzione *update*.
+Gestito da tutti i membri del team in momenti differenti, mi sono occupato principalmente della gestione del *GameOver*, della visualizzazione del cambio del turno tramite la funzione `updateTurnLabel` e dell'aggiornamento dello stato del game nella funzione `update`.
 
 Il sistema aggiorna la board da visualizzare in base al turno del player utilizzando la classe `GridManager` per creare a ogni *update* una griglia di bottoni aggiornati (colore e testo) che rappresentano il nuovo stato della board di gioco e tramite il `ButtonFactory` che si occupa di creare i bottoni della mappa e il bottone per iniziare la partita.
 Viene inoltre delegata la gestione del click dei bottoni al `ClickHandler`, che si occupa di gestire i diversi tipi di click dell'utente, come il *SingleClick* e il *DoubleClick*.
@@ -111,23 +111,6 @@ object ButtonRenderer:
   }
 ```
 
-In base alla fase della partita, sfruttato grazie al *Pattern matching*, viene separata la logica chiamando funzioni specializzate. Viene inoltre garantito il *type safety* gestendo tutti i casi tramite l'*exhaustive matching*.
-
-### Gestione State-Based del rendering
-```scala
-private def battleText(pos: Position, state: GameState, turn: Turn): String =
-  turn match {
-    case Turn.FirstPlayer =>
-      state.attackResult.get(pos) match
-        case Some(AttackResult.Miss) => "X"
-        case Some(AttackResult.Hit(_) | AttackResult.Sunk(_)) => "O"
-        case None => ""
-    case Turn.SecondPlayer =>
-      state.enemyAttackResult.get(pos) match
-        ....
-  }
-```
-
 ### ColorScheme
 ```scala
 object ColorScheme:
@@ -136,11 +119,11 @@ object ColorScheme:
   val OCCUPIED: Color      = java.awt.Color.BLACK
 ```
 
-I colori sono definiti all'interno di un file dedicato per organizzare le costanti
+I colori sono definiti all'interno di un file dedicato per organizzare le costanti.
 
 ## Gestione della battaglia e turnazione
 A seguìto della creazione dei bottoni della mappa, ogni interazione con essa produce diversi tipi di *click*, definiti all'interno di `ClickType`. In questa versione dell'applicazione abbiamo due tipi di click: *SingleClick* e *DoubleClick*. La prima, gestisce i singoli click inerenti alla mappa, attraversando ogni fase della partita: *Posizionamento*, *Battaglia* e *Game Over*, fasi definite come `enum` all'interno del `GameController`. Il secondo tipo di *click* riguarda solamente la fase di *Posizionamento*, e permette di ruotare la nave attorno alla sua *ancora* se cliccata rapidamente (entro un numero prestabilito di millisecondi).
-La fase iniziale di *posizionamento* viene gestita tramite un bottone creato dal `ButtonFactory` dove in caso di modalità *multi player*, permette il passaggio del turno al secondo player e successivamente di iniziare la partita, altrimenti, nella modalità *single player*, appena il player umano termina la sua disposizione delle navi, può iniziare la partita. In entrambi, superata la fase di posizionamento, la turnazione verrà gestita dai messaggi di dialog.
+La fase iniziale di *posizionamento* viene gestita tramite un bottone creato dal `ButtonFactory` dove in caso di modalità *multi player*, permette il passaggio del turno al secondo player e successivamente di iniziare la partita, altrimenti, nella modalità *single player*, appena il player umano termina la sua disposizione delle navi, può iniziare la partita. In entrambi i casi, superata la fase di posizionamento, la turnazione verrà gestita dai messaggi di dialog.
 Successivamente, durante la fase di *battaglia*, a ogni azione dell'utente (player umano o bot) verrà visualizzato dapprima il risultato dell'attacco nella mappa, e in seguito un *dialog* che permetterà la corretta gestione del turno. Tutti i messaggi di *dialog* sono gestiti tramite il `TurnDialogHandler`, che sfrutta il `DialogFactory` per racchiudere tutti i messaggi utilizzati nell'applicazione.
 
 ### Gestione dei Click e degli Eventi
@@ -259,7 +242,7 @@ def processBattleClick(
         BattleClickResult(state, List(errorMessage), shouldChangeTurn = false)
 ```
 
-Come nel `ShipPositioning`, anche qui viene usata l'annotazione @tailrec per gestire l'attacco del bot fino al raggiungimento di un risultato valido, ovvero diverso dal *AlreadyAttacked*.
+Come nel `ShipPositioning`, anche qui viene usata l'annotazione `@tailrec` per gestire l'attacco del bot fino al raggiungimento di un risultato valido, ovvero diverso dal *AlreadyAttacked*.
 ```scala
 @tailrec
 def attemptAttack(currentBoard: PlayerBoard, retriesLeft: Int): (PlayerBoard, Either[String, AttackResult]) =
@@ -332,7 +315,7 @@ def runLater(delayMs: Int = 1000)(action: => Unit): Unit =
 ```
 Viene usato il *default parameters* per fornire un valore di default per eseguire azioni dopo un delay specificato, e inoltre, tramite le *lazy evaluation*, le azioni sono valutate solo quando eseguite.
 
-Il `TunDialogHandler` gestisce la visualizzazione di dialog per la turnazione e feedback:
+Il `TunDialogHandler` gestisce la visualizzazione di dialog per la turnazione e feedback.
 Sono gestiti diversi tipi di dialog, come il dialog per il cambio turno, per la gestione del feedback per azioni del bot e per l'attesa durante l'elaborazione di azioni.
 Viene usato l'*Option type* per gestire in sicurezza lo stato del dialog. Inoltre, l'utilizzo del *DialogFactory* ha permesso di separare la creazione dalla gestione dei dialog.
 ```scala
@@ -369,12 +352,12 @@ case class GameActionResult(newState: GameState, newTurn: Turn, messages: List[S
   def withDialog(dialog: DialogAction): GameActionResult = copy(showDialog = Some(dialog))
 ```
 Per la gestione dell'avvio del gioco viene invocato `handleStartGame` che gestisce tre scenari:
--   partita in modalità *single player* con bot e turno di posizionamento del bot
--   partita in modalità *multi player* con gestione del posizionamento dei tue player tramite bottone e dialog
+-   partita in modalità *single player* con bot e turno di posizionamento
+-   partita in modalità *multi player* con gestione del posizionamento dei due player tramite bottone e dialog
 -   avvio della battaglia dopo il posizionamento delle navi in entrambe le modalità
 
-Ogni funzione ritorna un nuovo *GameActionResult*. Per la fase di posizionamento, l'azione è delegata al *PositioningHandler*, ma il risultato viene incapsulato sempre in un *GameActionResult*, come si può notare per le funzioni *handlePositioningClick*, *handlePositioningDoubleClick*, *handleRandomizePositions*.
-Anche per la fase d'attacco, nel caso di un player umano, in *handleBattleClick*, viene restituito il *GameActionResult*, dove in caso di fine partita, ritorna lo stato finale, altrimenti controlla se cambiare il turno o riproporre l'attacco per un attacco invalido precedente.
+Ogni funzione ritorna un nuovo *GameActionResult*. Per la fase di posizionamento, l'azione è delegata al *PositioningHandler*, ma il risultato viene incapsulato sempre in un *GameActionResult*, come si può notare per le funzioni `handlePositioningClick`, `handlePositioningDoubleClick`, `handleRandomizePositions`.
+Anche per la fase d'attacco, nel caso di un player umano, in `handleBattleClick`, viene restituito il *GameActionResult*, dove in caso di fine partita, ritorna lo stato finale, altrimenti controlla se cambiare il turno o riproporre l'attacco per un attacco invalido precedente.
 Nel caso in cui sia il turno d'attacco del bot, l'attacco viene effettuato automaticamente, e in caso di non vittoria, viene aggiornato il turno.
 ```scala
 def handlePositioningClick(
@@ -425,9 +408,9 @@ def selectShipAt(gameState: GameState, position: Position, turn: Turn, positioni
     case Right(ship) => gameState.selectShip(ship)
     case Left(_)     => gameState
 ```
-Tramite il *pattern matching su Either*, la gestione di successo/errore è più pulita e facilmente leggibile.
+Tramite il *pattern matching* su `Either`, la gestione di successo/errore è più pulita e facilmente leggibile.
 
-Per la gestione dei callbacks sono state usate *high-order functions*:
+La gestione dei callbacks avviene tramite *high-order functions*:
 ```scala
 def showBotResultDialog(result: String, onDismiss: () => Unit): Unit =
   val dialog = DialogFactory.createBotResultDialog(gui, result, onDismiss)
@@ -447,7 +430,7 @@ implementare la logica in `ShipPositioning`. Purtroppo, non sono riuscito a gara
 altri file da me implementati, i quali hanno visto solo in seconda sede la realizzazione dei test, come ad esempio 
 `BattleLogicTest` e `TurnLogicTest`. Questo è stato possibile solo grazie a un refactor che ha permesso 
 di separare la logica di battaglia e turnazione, permettendo così di testare le singole responsabilità.
-Per lo sviluppo dei test ho utilizzato ScalaTest
+Per lo sviluppo dei test ho utilizzato ScalaTest.
 
 ### ShipPositioningTest
 In questo test viene verificato il corretto funzionamento della logica di posizionamento delle navi, con casi di test per:

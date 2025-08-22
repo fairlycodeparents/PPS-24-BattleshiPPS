@@ -14,15 +14,17 @@ questa metodologia è stata applicata alle sole classi principali e non a tutte 
 
 In particolare, mi sono concentrato sulle seguenti aree:
 
-* **[Configurazione della plancia di gioco](#plancia-di-gioco)**: `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`,
+* [Configurazione della plancia di gioco](#plancia-di-gioco): `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`,
 `BoardCoordinates`, `ShipPlacementDSL`.
-* **[Validazione della configurazione scelta dall'utente](#gestione-della-configurazione)**: `GameConfig`,
+* [Validazione della configurazione scelta dall'utente](#gestione-della-configurazione): `GameConfig`,
 `ConfigurationValidator`, `MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
-* **[Interfaccia grafica e interazione con l'utente](#contributi-nellinterfaccia-utente)**: `SetupView`,
+* [Interfaccia grafica e interazione con l'utente](#contributi-nellinterfaccia-utente): `SetupView`,
 `DifficultySelection`, `GameSetup`.
-* **[Strategie d'attacco del bot](#strategie-dattacco-del-bot)**: `AdvancedBotAttackStrategy`, `PositionWeighting`,
+* [Strategie d'attacco del bot](#strategie-dattacco-del-bot): `AdvancedBotAttackStrategy`, `PositionWeighting`,
 `MinDistanceWeighting`, `MaxWeightStrategy` e, in collaborazione con Giangiulli Chiara, `TargetAlreadyHitStrategy`.
-* **[Classi di supporto](#creazione-della-plancia)**: `Position`.
+* [Classi di supporto](#creazione-della-plancia): `Position`.
+* [Classi di testing](#testing): `PositionTest`, `PlayerBoardTest`, `PlayerBoardBuilderTest`,
+  `ConfigurationValidatorTest`, `MaxWeightStrategyTest`.
 
 ---
 
@@ -90,14 +92,14 @@ e affondare la nave.
 punto precedente) con un sistema di punteggio per determinare la cella migliore da attaccare, basato sulla distribuzione
 uniforme dei colpi sulla plancia.
 
-Successivamente, notando che le strategie intermedia e avanzata condividono una logica comune, ho rifattorizzato il
-codice per utilizzare un approccio basato su *mixin* e composizione delle strategie. Ciò ha permesso di creare un
-sistema modulare, facilitando future estensioni e rendendo il codice più chiaro e manutenibile.
+Considerando che le strategie intermedia e avanzata condividono una logica comune, il codice è stato rifattorizzato per
+utilizzare un approccio basato su *mixin* e composizione delle strategie. Ciò ha permesso di creare un sistema modulare,
+facilitando future estensioni e rendendo il codice più chiaro e manutenibile.
 
-In particolare, ho realizzato `AdvancedBotAttackStrategy` e `TargetAlreadyHitStrategy`, e ho adattato la
-`AverageBotAttackStrategy` di Giangiulli, per allinearsi al mixin. In questo modo, le strategie possono essere
-combinate senza modificare il codice esistente e la logica comune può essere riutilizzata. Ad esempio, la strategia
-avanzata viene definita come mostrato di seguito:
+In particolare, ho realizzato `AdvancedBotAttackStrategy` e ho collaborato con Giangiulli per allineare
+`TargetAlreadyHitStrategy` e `AverageBotAttackStrategy` al mixin. In questo modo, le strategie possono essere combinate
+senza modificare il codice esistente e la logica comune può essere riutilizzata. Ad esempio, la strategia avanzata viene
+definita come mostrato di seguito:
 
 ```scala
 /** An advanced bot attack strategy that combines uniform distribution with targeting already hit positions. */
@@ -117,7 +119,7 @@ ogni momento.
 
 ```scala
 /** An attack strategy that uses a uniform distribution to select positions based on their weights.
- * It calculates the weight of each position based on the provided [[PositionWeighting]] strategy and chooses the
+ * It calculates the weight of each position based on the provided PositionWeighting strategy and chooses the
  * position with the highest weight.
  * @param positionWeighting the strategy to calculate the weight of positions
  */
@@ -196,16 +198,16 @@ rappresentata in modo più leggibile come `C(5)`.
 ```scala
 object BoardCoordinates:
 
-  /** A mapping of letters 'A' through 'J' to columns 0 through 9. */
+  /** A mapping of letters A through J to columns 0 through 9. */
   private val letterToColumn: Map[Char, Int] = ('A' to 'J').zipWithIndex.toMap
 
-  /** Converts a letter and row number to a [[Position]]. */
+  /** Converts a letter and row number to a Position. */
   private object column:
 
-    /** Creates a [[Position]] from a letter and row number.
+    /** Creates a Position from a letter and row number.
       * @param letter the letter representing the column (A-J)
       * @param row the row number (1-10)
-      * @return a [[Position]] corresponding to the letter and row
+      * @return a Position corresponding to the letter and row
       * @throws IllegalArgumentException if the letter or row is invalid
       */
     def apply(letter: Char)(row: Int): Position =
@@ -271,3 +273,31 @@ it should "support placement of a vertical ship" in:
 Per quanto riguarda l'interfaccia utente, ho lavorato principalmente sulla schermata di configurazione della partita,
 implementando la classe `SetupView`, che consente di selezionare la difficoltà e di configurare le navi da
 utilizzare, gestendo le interazioni con l'utente in caso di errori tramite messaggi di errore.
+
+# Testing
+Come già accennato nella sezione precedente, i test sono stati fondamentali per garantire la qualità del codice e per
+facilitare il processo di sviluppo, specialmente durante la rifattorizzazione, e sono stati scritti con particolare
+attenzione alla leggibilità.
+
+Di seguito viene riportato un breve esempio di test, per illustrare l'approccio utilizzato nella loro scrittura.
+
+```scala
+  it should "handle a placement at the board's edge (bottom-right)" in:
+    board(place a Destroyer at J(7) vertical).positions shouldEqual Position(9, 6 to 9)
+
+  it should "throw RuntimeException if ships overlap" in:
+    a[RuntimeException] should be thrownBy board(
+      place a Carrier at A(1) horizontal,
+      place a Submarine at A(1) horizontal
+    )
+
+  it should "throw RuntimeException if a ship goes out of bounds" in:
+    a[RuntimeException] should be thrownBy board(
+      place a Carrier at J(1) horizontal
+    )
+
+  it should "throw RuntimeException with an invalid coordinate" in:
+    a[RuntimeException] should be thrownBy board(
+      place a Carrier at A(11) horizontal
+    )
+```

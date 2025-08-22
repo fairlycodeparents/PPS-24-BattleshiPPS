@@ -46,8 +46,8 @@ table td[rowspan] {
             Gestito tramite un approccio Git Flow.</td>
       <td>Git Flow Setup</td>
       <td>Mirco</td>
-      <td></td>
-      <td></td>
+      <td>2</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Studio dell'architettura</td>
@@ -58,8 +58,8 @@ table td[rowspan] {
     <tr>
       <td>Docs Setup</td>
       <td>Mirco</td>
-      <td></td>
-      <td></td>
+      <td>5</td>
+      <td>2</td>
     </tr>
     <tr>
       <td></td>
@@ -67,8 +67,8 @@ table td[rowspan] {
       <td>Come utente, vorrei avere una prima visualizzazione del layout dell’applicazione</td>
       <td></td>
       <td>Mirco</td>
-      <td></td>
-      <td></td>
+      <td>3</td>
+      <td>0</td>
     </tr>
     <tr>
       <td rowspan="5">3</td>
@@ -117,8 +117,8 @@ table td[rowspan] {
         in modo chiaro ed efficace il corretto funzionamento del progetto</td>
       <td></td>
       <td>Mirco</td>
-      <td></td>
-      <td></td>
+      <td>7</td>
+      <td>4</td>
     </tr>
     <tr>
       <td>6</td>
