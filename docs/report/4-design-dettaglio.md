@@ -7,6 +7,8 @@ parent: Report
 # Design di dettaglio
 
 ## Model
+Il Model racchiude e gestisce l’intera logica di business del gioco. Di seguito sono riportate le principali scelte di 
+design che hanno guidato l'implementazione di questo componente architetturale.
 
 ### Creazione delle navi
 La creazione delle navi viene modellata attraverso l’uso dei _Factory Methods_ definiti nell’enumerazione `ShipType`.
