@@ -23,6 +23,8 @@ In particolare, mi sono concentrato sulle seguenti aree:
 * [Strategie d'attacco del bot](#strategie-dattacco-del-bot): `AdvancedBotAttackStrategy`, `PositionWeighting`,
 `MinDistanceWeighting`, `MaxWeightStrategy` e, in collaborazione con Giangiulli Chiara, `TargetAlreadyHitStrategy`.
 * [Classi di supporto](#creazione-della-plancia): `Position`.
+* [Classi di testing](#testing): `PositionTest`, `PlayerBoardTest`, `PlayerBoardBuilderTest`,
+  `ConfigurationValidatorTest`, `MaxWeightStrategyTest`.
 
 ---
 
@@ -271,3 +273,31 @@ it should "support placement of a vertical ship" in:
 Per quanto riguarda l'interfaccia utente, ho lavorato principalmente sulla schermata di configurazione della partita,
 implementando la classe `SetupView`, che consente di selezionare la difficoltà e di configurare le navi da
 utilizzare, gestendo le interazioni con l'utente in caso di errori tramite messaggi di errore.
+
+# Testing
+Come già accennato nella sezione precedente, i test sono stati fondamentali per garantire la qualità del codice e per
+facilitare il processo di sviluppo, specialmente durante la rifattorizzazione, e sono stati scritti con particolare
+attenzione alla leggibilità.
+
+Di seguito viene riportato un breve esempio di test, per illustrare l'approccio utilizzato nella loro scrittura.
+
+```scala
+  it should "handle a placement at the board's edge (bottom-right)" in:
+    board(place a Destroyer at J(7) vertical).positions shouldEqual Position(9, 6 to 9)
+
+  it should "throw RuntimeException if ships overlap" in:
+    a[RuntimeException] should be thrownBy board(
+      place a Carrier at A(1) horizontal,
+      place a Submarine at A(1) horizontal
+    )
+
+  it should "throw RuntimeException if a ship goes out of bounds" in:
+    a[RuntimeException] should be thrownBy board(
+      place a Carrier at J(1) horizontal
+    )
+
+  it should "throw RuntimeException with an invalid coordinate" in:
+    a[RuntimeException] should be thrownBy board(
+      place a Carrier at A(11) horizontal
+    )
+```
