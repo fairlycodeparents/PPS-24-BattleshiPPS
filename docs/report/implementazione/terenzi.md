@@ -8,11 +8,7 @@ parent: Implementazione
 
 ## Panoramica dei Contributi
 
-Il mio contributo al progetto è stato realizzato adottando un approccio ispirato al TDD, utilizzando i test per guidare
-lo sviluppo delle funzionalità e assicurare la coerenza del codice in caso di modifiche. Tuttavia, per motivi di tempo,
-questa metodologia è stata applicata alle sole classi principali e non a tutte le parti implementate.
-
-In particolare, mi sono concentrato sulle seguenti aree:
+Il mio contributo al progetto si è focalizzato sulle seguenti aree:
 
 * [Configurazione della plancia di gioco](#plancia-di-gioco): `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`,
 `BoardCoordinates`, `ShipPlacementDSL`.
