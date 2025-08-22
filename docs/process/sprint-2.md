@@ -46,8 +46,8 @@ table td[rowspan] {
             Gestito tramite un approccio Git Flow.</td>
       <td>Git Flow Setup</td>
       <td>Mirco</td>
-      <td></td>
-      <td></td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Studio dell'architettura</td>
@@ -58,8 +58,8 @@ table td[rowspan] {
     <tr>
       <td>Docs Setup</td>
       <td>Mirco</td>
-      <td></td>
-      <td></td>
+      <td>2</td>
+      <td>0</td>
     </tr>
     <tr>
       <td></td>
@@ -67,8 +67,8 @@ table td[rowspan] {
       <td>Come utente, vorrei avere una prima visualizzazione del layout dell’applicazione</td>
       <td></td>
       <td>Mirco</td>
-      <td></td>
-      <td></td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td rowspan="5">3</td>
@@ -127,14 +127,10 @@ table td[rowspan] {
     <tr>
       <td>Creazione DSL</td>
       <td>Mirco</td>
-      <td></td>
-      <td></td>
+      <td>4</td>
+      <td>0</td>
     </tr>
     <tr>
-      <td>Estensione DSL per l'attacco</td>
-      <td>Mirco</td>
-      <td></td>
-      <td></td>
     </tr>
     <tr>
       <td rowspan="4">6</td>
@@ -156,8 +152,8 @@ table td[rowspan] {
     <tr>
       <td>Estensione della board per supportare la logica di attacco</td>
       <td>Mirco</td>
-      <td></td>
-      <td></td>
+      <td>9</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>7</td>
