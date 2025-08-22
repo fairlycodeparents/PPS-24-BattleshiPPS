@@ -60,7 +60,20 @@ Questo approccio ha permesso sia l’aggiornamento costante del gruppo sulle att
 sia un ulteriore livello di controllo e validazione del codice prima della sua integrazione definitiva.
 
 ## Scelta degli strumenti di test/build/continuous integration
-Per il testing si è scelto di utilizzare `ScalaTest` come strumento di automazione, essendo una tecnologia nota e facile
-da integrare. Come build tool è stato scelto `sbt`, in quanto nasce specificatamente per Scala.
-Sono stati usati plugin dedicati come _scalafmtAll_ che integrano perfettamente strumenti di formattazione e refactoring automatico.
-L’intero progetto (inclusa la relazione) è stato gestito tramite GitHub.
+Per il testing si è scelto di utilizzare *ScalaTest* come strumento di automazione, essendo una tecnologia nota e facile
+da integrare, mentre come build tool è stato scelto *sbt*, in quanto nasce specificatamente per Scala. Inoltre, è stato
+utilizzato *scalafmt* per formattare automaticamente il codice sorgente per renderlo coerente e standardizzato
+all'interno del team.
+
+L’intero progetto (inclusa la relazione) è stato gestito tramite *GitHub*. In particolare, per automatizzare i processi
+di test e controllo qualità, è stata implementata una pipeline di continuous integration su *GitHub Actions*. Questa
+pipeline si attiva automaticamente a ogni nuova push sui branch di sviluppo, garantendo che il codice rispetti gli
+standard prefissati prima di essere aggiunto. I workflow sono stati configurati per eseguire le seguenti azioni:
+
+* Build e test: il codice viene compilato e testato automaticamente su diverse piattaforme (ubuntu, windows, macos) e
+versioni di Java (17, 21), per assicurare la compatibilità cross-platform e prevenire regressioni. Questo processo viene
+avviato ad ogni push, consentendo un controllo continuo dello stato del software.
+* Controllo della formattazione: si verifica che il codice rispetti gli standard di formattazione stabiliti dal team,
+utilizzando `scalafmtCheckAll` per mantenere una codebase coerente e leggibile.
+* Validazione dei commit: per garantire chiarezza e coerenza nella cronologia dei commit, è stato implementato
+un workflow che valida i messaggi di commit, rispettando le specifiche di *Conventional Commits*.
