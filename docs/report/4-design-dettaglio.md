@@ -45,7 +45,6 @@ permettono la creazione modulare delle diverse strategie:
 La view si occupa in un primo momento di gestire l'avvio della partita, che prevede le configurazioni iniziali, 
 e successivamente, la gestione della partita. C'è una chiara separazione tra logica di visualizzazione, gestione degli
 eventi e rendering. 
-## Setup View
 ## Game View
 Sono stati utilizzati i seguenti pattern:
 - factory pattern: per `ButtonFactory`, che centralizza la creazione di bottoni, e `DialogFactory` che gestisce la
@@ -82,3 +81,17 @@ se la fase della partita sia impostata su *Game Over*.
 <div style="text-align: center;">
   <img src="../assets/img/controller-class-diagram.png" alt="Controller UML scheme" />
 </div>
+
+### Impostazioni della partita
+![Diagramma classi](../assets/img/setup-class-diagram.png)
+
+La classe `GameSetup` agisce da controller per la fase di configurazione del gioco. Il suo ruolo principale è garantire
+che la configurazione sia sempre valida. 
+
+All'avvio, fornisce una configurazione iniziale pre-validata alla `SetupView`. Successivamente, ogni volta che l'utente
+modifica un valore, il controller recupera i dati aggiornati dalla view e li passa attraverso una serie di validatori
+(`ConfigurationValidator`). Se la configurazione non rispetta le regole (ad esempio, troppe navi), `GameSetup` la
+corregge automaticamente e aggiorna la `SetupView` per riflettere le modifiche.
+
+Questo processo continuo di validazione e correzione assicura che l'applicazione rimanga in uno stato coerente e
+giocabile, fornendo un feedback immediato all'utente e prevenendo errori prima che si verifichino.

@@ -30,15 +30,15 @@ class ConfigurationValidatorTest extends AnyFlatSpec with should.Matchers:
 
   "The MaxOccupancyValidator" should "return the same configuration if it is valid" in:
     val config = GameConfig(validShipAmounts)
-    maxOccupancyValidator.validate(config).ships shouldEqual config.ships
+    maxOccupancyValidator.validate(config) shouldEqual config
 
   it should "return an empty configuration if the initial configuration is empty" in:
     val emptyConfig = GameConfig(Map.empty)
-    maxOccupancyValidator.validate(emptyConfig).ships shouldEqual emptyConfig.ships
+    maxOccupancyValidator.validate(emptyConfig) shouldEqual emptyConfig
 
   it should "not return the original configuration if it exceeds the maximum ship count" in:
     val config = GameConfig(invalidShipAmounts)
-    maxOccupancyValidator.validate(config).ships should not equal config.ships
+    maxOccupancyValidator.validate(config) should not equal config
 
   it should "correct the configuration to fit within the maximum ship count" in:
     val config          = GameConfig(invalidShipAmounts)
@@ -50,8 +50,8 @@ class ConfigurationValidatorTest extends AnyFlatSpec with should.Matchers:
 
   "The NotEmptyValidator" should "add at least a ship, if the configuration is empty" in:
     val emptyConfig = GameConfig(Map.empty)
-    notEmptyValidator.validate(emptyConfig).ships should not equal emptyConfig.ships
+    notEmptyValidator.validate(emptyConfig) should not equal emptyConfig
 
   it should "return the same configuration if it is not empty" in:
     val config = GameConfig(validShipAmounts)
-    notEmptyValidator.validate(config).ships shouldEqual config.ships
+    notEmptyValidator.validate(config) shouldEqual config
