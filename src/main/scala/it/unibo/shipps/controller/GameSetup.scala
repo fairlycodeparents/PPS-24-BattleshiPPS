@@ -6,7 +6,6 @@ import it.unibo.shipps.model.player.PlayerFactory.*
 import it.unibo.shipps.view.{DifficultySelection, GameView, SetupView}
 import it.unibo.shipps.model.player.Player
 
-import javax.swing.event.ChangeEvent
 import scala.swing.*
 
 class GameSetup(val viewFrame: MainFrame):
@@ -21,13 +20,13 @@ class GameSetup(val viewFrame: MainFrame):
   SetupView.updateConfigDisplay(ConfigurationManager.applyValidators(initialConfig, validators))
   SetupView.setController(this)
 
-  for ((ship, spinner) <- SetupView.spinners) do
-    spinner.addChangeListener((e: ChangeEvent) =>
-      val currentConfig = SetupView.getGameConfig
-      val corrected     = ConfigurationManager.applyValidators(currentConfig, validators)
-      SetupView.updateConfigDisplay(corrected)
-    )
+  /** Called when any of the ship count spinners change value. */
+  def onSpinnerChange(): Unit =
+    val currentConfig = SetupView.getGameConfig
+    val corrected     = ConfigurationManager.applyValidators(currentConfig, validators)
+    SetupView.updateConfigDisplay(corrected)
 
+  /** Handles the event when the "Single Player" button is clicked. */
   def handleSinglePlayerClick(): Unit =
     val options           = Seq("Easy", "Medium", "Hard")
     val choosenDifficulty = new DifficultySelection(options, viewFrame.peer)
@@ -37,6 +36,7 @@ class GameSetup(val viewFrame: MainFrame):
       case "Medium" => createController(createBotPlayer(AverageBotAttackStrategy()))
       case "Hard"   => createController(createBotPlayer(AdvancedBotAttackStrategy()))
 
+  /** Handles the event when the "Multiplayer" button is clicked. */
   def handleMultiPlayerClick(): Unit =
     createController(createHumanPlayer())
 

@@ -1,9 +1,11 @@
 package it.unibo.shipps.view
 
 import it.unibo.shipps.model.{GameConfig, ShipType}
+import it.unibo.shipps.controller.GameSetup
 import javax.swing.{JDialog, JSpinner, SpinnerNumberModel}
 import scala.swing.*
-import it.unibo.shipps.controller.GameSetup
+
+import javax.swing.event.ChangeEvent
 import scala.swing.event.ButtonClicked
 
 class DifficultySelection(options: Seq[String], owner: java.awt.Frame)
@@ -43,6 +45,10 @@ object SetupView:
       case ButtonClicked(`multiPlayerButton`) =>
         controller.foreach(_.handleMultiPlayerClick())
     }
+    for ((ship, spinner) <- spinners) do
+      spinner.addChangeListener((e: ChangeEvent) =>
+        controller.foreach(_.onSpinnerChange())
+      )
 
   /** Retrieves the current game configuration based on user selections.
     * @return The current GameConfig instance.
@@ -61,7 +67,7 @@ object SetupView:
   private val framePadding    = 30
   private val verticalSpacing = 10
 
-  val spinners: Map[ShipType, JSpinner] = ShipType.values.map(ship =>
+  private val spinners: Map[ShipType, JSpinner] = ShipType.values.map(ship =>
     ship -> new JSpinner(new SpinnerNumberModel(minShipCount, minShipCount, maxShipCount, stepShipCount))
   ).toMap
 
