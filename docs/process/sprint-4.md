@@ -106,18 +106,18 @@ table td[rowspan] {
         muovere la nave nella nuova posizione, 
         ruotare la nave)</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>4</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Posizionamento iniziale</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Refactor player board</td>
@@ -135,18 +135,18 @@ table td[rowspan] {
     <tr>
       <td>Posizionamento iniziale automatico</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Posizionamento randomico ripetuto</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td rowspan="3">5</td>
@@ -186,10 +186,10 @@ table td[rowspan] {
     <tr>
       <td>Feedback all'utente per il risultato dell'attacco</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>10</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Estensione della board per supportare la logica di attacco</td>
@@ -202,10 +202,10 @@ table td[rowspan] {
     <tr>
       <td>Refactor del game controller</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>5</td>
+      <td>5</td>
+      <td>3</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Miglioramento usabilità GUI</td>
@@ -232,18 +232,18 @@ table td[rowspan] {
     <tr>
       <td>Gestione dei turni e del loop di gioco</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>10</td>
+      <td>10</td>
+      <td>2</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Refactor del Game Controller</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>5</td>
+      <td>5</td>
+      <td>5</td>
+      <td>0</td>
     </tr>
     <tr>
       <td rowspan="3">8</td>
@@ -261,10 +261,10 @@ table td[rowspan] {
     <tr>
       <td>Gestione dei turni e del loop di gioco</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>5</td>
+      <td>5</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>9</td>
@@ -316,10 +316,10 @@ table td[rowspan] {
     <tr>
       <td>Posizionamento ostacoli</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>5</td>
+      <td>5</td>
+      <td>5</td>
+      <td>5</td>
     </tr>
     <tr>
       <td>Aggiunta ostacoli nella configurazione (settings)</td>
