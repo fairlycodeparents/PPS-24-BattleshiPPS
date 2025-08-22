@@ -33,6 +33,7 @@ class GameSetup(val viewFrame: MainFrame):
       updateConfig(ship, spinner.getValue.asInstanceOf[Int])
     )
 
+  /** Handles the event when the single-player button is clicked. */
   def handleSinglePlayerClick(): Unit =
     val options           = Seq("Easy", "Medium", "Hard")
     val choosenDifficulty = new DifficultySelection(options, viewFrame.peer)
@@ -42,6 +43,7 @@ class GameSetup(val viewFrame: MainFrame):
       case "Medium" => createController(createBotPlayer(AverageBotAttackStrategy()))
       case "Hard"   => createController(createBotPlayer(AdvancedBotAttackStrategy()))
 
+  /** Handles the event when the multiplayer button is clicked. */
   def handleMultiPlayerClick(): Unit =
     createController(createHumanPlayer())
 

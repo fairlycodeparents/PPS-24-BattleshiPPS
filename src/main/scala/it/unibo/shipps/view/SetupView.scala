@@ -31,6 +31,9 @@ class DifficultySelection(options: Seq[String], owner: java.awt.Frame)
 object SetupView:
   private var controller: Option[GameSetup] = None
 
+  /** Sets the controller for handling user interactions.
+    * @param c The GameSetup controller instance.
+    */
   def setController(c: GameSetup): Unit =
     controller = Some(c)
     mainPanel.listenTo(singlePlayerButton, multiPlayerButton)
@@ -41,6 +44,9 @@ object SetupView:
         controller.foreach(_.handleMultiPlayerClick())
     }
 
+  /** Retrieves the current game configuration based on user selections.
+    * @return The current GameConfig instance.
+    */
   def getGameConfig: GameConfig =
     GameConfig(spinners.map { case (shipType, spinner) =>
       shipType -> spinner.getValue.asInstanceOf[Int]
