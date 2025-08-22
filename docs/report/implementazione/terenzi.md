@@ -14,15 +14,15 @@ questa metodologia è stata applicata alle sole classi principali e non a tutte 
 
 In particolare, mi sono concentrato sulle seguenti aree:
 
-* **[Configurazione della plancia di gioco](#plancia-di-gioco)**: `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`,
+* [Configurazione della plancia di gioco](#plancia-di-gioco): `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`,
 `BoardCoordinates`, `ShipPlacementDSL`.
-* **[Validazione della configurazione scelta dall'utente](#gestione-della-configurazione)**: `GameConfig`,
+* [Validazione della configurazione scelta dall'utente](#gestione-della-configurazione): `GameConfig`,
 `ConfigurationValidator`, `MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
-* **[Interfaccia grafica e interazione con l'utente](#contributi-nellinterfaccia-utente)**: `SetupView`,
+* [Interfaccia grafica e interazione con l'utente](#contributi-nellinterfaccia-utente): `SetupView`,
 `DifficultySelection`, `GameSetup`.
-* **[Strategie d'attacco del bot](#strategie-dattacco-del-bot)**: `AdvancedBotAttackStrategy`, `PositionWeighting`,
+* [Strategie d'attacco del bot](#strategie-dattacco-del-bot): `AdvancedBotAttackStrategy`, `PositionWeighting`,
 `MinDistanceWeighting`, `MaxWeightStrategy` e, in collaborazione con Giangiulli Chiara, `TargetAlreadyHitStrategy`.
-* **[Classi di supporto](#creazione-della-plancia)**: `Position`.
+* [Classi di supporto](#creazione-della-plancia): `Position`.
 
 ---
 
@@ -117,7 +117,7 @@ ogni momento.
 
 ```scala
 /** An attack strategy that uses a uniform distribution to select positions based on their weights.
- * It calculates the weight of each position based on the provided [[PositionWeighting]] strategy and chooses the
+ * It calculates the weight of each position based on the provided PositionWeighting strategy and chooses the
  * position with the highest weight.
  * @param positionWeighting the strategy to calculate the weight of positions
  */
@@ -196,16 +196,16 @@ rappresentata in modo più leggibile come `C(5)`.
 ```scala
 object BoardCoordinates:
 
-  /** A mapping of letters 'A' through 'J' to columns 0 through 9. */
+  /** A mapping of letters A through J to columns 0 through 9. */
   private val letterToColumn: Map[Char, Int] = ('A' to 'J').zipWithIndex.toMap
 
-  /** Converts a letter and row number to a [[Position]]. */
+  /** Converts a letter and row number to a Position. */
   private object column:
 
-    /** Creates a [[Position]] from a letter and row number.
+    /** Creates a Position from a letter and row number.
       * @param letter the letter representing the column (A-J)
       * @param row the row number (1-10)
-      * @return a [[Position]] corresponding to the letter and row
+      * @return a Position corresponding to the letter and row
       * @throws IllegalArgumentException if the letter or row is invalid
       */
     def apply(letter: Char)(row: Int): Position =
