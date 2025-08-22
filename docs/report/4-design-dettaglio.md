@@ -83,7 +83,6 @@ se la fase della partita sia impostata su *Game Over*.
 </div>
 
 ### Impostazioni della partita
-![Diagramma classi](../assets/img/setup-class-diagram.png)
 
 La classe `GameSetup` agisce da controller per la fase di configurazione del gioco. Il suo ruolo principale è garantire
 che la configurazione sia sempre valida. 
@@ -95,3 +94,5 @@ corregge automaticamente e aggiorna la `SetupView` per riflettere le modifiche.
 
 Questo processo continuo di validazione e correzione assicura che l'applicazione rimanga in uno stato coerente e
 giocabile, fornendo un feedback immediato all'utente e prevenendo errori prima che si verifichino.
+
+![Diagramma classi](../assets/img/setup-class-diagram.png)
