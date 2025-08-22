@@ -14,14 +14,17 @@ questa metodologia è stata applicata alle sole classi principali e non a tutte 
 
 In particolare, mi sono concentrato sulle seguenti aree:
 
-* **Configurazione della plancia di gioco**: `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`, `BoardCoordinates`,
-`ShipPlacementDSL`.
-* **Validazione della configurazione scelta dall'utente**: `GameConfig`, `ConfigurationValidator`,
-`MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
-* **Interfaccia grafica e interazione con l'utente**: `SetupView`, `DifficultySelection`, `GameSetup`.
-* **Strategie d'attacco del bot**: `AdvancedBotAttackStrategy`, `PositionWeighting`, `MinDistanceWeighting`,
-`MaxWeightStrategy` e, in collaborazione con Giangiulli Chiara, `TargetAlreadyHitStrategy`.
-* **Classi di supporto**: `Position`.
+* **[Configurazione della plancia di gioco](#plancia-di-gioco)**: `PlayerBoard`, `PlayerBoardBuilder`, `BoardFactory`,
+`BoardCoordinates`, `ShipPlacementDSL`.
+* **[Validazione della configurazione scelta dall'utente](#gestione-della-configurazione)**: `GameConfig`,
+`ConfigurationValidator`, `MaxOccupancyValidator`, `NotEmptyValidator`, `ConfigurationManager`.
+* **[Interfaccia grafica e interazione con l'utente](#contributi-nellinterfaccia-utente)**: `SetupView`,
+`DifficultySelection`, `GameSetup`.
+* **[Strategie d'attacco del bot](#strategie-dattacco-del-bot)**: `AdvancedBotAttackStrategy`, `PositionWeighting`,
+`MinDistanceWeighting`, `MaxWeightStrategy` e, in collaborazione con Giangiulli Chiara, `TargetAlreadyHitStrategy`.
+* **[Classi di supporto](#creazione-della-plancia)**: `Position`.
+
+---
 
 ## Gestione della configurazione
 
