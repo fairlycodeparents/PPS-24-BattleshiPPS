@@ -92,21 +92,21 @@ table td[rowspan] {
         muovere la nave nella nuova posizione, 
         ruotare la nave)</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
+      <td>15</td>
+      <td>4</td>
     </tr>
     <tr>
       <td>Posizionamento iniziale</td>
       <td>Dilaver</td>
-      <td></td>
-      <td></td>
+      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>4</td>
       <td>Posizionamento random</td>
       <td>Come utente, vorrei la possibilità di schierare in modo automatico le mie navi</td>
       <td></td>
-      <td>Dilaver</td>
+      <td></td>
       <td></td>
       <td></td>
     </tr>

@@ -140,8 +140,8 @@ I colori sono definiti all'interno di un file dedicato per organizzare le costan
 
 ## Gestione della battaglia e turnazione
 A seguìto della creazione dei bottoni della mappa, ogni interazione con essa produce diversi tipi di *click*, definiti all'interno di `ClickType`. In questa versione dell'applicazione abbiamo due tipi di click: *SingleClick* e *DoubleClick*. La prima, gestisce i singoli click inerenti alla mappa, attraversando ogni fase della partita: *Posizionamento*, *Battaglia* e *Game Over*, fasi definite come `enum` all'interno del `GameController`. Il secondo tipo di *click* riguarda solamente la fase di *Posizionamento*, e permette di ruotare la nave attorno alla sua *ancora* se cliccata rapidamente (entro un numero prestabilito di millisecondi).
-La fase iniziale di *posizionamento* viene gestita tramite il bottone creato dal `ButtonFactory` in caso di multiplayer, altrimenti appena il player umano termina la sua disposizione delle navi, la partita ha inizio. 
-Successivamente, durante la fase di *battaglia*, a ogni azione dell'utente (player umano o bot) verrà visualizzato dapprima il risultato dell'attacco nella mapp, e in seguito un *dialog* che permetterà la corretta gestione del turno. Tutti i messaggi di *dialog* sono gestiti tramite il `TurnDialogHandler`, che sfrutta il `DialogFactory` per racchiudere tutti i messaggi utilizzati nell'applicazione.
+La fase iniziale di *posizionamento* viene gestita tramite un bottone creato dal `ButtonFactory` dove in caso di modalità *multi player*, permette il passaggio del turno al secondo player e successivamente di iniziare la partita, altrimenti, nella modalità *single player*, appena il player umano termina la sua disposizione delle navi, può iniziare la partita. In entrambi, superata la fase di posizionamento, la turnazione verrà gestita dai messaggi di dialog.
+Successivamente, durante la fase di *battaglia*, a ogni azione dell'utente (player umano o bot) verrà visualizzato dapprima il risultato dell'attacco nella mappa, e in seguito un *dialog* che permetterà la corretta gestione del turno. Tutti i messaggi di *dialog* sono gestiti tramite il `TurnDialogHandler`, che sfrutta il `DialogFactory` per racchiudere tutti i messaggi utilizzati nell'applicazione.
 
 ### Gestione dei Click e degli Eventi
 Il file `ClickHandler` implementa la logica per gestire i diversi tipi di click dell'utente descritti precedentemente.
@@ -163,7 +163,7 @@ def handleClick(clickType: ClickType, controller: GameController): Unit =
 
 ### Sistema di Gestione della battaglia
 #### BattleHandler
-Il `BattleHandler coordina la logica di battaglia senza implementarla direttamente, delegando gli attacchi, umani e bot, a `BattleLogic`.
+Il `BattleHandler` coordina la logica di battaglia senza implementarla direttamente, delegando gli attacchi, umani e bot, a `BattleLogic`.
 Le funzioni sono il risultato della combinazione di risultati di altre funzioni, sfruttando così la delegazione della logica a moduli specializzati.
 
 ```scala
@@ -370,7 +370,7 @@ case class GameActionResult(newState: GameState, newTurn: Turn, messages: List[S
 ```
 Per la gestione dell'avvio del gioco viene invocato `handleStartGame` che gestisce tre scenari:
 -   partita in modalità *single player* con bot e turno di posizionamento del bot
--   partita in modalità *multi player* con gestione del posizionamento dei tue player tramite dialog
+-   partita in modalità *multi player* con gestione del posizionamento dei tue player tramite bottone e dialog
 -   avvio della battaglia dopo il posizionamento delle navi in entrambe le modalità
 
 Ogni funzione ritorna un nuovo *GameActionResult*. Per la fase di posizionamento, l'azione è delegata al *PositioningHandler*, ma il risultato viene incapsulato sempre in un *GameActionResult*, come si può notare per le funzioni *handlePositioningClick*, *handlePositioningDoubleClick*, *handleRandomizePositions*.
@@ -432,7 +432,7 @@ Per la gestione dei callbacks sono state usate *high-order functions*:
 def showBotResultDialog(result: String, onDismiss: () => Unit): Unit =
   val dialog = DialogFactory.createBotResultDialog(gui, result, onDismiss)
 ```
-ottenendo così *flessibilità*, dove diversi comportamenti posso essere passati come parametri e *composizione*, i callback possono essere composti funzionalmente.
+ottenendo così *flessibilità*, dove diversi comportamenti possono essere passati come parametri e *composizione*, i callback possono essere composti funzionalmente.
 
 La gestione dello stato opzionale utilizza operazioni monadiche per evitare null pointer exception:
 ```scala
@@ -467,7 +467,7 @@ In questo test viene verificato il corretto funzionamento della logica di posizi
 ```
 
 È stato fatto uso del `Either` per gestire il risultato della ricerca della nave, dove in caso di successo viene restituita la nave, altrimenti un messaggio di errore.
-Inoltre, l'uso del `DSL` per la creazione della board permette di rendere i test più leggibili e concisi, evitando la creazione manuale di ogni singolo elemento della board.
+Inoltre, l'uso del `DSL` per la creazione della board permette di rendere i test più leggibili e concisi.
 
 ```scala
 it should "return an error when no ship is found at the position" in:
@@ -510,7 +510,7 @@ it should "fail when ship overlaps with existing ship" in:
 Il test `BattleLogicTest` verifica la logica di battaglia, assicurando che gli attacchi vengano gestiti correttamente e che le navi vengano affondate, mancate o colpite come previsto (Sunk/Miss/Hit).
 Viene inoltre controllato il caso di attacco a una cella già attaccata in precedenza, creando quindi il messaggio *AlreadyAttack*. È presente anche la verifica della differenziazione tra i due player, i quali attaccano le rispettive board.
 Viene gestito anche il caso di transizione a *Game over* e l'aggiornamento dei colori dei bottoni nella board.
-Per l'implementazione dei test ho usato `pattern matching` per la gestione dei risultati di gioco, i `case class` per rappresentare lo stato immutabile del gioco,
+Nell'implementazione dei test ho usato `pattern matching` per la gestione dei risultati di gioco, i `case class` per rappresentare lo stato immutabile del gioco,
 e `foldLeft` per accumulare stati attraverso attacchi multipli.  
 
 ```scala
