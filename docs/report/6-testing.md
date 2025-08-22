@@ -17,19 +17,18 @@ validazione del comportamento.
 Durante lo sviluppo si è provato ad adottare un approccio ispirato al _Test Driven Development_ (TDD): 
 scrivere test unitari prima dell’implementazione e seguire il ciclo _red-green-refactor_.
 
-Tuttavia, questa metodologia non è stata seguita in maniera rigorosa in tutte le parti del progetto.
-In alcuni casi i test sono stati effettivamente scritti prima del codice (soprattutto nella logica di base), 
-mentre in altri sono stati introdotti successivamente.
-
-I test hanno garantito una base solida di verifica, supportando sia la collaborazione all’interno del team sia le attività 
-di refactoring. 
-
+I test hanno garantito una base solida di verifica, supportando sia la collaborazione all’interno del team sia le attività
+di refactoring.
 Hanno permesso di controllare le specifiche, la correttezza della logica implementata e la valutazione di casi limite o non validi.
-
-Hanno inoltre svolto un ruolo importante anche come strumento di documentazione pratica, poiché mostrano in modo diretto 
-come le diverse componenti devono essere utilizzate. 
-Questo ha permesso, ad esempio, di rendere immediatamente comprensibile ogni nuovo contributo agli altri membri del gruppo, 
+Hanno inoltre svolto un ruolo importante anche come strumento di documentazione pratica, poiché mostrano in modo diretto
+come le diverse componenti devono essere utilizzate.
+Questo ha permesso, ad esempio, di rendere immediatamente comprensibile ogni nuovo contributo agli altri membri del gruppo,
 semplicemente osservando i test già scritti.
+
+Tuttavia, questa metodologia non è stata seguita in maniera rigorosa in tutte le parti del progetto.
+In alcuni casi, i test non sono stati inseriti o sono stati aggiunti solo successivamente all'implementazione del codice.
+Ad esempio, per le interfacce utente i test sono stati omessi a favore di test manuali svolti direttamente
+sull'applicazione.
 
 ## Esempi rilevanti
 Alcuni esempi significativi sono riportati nelle singole sezioni di [implementazione](5-implementazione.md) dei membri del team.
