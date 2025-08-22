@@ -33,11 +33,12 @@ Per questo motivo, è stato definito il trait `ConfigurationValidator`, che si o
 gioco. Ogni configurazione è rappresentata da una classe `GameConfig`, che incapsula le informazioni sulle navi e le
 loro quantità.
 
-```scala
+```scala 3
 /** This validator ensures the total number of ship cells does not exceed a predefined percentage of the board.
  * @param maxOccupancy The maximum percentage of board cells that can be occupied by ships.
  */
 class MaxOccupancyValidator(val maxOccupancy: Double) extends ConfigurationValidator:
+
   def validate(config: GameConfig): GameConfig =
     val boardCells     = PlayerBoard.size * PlayerBoard.size
     val maxCells       = (boardCells * maxOccupancy).toInt
@@ -95,7 +96,7 @@ In particolare, ho realizzato `AdvancedBotAttackStrategy` e `TargetAlreadyHitStr
 combinate senza modificare il codice esistente e la logica comune può essere riutilizzata. Ad esempio, la strategia
 avanzata viene definita come mostrato di seguito:
 
-```scala
+```scala 3
 /** An advanced bot attack strategy that combines uniform distribution with targeting already hit positions. */
 class AdvancedBotAttackStrategy
   extends MaxWeightStrategy(MinDistanceWeighting())
@@ -111,7 +112,7 @@ facilitando eventuali estensioni del codice o modifiche. In particolare, questo 
 semplificato dai test esistenti, che hanno permesso di verificare il corretto funzionamento dell' implementazione in
 ogni momento. 
 
-```scala
+```scala 3
 /** An attack strategy that uses a uniform distribution to select positions based on their weights.
  * It calculates the weight of each position based on the provided [[PositionWeighting]] strategy and chooses the
  * position with the highest weight.
@@ -151,7 +152,7 @@ per classificare ciascuna cella non ancora colpita. Nel progetto attuale, il cal
 effettuati (`MinDistanceWeighting`). In caso di parità di punteggio tra più celle, il target viene scelto in modo
 casuale tra quelle con il punteggio più elevato.
 
-```scala
+```scala 3
 /** A position weighting strategy that calculates the weight based on the minimum distance to existing hits. */
 class MinDistanceWeighting extends PositionWeighting:
 
@@ -189,7 +190,7 @@ modo alternativo, utilizzando una notazione "classica", composta da una lettera 
 come ad esempio `C(5)` per indicare la colonna C e la riga 5. In questo modo, la posizione `Position(2, 4)` può essere
 rappresentata in modo più leggibile come `C(5)`.
 
-```scala
+```scala 3
 object BoardCoordinates:
 
   /** A mapping of letters 'A' through 'J' to columns 0 through 9. */
@@ -238,7 +239,7 @@ restituita.
 In questo modo, è stato possibile definire le posizioni delle navi all'interno della plancia con una sintassi simile
 alla seguente:
 
-```scala
+```scala 3
 board(
   place a Carrier at A(1) horizontal,
   place a Submarine at A(2) horizontal,
@@ -255,7 +256,7 @@ Infine, combinando tutti gli aspetti descritti in questa sezione, è stato possi
 e intuitivo. Ad esempio, di seguito viene riportato un test che verifica la corretta gestione del posizionamento
 di una nave verticale:
 
-```scala
+```scala 3
 it should "support placement of a vertical ship" in:
   board(
     place a Destroyer at B(2) vertical
