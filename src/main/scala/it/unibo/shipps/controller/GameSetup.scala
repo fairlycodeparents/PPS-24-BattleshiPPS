@@ -3,13 +3,11 @@ package it.unibo.shipps.controller
 import it.unibo.shipps.model.*
 import it.unibo.shipps.view.handler.TurnDialogHandler
 import it.unibo.shipps.model.player.PlayerFactory.*
-import ShipType.*
 import it.unibo.shipps.view.{DifficultySelection, GameView, SetupView}
 import it.unibo.shipps.model.player.Player
 
 import javax.swing.event.ChangeEvent
 import scala.swing.*
-import scala.swing.event.ButtonClicked
 
 class GameSetup(val viewFrame: MainFrame):
   private var currentConfig: GameConfig = GameConfig(ShipType.values.map(_ -> 1).toMap)
@@ -20,33 +18,32 @@ class GameSetup(val viewFrame: MainFrame):
 
   viewFrame.title = "BattleshiPPS: Homepage"
   viewFrame.contents = SetupView.mainPanel
-  SetupView.applyConfig(ConfigurationManager.applyValidators(currentConfig, validators).ships)
+  SetupView.updateConfigDisplay(ConfigurationManager.applyValidators(currentConfig, validators))
+  SetupView.setController(this)
 
   private def updateConfig(shipType: ShipType, count: Int): Unit =
     val updatedShips = currentConfig.ships.updated(shipType, count)
     currentConfig = GameConfig(updatedShips)
     val corrected = ConfigurationManager.applyValidators(currentConfig, validators)
     currentConfig = corrected
-    SetupView.applyConfig(corrected.ships)
+    SetupView.updateConfigDisplay(corrected)
 
   for ((ship, spinner) <- SetupView.spinners) do
     spinner.addChangeListener((e: ChangeEvent) =>
       updateConfig(ship, spinner.getValue.asInstanceOf[Int])
     )
 
-  viewFrame.listenTo(SetupView.singlePlayerButton, SetupView.multiPlayerButton)
-  viewFrame.reactions += {
-    case ButtonClicked(SetupView.singlePlayerButton) =>
-      val options           = Seq("Easy", "Medium", "Hard")
-      val choosenDifficulty = new DifficultySelection(options, viewFrame.peer)
-      choosenDifficulty.setVisible(true)
-      choosenDifficulty.selection match
-        case "Easy"   => createController(createBotPlayer(RandomBotAttackStrategy()))
-        case "Medium" => createController(createBotPlayer(AverageBotAttackStrategy()))
-        case "Hard"   => createController(createBotPlayer(AdvancedBotAttackStrategy()))
-    case ButtonClicked(SetupView.multiPlayerButton) =>
-      createController(createHumanPlayer())
-  }
+  def handleSinglePlayerClick(): Unit =
+    val options           = Seq("Easy", "Medium", "Hard")
+    val choosenDifficulty = new DifficultySelection(options, viewFrame.peer)
+    choosenDifficulty.setVisible(true)
+    choosenDifficulty.selection match
+      case "Easy"   => createController(createBotPlayer(RandomBotAttackStrategy()))
+      case "Medium" => createController(createBotPlayer(AverageBotAttackStrategy()))
+      case "Hard"   => createController(createBotPlayer(AdvancedBotAttackStrategy()))
+
+  def handleMultiPlayerClick(): Unit =
+    createController(createHumanPlayer())
 
   private def showErrorDialog(message: String): Unit =
     Dialog.showMessage(
@@ -57,8 +54,8 @@ class GameSetup(val viewFrame: MainFrame):
     )
 
   private def createController(secondPlayer: Player): Unit =
-    val maybeBoard1 = BoardFactory.createRandomBoard(currentConfig)
-    val maybeBoard2 = BoardFactory.createRandomBoard(currentConfig)
+    val maybeBoard1 = BoardFactory.createRandomBoard(SetupView.getGameConfig)
+    val maybeBoard2 = BoardFactory.createRandomBoard(SetupView.getGameConfig)
 
     (maybeBoard1, maybeBoard2) match
       case (Right(board1), Right(board2)) =>
