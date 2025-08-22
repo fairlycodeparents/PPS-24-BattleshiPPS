@@ -7,6 +7,8 @@ parent: Report
 # Design di dettaglio
 
 ## Model
+Il Model racchiude e gestisce l’intera logica di business del gioco. Di seguito sono riportate le principali scelte di 
+design che hanno guidato l'implementazione di questo componente architetturale.
 
 ### Creazione delle navi
 La creazione delle navi viene modellata attraverso l’uso dei _Factory Methods_ definiti nell’enumerazione `ShipType`.
@@ -51,12 +53,12 @@ Sono stati utilizzati i seguenti pattern:
 - observer pattern: per gestire facilmente le azioni dell'interfaccia utente come click o pressione dei tasti
 - state pattern: rendering basato su `GamePhase`, la view cambia in base alla fase della partita
 - strategy pattern: per incapsulare comportamenti alternativi, come per la gestione dei click. `ClickHandler` applica
-  strategie divers per i diversi tipi di click 
+  strategie diverse per i diversi tipi di click 
 - template method: i dialog hanno una struttura comune in `DialogFactory`, ma comportamenti specifici
 
 <div style="text-align: center;">
     <img src="../assets/img/view-render-class-diagram.png" alt="View rendering Class Diagram" width="2159"/>
-    <img src="../assets/img/view-turn-class-diagram.png" alt="View turn dialog Class Diagram" width="658"/>
+    <img src="../assets/img/view-turn-class-diagram.png" alt="View turn dialog Class Diagram" height="420px" width="280px"/>
 </div>
 
 ## Controller
