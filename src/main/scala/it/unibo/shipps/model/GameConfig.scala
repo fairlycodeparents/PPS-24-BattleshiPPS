@@ -62,8 +62,7 @@ object ConfigurationManager:
 object BoardFactory:
   /** Creates a [[PlayerBoard]] with ships positioned randomly.
     * @param config The ship configuration to position.
-    * @return The [[PlayerBoard]] with the ships.
-    * @throws RuntimeException if ship positioning fails.
+    * @return An [[Either]] with error message on the left and [[PlayerBoard]] on the right.
     */
   def createRandomBoard(config: GameConfig): Either[String, PlayerBoard] =
     val defaultPosition = Position(0, 0)
