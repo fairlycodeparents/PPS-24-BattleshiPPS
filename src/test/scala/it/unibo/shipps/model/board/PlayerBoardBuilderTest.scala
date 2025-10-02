@@ -4,7 +4,6 @@ import it.unibo.shipps.model.ShipType.*
 import it.unibo.shipps.model.board.BoardCoordinates.*
 import it.unibo.shipps.model.board.PlayerBoardBuilder.*
 import it.unibo.shipps.model.board.ShipPlacementDSL.place
-import it.unibo.shipps.model.board.{PlayerBoard, PlayerBoardBuilder, Position}
 import org.scalatest.*
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.*
