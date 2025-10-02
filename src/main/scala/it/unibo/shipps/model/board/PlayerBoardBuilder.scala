@@ -76,7 +76,7 @@ object BoardCoordinates:
       */
     def apply(letter: Char)(row: Int): Position =
       letterToColumn.get(letter.toUpper) match
-        case Some(col) if row >= 1 && row <= 10 => Position(col, row - 1)
+        case Some(col) => Position(col, row - 1)
         case _ => throw new IllegalArgumentException(s"Invalid coordinate: ${letter.toUpper}$row")
 
   /** Helpers to define readable coordinates, e.g. C(5). */
