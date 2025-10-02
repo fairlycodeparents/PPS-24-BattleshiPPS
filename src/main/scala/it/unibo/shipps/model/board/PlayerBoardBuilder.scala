@@ -77,7 +77,7 @@ object BoardCoordinates:
     def apply(letter: Char)(row: Int): Position =
       letterToColumn.get(letter.toUpper) match
         case Some(col) => Position(col, row - 1)
-        case _ => throw new IllegalArgumentException(s"Invalid coordinate: ${letter.toUpper}$row")
+        case _         => throw new IllegalArgumentException(s"Invalid coordinate: ${letter.toUpper}$row")
 
   /** Helpers to define readable coordinates, e.g. C(5). */
   val A: Int => Position = column('A')
