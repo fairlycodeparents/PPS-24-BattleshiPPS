@@ -68,7 +68,7 @@ object BoardCoordinates:
   private val letterToColumn: Map[Char, Int] = ('A' to 'J').zipWithIndex.toMap
 
   /** Converts a letter and row number to a [[Position]]. */
-  private object column:
+  object column:
 
     /** Creates a [[Position]] from a letter and row number.
       * @param letter the letter representing the column (A-J)

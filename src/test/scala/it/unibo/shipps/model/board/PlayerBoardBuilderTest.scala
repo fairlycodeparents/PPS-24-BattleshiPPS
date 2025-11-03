@@ -60,4 +60,6 @@ class PlayerBoardBuilderTest extends AnyFlatSpec with should.Matchers:
     )
     result.isLeft shouldBe true
     result.left.getOrElse(fail()) should include("out of bounds")
-    
+
+  it should "throw RuntimeException if an unexisting position is used" in:
+    a[RuntimeException] should be thrownBy column('Z')(1)
