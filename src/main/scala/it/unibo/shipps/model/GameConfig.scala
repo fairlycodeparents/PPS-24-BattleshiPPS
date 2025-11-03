@@ -70,4 +70,4 @@ object BoardFactory:
       List.fill(count)(shipType.at(defaultPosition, ShipOrientation.Horizontal))
     ).toList
 
-    ShipPositioningImpl.randomPositioning(PlayerBoardBuilder.board(), shipsToPlace)
+    ShipPositioningImpl.randomPositioning(PlayerBoard(), shipsToPlace)

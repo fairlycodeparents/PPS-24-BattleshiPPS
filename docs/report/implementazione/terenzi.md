@@ -271,22 +271,20 @@ attenzione alla leggibilità.
 Di seguito viene riportato un breve esempio di test, per illustrare l'approccio utilizzato nella loro scrittura.
 
 ```scala
-  it should "handle a placement at the board's edge (bottom-right)" in:
-    board(place a Destroyer at J(7) vertical).positions shouldEqual Position(9, 6 to 9)
+  "A player board" should "allow removing a ship that does exist" in:
+    val boardWithoutShip = boardWithShip.removeShip(ship)
+    boardWithoutShip.getOrElse(fail()).ships shouldBe empty
 
-  it should "throw RuntimeException if ships overlap" in:
-    a[RuntimeException] should be thrownBy board(
-      place a Carrier at A(1) horizontal,
-      place a Submarine at A(1) horizontal
-    )
+  it should "update occupied positions correctly, after a ship is added" in:
+    boardWithShip.isAnyPositionOccupied(Set(position)) shouldBe true
 
-  it should "throw RuntimeException if a ship goes out of bounds" in:
-    a[RuntimeException] should be thrownBy board(
-      place a Carrier at J(1) horizontal
-    )
+  it should "return a Left with an error message if a ship is added to an occupied position" in:
+    val result = boardWithShip.addShip(ship)
+    result.isLeft shouldBe true
 
-  it should "throw RuntimeException with an invalid coordinate" in:
-    a[RuntimeException] should be thrownBy board(
-      place a Carrier at A(11) horizontal
-    )
+  it should "return the ship at a specific position" in:
+    boardWithShip.shipAtPosition(position) shouldEqual Some(ship)
+
+  it should "return an empty optional if no ship is at the specified position" in:
+    emptyBoard.shipAtPosition(position) shouldEqual None
 ```

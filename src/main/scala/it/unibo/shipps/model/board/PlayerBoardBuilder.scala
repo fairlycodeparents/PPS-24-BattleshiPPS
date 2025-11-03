@@ -10,17 +10,19 @@ object PlayerBoardBuilder:
 
   /** Creates a [[PlayerBoard]] from a list of placements.
     * @param placements a sequence of [[Placement]] objects
-    * @return a fully constructed [[PlayerBoard]]
-    * @throws RuntimeException if any placement is invalid or overlaps
+    * @return an [[Either]] containing the error message or the constructed [[PlayerBoard]]
     */
-  def board(placements: Placement*): PlayerBoard =
-    placements.foldLeft(PlayerBoard()): (board, placement) =>
-      ShipPositioningImpl.placeShip(
-        board,
-        placement.shipType.at(placement.start, placement.orientation)
-      ) match
-        case Left(error)         => throw new RuntimeException(s"Error placing ship: $error")
-        case Right(updatedBoard) => updatedBoard
+  def board(placements: Placement*): Either[String, PlayerBoard] =
+    val initial: Either[String, PlayerBoard] = Right(PlayerBoard())
+    placements.foldLeft(initial) { (acc, placement) =>
+      for {
+        currentBoard <- acc
+        updatedBoard <- ShipPositioningImpl.placeShip(
+          currentBoard,
+          placement.shipType.at(placement.start, placement.orientation)
+        )
+      } yield updatedBoard
+    }
 
 object ShipPlacementDSL:
 
@@ -66,7 +68,7 @@ object BoardCoordinates:
   private val letterToColumn: Map[Char, Int] = ('A' to 'J').zipWithIndex.toMap
 
   /** Converts a letter and row number to a [[Position]]. */
-  private object column:
+  object column:
 
     /** Creates a [[Position]] from a letter and row number.
       * @param letter the letter representing the column (A-J)

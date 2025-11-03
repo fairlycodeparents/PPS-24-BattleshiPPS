@@ -31,7 +31,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
   "ShipPositioning" should "successfully return a ship at a given position" in:
     val testBoard = board(
       place a Frigate at A(1) vertical
-    )
+    ).getOrElse(fail("Board setup failed"))
     val position = A(1)
 
     val result = shipPositioning.getShipAt(testBoard, position)
@@ -40,7 +40,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
     result.getOrElse(fail()).anchor shouldBe A(1)
 
   it should "return an error when no ship is found at the position" in:
-    val testBoard = board()
+    val testBoard = board().getOrElse(fail("Board setup failed"))
     val position  = B(2)
 
     val result = shipPositioning.getShipAt(testBoard, position)
@@ -62,7 +62,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
   it should "fail when ship overlaps with existing ship" in:
     val testBoard = board(
       place a Frigate at A(1) vertical
-    )
+    ).getOrElse(fail("Board setup failed"))
     val newShip = Submarine.at(A(1), Vertical)
 
     val result = shipPositioning.placeShip(testBoard, newShip)
@@ -82,7 +82,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
   it should "successfully move a ship to a new position" in:
     val testBoard = board(
       place a Frigate at A(1) vertical
-    )
+    ).getOrElse(fail("Board setup failed"))
     val ship        = testBoard.ships.head
     val newPosition = C(1)
 
@@ -97,7 +97,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
     val testBoard = board(
       place a Frigate at A(1) vertical,
       place a Submarine at B(1) vertical
-    )
+    ).getOrElse(fail("Board setup failed"))
     val overlappingShip = testBoard.ships.find(_.anchor == B(1)).getOrElse(fail())
 
     val result = shipPositioning.moveShip(testBoard, overlappingShip, A(1))
@@ -108,7 +108,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
   it should "fail when moved ship is out of bounds" in:
     val testBoard = board(
       place a Carrier at A(1) horizontal
-    )
+    ).getOrElse(fail("Board setup failed"))
     val ship = testBoard.ships.head
 
     val result = shipPositioning.moveShip(testBoard, ship, H(8))
@@ -119,7 +119,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
   it should "successfully rotate a ship" in:
     val testBoard = board(
       place a Frigate at A(1) vertical
-    )
+    ).getOrElse(fail("Board setup failed"))
     val ship = testBoard.ships.head
 
     val result = shipPositioning.rotateShip(testBoard, ship)
@@ -133,7 +133,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
     val testBoard = board(
       place a Submarine at A(2) vertical,
       place a Frigate at A(1) horizontal
-    )
+    ).getOrElse(fail("Board setup failed"))
     val shipToRotate = testBoard.ships
       .find(_.orientation == Horizontal)
       .getOrElse(fail())
@@ -146,7 +146,7 @@ class ShipPositioningTest extends AnyFlatSpec with should.Matchers:
   it should "fail when rotated ship is out of bounds" in:
     val testBoard = board(
       place a Carrier at A(8) horizontal
-    )
+    ).getOrElse(fail("Board setup failed"))
     val ship = testBoard.ships.head
 
     val result = shipPositioning.rotateShip(testBoard, ship)
