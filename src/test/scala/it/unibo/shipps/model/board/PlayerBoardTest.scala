@@ -18,7 +18,7 @@ class PlayerBoardTest extends AnyFlatSpec with should.Matchers:
   val emptyBoard: PlayerBoard = PlayerBoard()
   val boardWithShip: PlayerBoard = PlayerBoardBuilder.board(
     place a Frigate at C(4) horizontal
-  )
+  ).getOrElse(fail("Board setup failed"))
 
   "An empty player board" should "be initialised with no ships" in:
     emptyBoard.ships shouldBe empty

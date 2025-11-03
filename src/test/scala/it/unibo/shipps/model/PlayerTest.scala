@@ -21,7 +21,7 @@ class PlayerTest extends AnyFlatSpec with should.Matchers:
     place a Submarine at A(5) horizontal,
     place a Destroyer at C(7) horizontal,
     place a Carrier at J(2) vertical
-  )
+  ).getOrElse(fail("Board setup failed"))
 
   "A human player" should "be created with its own attack strategy" in:
     humanPlayer.isABot shouldBe false
