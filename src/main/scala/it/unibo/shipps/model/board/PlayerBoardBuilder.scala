@@ -76,24 +76,17 @@ object BoardCoordinates:
       */
     def apply(letter: Char)(row: Int): Position =
       letterToColumn.get(letter.toUpper) match
-        case Some(col) if row >= 1 && row <= 10 => Position(col, row - 1)
-        case _ => throw new IllegalArgumentException(s"Invalid coordinate: ${letter.toUpper}$row")
-
-  /** A trait for column objects to share the apply method. */
-  private trait ColumnObject extends (Int => Position)
-
-  /** Creates a column object for a given character. */
-  private def createColumnObject(char: Char): ColumnObject =
-    (row: Int) => column(char)(row)
+        case Some(col) => Position(col, row - 1)
+        case _         => throw new IllegalArgumentException(s"Invalid coordinate: ${letter.toUpper}$row")
 
   /** Helpers to define readable coordinates, e.g. C(5). */
-  val A: Int => Position = createColumnObject('A')
-  val B: Int => Position = createColumnObject('B')
-  val C: Int => Position = createColumnObject('C')
-  val D: Int => Position = createColumnObject('D')
-  val E: Int => Position = createColumnObject('E')
-  val F: Int => Position = createColumnObject('F')
-  val G: Int => Position = createColumnObject('G')
-  val H: Int => Position = createColumnObject('H')
-  val I: Int => Position = createColumnObject('I')
-  val J: Int => Position = createColumnObject('J')
+  val A: Int => Position = column('A')
+  val B: Int => Position = column('B')
+  val C: Int => Position = column('C')
+  val D: Int => Position = column('D')
+  val E: Int => Position = column('E')
+  val F: Int => Position = column('F')
+  val G: Int => Position = column('G')
+  val H: Int => Position = column('H')
+  val I: Int => Position = column('I')
+  val J: Int => Position = column('J')

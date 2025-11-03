@@ -1,13 +1,12 @@
 package it.unibo.shipps.model.board
 
-import org.scalatest.*
-import flatspec.*
-import it.unibo.shipps.model.{Ship, ShipType}
-import it.unibo.shipps.model.board.{PlayerBoard, Position}
+import it.unibo.shipps.model.ShipType.*
 import it.unibo.shipps.model.board.BoardCoordinates.*
 import it.unibo.shipps.model.board.ShipPlacementDSL.*
-import ShipType.*
-import matchers.*
+import it.unibo.shipps.model.{Ship, ShipType}
+import org.scalatest.*
+import org.scalatest.flatspec.*
+import org.scalatest.matchers.*
 
 import scala.language.postfixOps
 
