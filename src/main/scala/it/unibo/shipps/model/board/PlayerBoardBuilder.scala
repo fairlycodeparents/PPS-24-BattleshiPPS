@@ -9,9 +9,9 @@ object PlayerBoardBuilder:
   import ShipPlacementDSL.Placement
 
   /** Creates a [[PlayerBoard]] from a list of placements.
-   * @param placements a sequence of [[Placement]] objects
-   * @return an [[Either]] containing the error message or the constructed [[PlayerBoard]]
-   */
+    * @param placements a sequence of [[Placement]] objects
+    * @return an [[Either]] containing the error message or the constructed [[PlayerBoard]]
+    */
   def board(placements: Placement*): Either[String, PlayerBoard] =
     val initial: Either[String, PlayerBoard] = Right(PlayerBoard())
     placements.foldLeft(initial) { (acc, placement) =>
